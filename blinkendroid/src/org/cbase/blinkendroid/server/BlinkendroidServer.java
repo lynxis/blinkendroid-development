@@ -31,7 +31,7 @@ import org.cbase.blinkendroid.player.bml.BLMHeader;
 
 import android.util.Log;
 
-public class BlinkendroidServer {
+public class BlinkendroidServer {//TODO schtief warum hier kein thread in server ui?
 
 	volatile private boolean running = false;
 	volatile private DatagramSocket serverSocket;

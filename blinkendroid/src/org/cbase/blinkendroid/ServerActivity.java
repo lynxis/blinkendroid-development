@@ -92,7 +92,7 @@ public class ServerActivity extends Activity implements ConnectionListener,
 
 				blinkendroidServer = new BlinkendroidServer(
 						ServerActivity.this, Constants.BROADCAST_SERVER_PORT);
-				blinkendroidServer.start();
+				blinkendroidServer.start();//TODO schtief warum hier kein thread in server ui?
 
 				startButton.setEnabled(false);
 				stopButton.setEnabled(true);
