@@ -127,6 +127,7 @@ public class ConnectionState implements CommandHandler {
 	protected void receivedSyn(int connId) {
 		if (m_state == Connstate.NONE) {
 			m_connId = connId;
+			System.out.println("receivedSyn");
 			sendSynAck();
 			stateChange(Connstate.ACKWAIT);
 		}
@@ -134,11 +135,13 @@ public class ConnectionState implements CommandHandler {
 	
 	protected void receivedAck() {
 		if (m_state == Connstate.ACKWAIT) {
+			System.out.println("receivedAck");
 			stateChange(Connstate.ESTABLISHED);
 		}
 	}
 	
 	protected void receivedReset() {
+		System.out.println("receivedReset");
 		stateChange(Connstate.NONE);
 	}
 	
@@ -148,6 +151,7 @@ public class ConnectionState implements CommandHandler {
 	}
 	 
 	protected void sendSyn() {
+		System.out.println("sendSyn");
 		ByteBuffer out = ByteBuffer.allocate(1024);
 		out.putInt(Command.SYN.ordinal());
 		out.putInt(7);
@@ -162,6 +166,7 @@ public class ConnectionState implements CommandHandler {
 		// TODO Auto-generated method stub		
 	}
 	protected void sendSynAck() {
+		System.out.println("sendSynAck");
 		ByteBuffer out = ByteBuffer.allocate(1024);
 		out.putInt(Command.SYNACK.ordinal());
 		out.putInt(m_connId);
@@ -174,6 +179,7 @@ public class ConnectionState implements CommandHandler {
 		// TODO Auto-generated method stub
 	}
 	protected void sendAck() {
+		System.out.println("sendAck");
 		ByteBuffer out = ByteBuffer.allocate(1024);
 		out.putInt(Command.ACK.ordinal());
 		out.putInt(m_connId);
@@ -187,6 +193,7 @@ public class ConnectionState implements CommandHandler {
 	}
 	
 	protected void sendReset() {
+		System.out.println("sendReset");
 		ByteBuffer out = ByteBuffer.allocate(1024);
 		out.putInt(Command.RESET.ordinal());
 		out.putInt(m_connId);
@@ -202,6 +209,7 @@ public class ConnectionState implements CommandHandler {
 	}
 	
 	protected void sendHeartbeat() {
+		System.out.println("sendHeartbeat");
 		ByteBuffer out = ByteBuffer.allocate(1024);
 		out.putInt(Command.HEARTBEAT.ordinal());
 		out.putInt(m_connId);
