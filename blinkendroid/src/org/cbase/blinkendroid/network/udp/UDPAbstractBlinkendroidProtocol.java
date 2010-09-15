@@ -78,7 +78,7 @@ public class UDPAbstractBlinkendroidProtocol implements UDPDirectConnection {
 		int proto = in.getInt();
 
         CommandHandler handler = handlers.get(proto);
-		System.out.println("recieve proto "+proto+" handler "+handler.getClass().toString());
+//		System.out.println("recieve proto "+proto+" handler "+handler.getClass().toString());
         if (null != handler)
             handler.handle(socketAddress, in);
 	}

@@ -60,7 +60,7 @@ public class ConnectionState implements CommandHandler {
 	public void handle(SocketAddress socketAddr, ByteBuffer bybuff) throws IOException {
 		final int iCommand = bybuff.getInt();
 		final int connId = bybuff.getInt();
-		System.out.println("handle "+iCommand+" "+connId);
+//		System.out.println("handle "+iCommand+" "+connId);
 		/*if ( Command.values().length > iCommand || 0 < iCommand ) {
 			// ignore unknown commands
 			return;

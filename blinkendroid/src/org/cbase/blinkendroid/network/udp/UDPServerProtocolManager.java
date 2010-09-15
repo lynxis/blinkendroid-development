@@ -70,10 +70,11 @@ public class UDPServerProtocolManager extends UDPAbstractBlinkendroidProtocol im
 		InetSocketAddress from = new InetSocketAddress(packet.getAddress(), packet.getPort());
 		
 		/* every Client has his own connectionHandler ! */
-		
+
 		ByteBuffer in = ByteBuffer.wrap(packet.getData());
 		int proto = in.getInt();
-
+//		System.out.println("server recieve "+proto);
+		
         CommandHandler handler = handlers.get(proto);
         if (null != handler) {
             handler.handle(from, in);
@@ -102,8 +103,7 @@ public class UDPServerProtocolManager extends UDPAbstractBlinkendroidProtocol im
 
 	public void handle(SocketAddress socketAddr, ByteBuffer bybuff)
 			throws IOException {
-		// TODO Auto-generated method stub
-		
+//System.out.println("handle nothing");
 	}
 	
 	
