@@ -100,6 +100,7 @@ public class ConnectionState implements CommandHandler {
 	}
 
 	protected void stateChange(Connstate newState) {
+		System.out.println("stateChanged "+newState);
 		if (newState == m_state) {
 			return;
 		}
@@ -118,6 +119,7 @@ public class ConnectionState implements CommandHandler {
 	}
 	
 	protected void receivedSynAck() throws IOException {
+		System.out.println("receivedSynAck");
 		if (m_state == Connstate.SYNACKWAIT) {
 			stateChange(Connstate.ESTABLISHED);
 			sendAck();
