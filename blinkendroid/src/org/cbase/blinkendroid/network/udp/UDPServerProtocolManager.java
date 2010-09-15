@@ -120,7 +120,7 @@ public class UDPServerProtocolManager extends UDPAbstractBlinkendroidProtocol im
 			Log.i(Constants.LOG_TAG, "GlobalTimerThread started");
 			while (running) {
 				try {
-					GlobalTimerThread.sleep(100);
+					GlobalTimerThread.sleep(1000);
 				} catch (InterruptedException e) {
 					// swallow
 				}
