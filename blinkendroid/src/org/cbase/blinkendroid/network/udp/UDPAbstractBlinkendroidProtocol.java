@@ -72,11 +72,13 @@ public class UDPAbstractBlinkendroidProtocol implements UDPDirectConnection {
 	}
 	
 	protected void receive(DatagramPacket packet) throws IOException {
+
 		InetSocketAddress socketAddress = (InetSocketAddress) packet.getSocketAddress();
 		ByteBuffer in = ByteBuffer.wrap(packet.getData());
 		int proto = in.getInt();
 
         CommandHandler handler = handlers.get(proto);
+		System.out.println("recieve proto "+proto+" handler "+handler.getClass().toString());
         if (null != handler)
             handler.handle(socketAddress, in);
 	}
