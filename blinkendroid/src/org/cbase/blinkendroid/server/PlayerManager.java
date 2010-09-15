@@ -388,6 +388,7 @@ public class PlayerManager implements ConnectionListener {
 	PlayerClient client = getPlayerClientBySocketAddress(socketAddr);
 
 	if (client != null) {
+//		System.out.println("handle with client");
 	    CommandHandler handler = client.getHandlers().get(proto);
 	    if (handler != null) {
 		try {
@@ -398,8 +399,11 @@ public class PlayerManager implements ConnectionListener {
 		}
 	    }
 	} else { // no client found
+//		System.out.println("handle without client");
 	    if (proto == Constants.PROTOCOL_CONNECTION) {
-		if (ConnectionState.Command.SYN.ordinal() == protoData.getInt()) {
+	    	int data=protoData.getInt();
+	    	System.out.println("Playermanager data "+data);
+		if (ConnectionState.Command.SYN.ordinal() == data) {
 		    // new connection
 		    try {
 			client = addClient(new ClientSocket(
