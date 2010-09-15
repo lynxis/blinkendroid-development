@@ -150,7 +150,7 @@ public class ConnectionState implements CommandHandler {
 	
 	protected void receivedHeartbeat() {
 		m_LastSeen = System.currentTimeMillis();
-		System.out.printf("Received Heartbeat %d - I'm %s\n", m_LastSeen, this.getClass().getName());
+//		System.out.printf("Received Heartbeat %d - I'm %s\n", m_LastSeen, this.getClass().getName());
 	}
 	 
 	protected void sendSyn() {

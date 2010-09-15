@@ -58,7 +58,7 @@ public class ClientConnectionState extends ConnectionState implements CommandHan
 			Log.i(Constants.LOG_TAG, "ClientConnectionState started");
 			while (running) {
 				try {
-					ClientConnectionHeartbeat.sleep(1000);
+					ClientConnectionHeartbeat.sleep(100);
 				} catch (InterruptedException e) {
 					// swallow
 				}
