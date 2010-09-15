@@ -42,7 +42,7 @@ public class PlayerManager implements ConnectionListener {
     private TimeouterThread timeouter = new TimeouterThread();
     private AtomicInteger arrowColorIndex = new AtomicInteger(
 	    new Random().nextInt(ARROW_COLORS.length));
-    private long serverPlayer = System.currentTimeMillis();
+//    private long serverPlayer = System.currentTimeMillis();
     private TCPVideoServer videoServer;
 
     public TCPVideoServer getVideoServer() {

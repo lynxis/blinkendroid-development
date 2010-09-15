@@ -38,6 +38,7 @@ public class PlayerClient extends ConnectionState {
 	public PlayerClient(PlayerManager playerManager,
 			ClientSocket clientSocket) {
 		super(clientSocket, playerManager);
+		System.out.println("new playerclient");
 		this.playerManager = playerManager;
 		this.m_clientSocket = clientSocket;
 		this.registerHandler(Constants.PROTOCOL_CONNECTION, this);
