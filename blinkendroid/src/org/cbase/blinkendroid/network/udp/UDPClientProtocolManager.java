@@ -21,16 +21,14 @@ public class UDPClientProtocolManager extends UDPAbstractBlinkendroidProtocol
 	private InetSocketAddress m_SocketAddr;
 
 	public UDPClientProtocolManager(DatagramSocket socket, InetSocketAddress serverAddr) throws IOException {
-		super(socket);
+		super(socket);		
 		this.m_SocketAddr = serverAddr;
 	}
 	
 	@Override
 	public void receive(DatagramPacket packet) throws IOException {
 		/* drop datapackets from other servers */
-		System.out.println("UDPClientProtocolManager.receive");
-		if(packet.getSocketAddress() == m_SocketAddr) {
-			System.out.println("UDPClientProtocolManager.receive OK");
+		if(packet.getAddress().equals(m_SocketAddr.getAddress())) {
 			super.receive(packet);
 		}
 	}
