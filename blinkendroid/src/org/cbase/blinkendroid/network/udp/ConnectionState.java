@@ -212,7 +212,7 @@ public class ConnectionState implements CommandHandler {
 	}
 	
 	protected void sendHeartbeat() {
-		System.out.println("sendHeartbeat");
+//		System.out.println("sendHeartbeat");
 		ByteBuffer out = ByteBuffer.allocate(1024);
 		out.putInt(Command.HEARTBEAT.ordinal());
 		out.putInt(m_connId);
