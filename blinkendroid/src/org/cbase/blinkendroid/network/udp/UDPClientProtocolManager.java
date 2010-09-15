@@ -28,7 +28,9 @@ public class UDPClientProtocolManager extends UDPAbstractBlinkendroidProtocol
 	@Override
 	public void receive(DatagramPacket packet) throws IOException {
 		/* drop datapackets from other servers */
+		System.out.println("UDPClientProtocolManager.receive");
 		if(packet.getSocketAddress() == m_SocketAddr) {
+			System.out.println("UDPClientProtocolManager.receive OK");
 			super.receive(packet);
 		}
 	}
