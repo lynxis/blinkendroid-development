@@ -374,7 +374,7 @@ public class PlayerManager implements ConnectionListener {
 	// TODO Auto-generated method stub
 	// TODO addClient
 	addClientToMatrix(clientSocket);
-	connectionListenerManager.connectionClosed(clientSocket);
+	connectionListenerManager.connectionOpened(clientSocket);
     }
 
     public void checkTimeouts() {
