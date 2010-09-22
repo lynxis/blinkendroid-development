@@ -33,102 +33,104 @@ import android.util.Log;
 
 public class BlinkendroidVideoClientProtocol {
 
-	public static final Integer PROTOCOL_PLAYER = 42;
-	public static final Integer COMMAND_PLAYER_TIME = 23;
-	public static final Integer COMMAND_CLIP = 17;
-	public static final Integer COMMAND_PLAY = 11;
-	public static final Integer COMMAND_INIT = 77;
+    public static final Integer PROTOCOL_PLAYER = 42;
+    public static final Integer COMMAND_PLAYER_TIME = 23;
+    public static final Integer COMMAND_CLIP = 17;
+    public static final Integer COMMAND_PLAY = 11;
+    public static final Integer COMMAND_INIT = 77;
 
-	public static BLM receiveMovie(InetSocketAddress socketAddress) {
-		BLM blm = null;
-		
-		try {
-			Socket socket = new Socket();
-			socket.connect(socketAddress);
-//			socket.setSoTimeout(1000);
-			BufferedOutputStream out = new BufferedOutputStream(socket.getOutputStream());
-			BufferedInputStream in = new BufferedInputStream(socket.getInputStream());
-			writeInt(out, 2353);
-			out.flush();
-			long length = readLong(in); // TODO checking racecondition with setSoTimeout
-			if (length == 0) {
-				Log.i(Constants.LOG_TAG, "Play default video ");
-			} else {
-				BBMZParser parser = new BBMZParser();
-				blm = parser.parseBBMZ(in, length);
-			}
-			out.close();
-			in.close();
-			socket.close();
-		} catch (SocketTimeoutException e) {
-			// setSoTimeout outer
-			int ooops = 0;
-		} catch (IOException e) {
-		}
-		return blm;
-	}
-	
-	
+    public static BLM receiveMovie(InetSocketAddress socketAddress) {
+	BLM blm = null;
 
-	protected static long readLong(BufferedInputStream in) throws IOException {
-		byte[] buffer = new byte[8];
-		// try {
-		in.read(buffer);
-		// } catch (IOException e) {
-		// Log.e(Constants.LOG_TAG,"readLong failed ",e);
-		// }
-		return ByteBuffer.wrap(buffer).getLong();
+	try {
+	    Socket socket = new Socket();
+	    socket.connect(socketAddress);
+	    // socket.setSoTimeout(1000);
+	    BufferedOutputStream out = new BufferedOutputStream(
+		    socket.getOutputStream());
+	    BufferedInputStream in = new BufferedInputStream(
+		    socket.getInputStream());
+	    writeInt(out, 2353);
+	    out.flush();
+	    long length = readLong(in); // TODO checking racecondition with
+					// setSoTimeout
+	    if (length == 0) {
+		Log.i(Constants.LOG_TAG, "Play default video ");
+	    } else {
+		BBMZParser parser = new BBMZParser();
+		blm = parser.parseBBMZ(in, length);
+	    }
+	    out.close();
+	    in.close();
+	    socket.close();
+	} catch (SocketTimeoutException e) {
+	    // setSoTimeout outer
+	    int ooops = 0;
+	} catch (IOException e) {
 	}
+	return blm;
+    }
 
-	protected static int readInt(BufferedInputStream in) throws IOException {
-		byte[] buffer = new byte[4];
-		// try {
-		in.read(buffer);
-		// } catch (IOException e) {
-		// Log.e(Constants.LOG_TAG,"readLong failed ",e);
-		// }
-		return ByteBuffer.wrap(buffer).getInt();
-	}
+    protected static long readLong(BufferedInputStream in) throws IOException {
+	byte[] buffer = new byte[8];
+	// try {
+	in.read(buffer);
+	// } catch (IOException e) {
+	// Log.e(Constants.LOG_TAG,"readLong failed ",e);
+	// }
+	return ByteBuffer.wrap(buffer).getLong();
+    }
 
-	protected float readFloat(BufferedInputStream in) throws IOException {
-		byte[] buffer = new byte[16];
-		// try {
-		in.read(buffer);
-		// } catch (IOException e) {
-		// Log.e(Constants.LOG_TAG,"readLong failed ",e);
-		// }
-		return ByteBuffer.wrap(buffer).getFloat();
-	}
+    protected static int readInt(BufferedInputStream in) throws IOException {
+	byte[] buffer = new byte[4];
+	// try {
+	in.read(buffer);
+	// } catch (IOException e) {
+	// Log.e(Constants.LOG_TAG,"readLong failed ",e);
+	// }
+	return ByteBuffer.wrap(buffer).getInt();
+    }
 
-	protected static void writeInt(BufferedOutputStream out, int i) throws IOException {
-		byte[] buffer = new byte[4];
-		ByteBuffer.wrap(buffer).putInt(i);
-		// try {
-		out.write(buffer);
-		// } catch (IOException e) {
-		// Log.e(Constants.LOG_TAG,"writeInt failed ",e);
-		// }
-	}
+    protected float readFloat(BufferedInputStream in) throws IOException {
+	byte[] buffer = new byte[16];
+	// try {
+	in.read(buffer);
+	// } catch (IOException e) {
+	// Log.e(Constants.LOG_TAG,"readLong failed ",e);
+	// }
+	return ByteBuffer.wrap(buffer).getFloat();
+    }
 
-	protected static void writeFloat(BufferedOutputStream out, float f)
-			throws IOException {
-		byte[] buffer = new byte[16];
-		ByteBuffer.wrap(buffer).putFloat(f);
-		// try {
-		out.write(buffer);
-		// } catch (IOException e) {
-		// Log.e(Constants.LOG_TAG,"writeFloat failed ",e);
-		// }
-	}
+    protected static void writeInt(BufferedOutputStream out, int i)
+	    throws IOException {
+	byte[] buffer = new byte[4];
+	ByteBuffer.wrap(buffer).putInt(i);
+	// try {
+	out.write(buffer);
+	// } catch (IOException e) {
+	// Log.e(Constants.LOG_TAG,"writeInt failed ",e);
+	// }
+    }
 
-	protected static void writeLong(BufferedOutputStream out, long l)
-			throws IOException {
-		byte[] buffer = new byte[8];
-		ByteBuffer.wrap(buffer).putLong(l);
-		// try {
-		out.write(buffer);
-		// } catch (IOException e) {
-		// Log.e(Constants.LOG_TAG,"writeLong failed ",e);
-		// }
-	}
+    protected static void writeFloat(BufferedOutputStream out, float f)
+	    throws IOException {
+	byte[] buffer = new byte[16];
+	ByteBuffer.wrap(buffer).putFloat(f);
+	// try {
+	out.write(buffer);
+	// } catch (IOException e) {
+	// Log.e(Constants.LOG_TAG,"writeFloat failed ",e);
+	// }
+    }
+
+    protected static void writeLong(BufferedOutputStream out, long l)
+	    throws IOException {
+	byte[] buffer = new byte[8];
+	ByteBuffer.wrap(buffer).putLong(l);
+	// try {
+	out.write(buffer);
+	// } catch (IOException e) {
+	// Log.e(Constants.LOG_TAG,"writeLong failed ",e);
+	// }
+    }
 }

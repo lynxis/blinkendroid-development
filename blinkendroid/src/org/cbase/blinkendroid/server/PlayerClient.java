@@ -11,47 +11,45 @@ import org.cbase.blinkendroid.network.udp.ConnectionState;
 
 public class PlayerClient extends ConnectionState {
 
-	// position
-	int x, y;
-	// clipping
-	float startX, endX, startY, endY;
-	// protocol
-	long startTime;
-	PlayerManager playerManager;
-	private ClientSocket m_clientSocket;
-	private BlinkendroidServerProtocol mBlinkenProtocol;
+    // position
+    int x, y;
+    // clipping
+    float startX, endX, startY, endY;
+    // protocol
+    long startTime;
+    PlayerManager playerManager;
+    private ClientSocket m_clientSocket;
+    private BlinkendroidServerProtocol mBlinkenProtocol;
 
-	protected final HashMap<Integer, CommandHandler> handlers = new HashMap<Integer, CommandHandler>();
+    protected final HashMap<Integer, CommandHandler> handlers = new HashMap<Integer, CommandHandler>();
 
-	public HashMap<Integer, CommandHandler> getHandlers() {
-		return handlers;
-	}
+    public HashMap<Integer, CommandHandler> getHandlers() {
+	return handlers;
+    }
 
-	public PlayerClient(PlayerManager playerManager,
-			ClientSocket clientSocket) {
-		super(clientSocket, playerManager);
-		System.out.println("new playerclient");
-		this.playerManager = playerManager;
-		this.m_clientSocket = clientSocket;
-		this.registerHandler(Constants.PROTOCOL_CONNECTION, this);
-		mBlinkenProtocol = new BlinkendroidServerProtocol(clientSocket);
-	}
-	
-	public SocketAddress getClientSocketAddress() {
-		return m_clientSocket.getInetSocketAddress();
-	}
+    public PlayerClient(PlayerManager playerManager, ClientSocket clientSocket) {
+	super(clientSocket, playerManager);
+	System.out.println("new playerclient");
+	this.playerManager = playerManager;
+	this.m_clientSocket = clientSocket;
+	this.registerHandler(Constants.PROTOCOL_CONNECTION, this);
+	mBlinkenProtocol = new BlinkendroidServerProtocol(clientSocket);
+    }
 
-	public void registerHandler(Integer proto, CommandHandler handler) {
-		handlers.put(proto, handler);
-	}
+    public SocketAddress getClientSocketAddress() {
+	return m_clientSocket.getInetSocketAddress();
+    }
 
-	public void unregisterHandler(CommandHandler handler) {
-		handlers.remove(handler);
-	}
-	
-	public BlinkendroidServerProtocol getBlinkenProtocol() {
-		return mBlinkenProtocol;
-	}
-	
-	
+    public void registerHandler(Integer proto, CommandHandler handler) {
+	handlers.put(proto, handler);
+    }
+
+    public void unregisterHandler(CommandHandler handler) {
+	handlers.remove(handler);
+    }
+
+    public BlinkendroidServerProtocol getBlinkenProtocol() {
+	return mBlinkenProtocol;
+    }
+
 }

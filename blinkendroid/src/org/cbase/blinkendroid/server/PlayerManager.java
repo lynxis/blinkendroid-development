@@ -39,7 +39,7 @@ public class PlayerManager implements ConnectionListener {
     private TimeouterThread timeouter = new TimeouterThread();
     private AtomicInteger arrowColorIndex = new AtomicInteger(
 	    new Random().nextInt(ARROW_COLORS.length));
-//    private long serverPlayer = System.currentTimeMillis();
+    // private long serverPlayer = System.currentTimeMillis();
     private TCPVideoServer videoServer;
 
     public TCPVideoServer getVideoServer() {
@@ -354,7 +354,7 @@ public class PlayerManager implements ConnectionListener {
     }
 
     @Override
-	public void connectionClosed(ClientSocket clientSocket) {
+    public void connectionClosed(ClientSocket clientSocket) {
 	// TODO Auto-generated method stub
 	// TODO remove Client
 	// search for the client
@@ -369,7 +369,7 @@ public class PlayerManager implements ConnectionListener {
     }
 
     @Override
-	public void connectionOpened(ClientSocket clientSocket) {
+    public void connectionOpened(ClientSocket clientSocket) {
 	// TODO Auto-generated method stub
 	// TODO addClient
 	addClientToMatrix(clientSocket);
@@ -387,7 +387,7 @@ public class PlayerManager implements ConnectionListener {
 	PlayerClient client = getPlayerClientBySocketAddress(socketAddr);
 
 	if (client != null) {
-//		System.out.println("handle with client");
+	    // System.out.println("handle with client");
 	    CommandHandler handler = client.getHandlers().get(proto);
 	    if (handler != null) {
 		try {
@@ -398,10 +398,10 @@ public class PlayerManager implements ConnectionListener {
 		}
 	    }
 	} else { // no client found
-//		System.out.println("handle without client");
+		 // System.out.println("handle without client");
 	    if (proto == Constants.PROTOCOL_CONNECTION) {
-	    	int data=protoData.getInt();
-	    	System.out.println("Playermanager data "+data);
+		int data = protoData.getInt();
+		System.out.println("Playermanager data " + data);
 		if (ConnectionState.Command.SYN.ordinal() == data) {
 		    // new connection
 		    try {
@@ -410,9 +410,9 @@ public class PlayerManager implements ConnectionListener {
 			protoData.rewind();
 			protoData.getInt(); // protocol
 			client.handle(socketAddr, protoData); // dirty direct
-							      // call of the
-							      // protocol
-							      // handler
+			// call of the
+			// protocol
+			// handler
 		    } catch (SocketException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

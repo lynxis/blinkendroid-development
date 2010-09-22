@@ -22,22 +22,21 @@ package org.cbase.blinkendroid;
  */
 public final class Constants {
 
-	public static final String LOG_TAG = "blinkendroid";
-	public static final int BROADCAST_ANNOUCEMENT_SERVER_PORT = 6998;
-	public static final int BROADCAST_ANNOUCEMENT_CLIENT_PORT = 6999;
-	public static final int BROADCAST_CLIENT_PORT = 6789;
-	public static final int BROADCAST_SERVER_PORT = 6790;
-	public static final int BROADCAST_IDLE_THRESHOLD = 5000;
-	public static final String MULTICAST_GROUP = "230.0.0.1";
-	public static final String SERVER_BROADCAST_COMMAND = "BLINKENDROID_SERVER";
-	//public static final int SERVER_PORT = 9876;
-	public static final int SERVER_SOCKET_CONNECT_TIMEOUT = 5000;
-	public static final int SHOW_OWNER_DURATION = 1500;
-	public static final int BROADCAST_PROTOCOL_VERSION = 3;
-	public static final String DOWNLOAD_URL = "market://details?id=org.cbase.blinkendroid";
-	public static final String ABOUT_URL = "http://code.google.com/p/blinkendroid";
-	
+    public static final String LOG_TAG = "blinkendroid";
+    public static final int BROADCAST_ANNOUCEMENT_SERVER_PORT = 6998;
+    public static final int BROADCAST_ANNOUCEMENT_CLIENT_PORT = 6999;
+    public static final int BROADCAST_CLIENT_PORT = 6789;
+    public static final int BROADCAST_SERVER_PORT = 6790;
+    public static final int BROADCAST_IDLE_THRESHOLD = 5000;
+    public static final String MULTICAST_GROUP = "230.0.0.1";
+    public static final String SERVER_BROADCAST_COMMAND = "BLINKENDROID_SERVER";
+    // public static final int SERVER_PORT = 9876;
+    public static final int SERVER_SOCKET_CONNECT_TIMEOUT = 5000;
+    public static final int SHOW_OWNER_DURATION = 1500;
+    public static final int BROADCAST_PROTOCOL_VERSION = 3;
+    public static final String DOWNLOAD_URL = "market://details?id=org.cbase.blinkendroid";
+    public static final String ABOUT_URL = "http://code.google.com/p/blinkendroid";
 
-	public static final Integer PROTOCOL_CONNECTION = 1;
-	public static final Integer PROTOCOL_PLAYER = 42;
+    public static final Integer PROTOCOL_CONNECTION = 1;
+    public static final Integer PROTOCOL_PLAYER = 42;
 }

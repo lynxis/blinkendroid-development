@@ -26,63 +26,67 @@ import org.cbase.blinkendroid.network.tcp.TCPVideoServer;
 import org.cbase.blinkendroid.network.udp.UDPServerProtocolManager;
 import org.cbase.blinkendroid.player.bml.BLMHeader;
 
-public class BlinkendroidServer {//TODO schtief warum hier kein thread in server ui?
+public class BlinkendroidServer {// TODO schtief warum hier kein thread in
+				 // server ui?
 
-	volatile private boolean running = false;
-	volatile private DatagramSocket serverSocket;
-	private int port = -1;
-	private PlayerManager playerManager;
-	private ConnectionListener connectionListener; // TODO muss der Server wissen wer der PlayerManager ist ?
-	private UDPServerProtocolManager m_ServerProto;
-	private TCPVideoServer videoSocket;
+    volatile private boolean running = false;
+    volatile private DatagramSocket serverSocket;
+    private int port = -1;
+    private PlayerManager playerManager;
+    private ConnectionListener connectionListener; // TODO muss der Server
+						   // wissen
+						   // wer der PlayerManager ist
+						   // ?
+    private UDPServerProtocolManager m_ServerProto;
+    private TCPVideoServer videoSocket;
 
-	public BlinkendroidServer(ConnectionListener connectionListener, int port) {
-		this.connectionListener = connectionListener;
-		this.port = port;
+    public BlinkendroidServer(ConnectionListener connectionListener, int port) {
+	this.connectionListener = connectionListener;
+	this.port = port;
+    }
+
+    public void start() {
+
+	running = true;
+
+	try {
+	    videoSocket = new TCPVideoServer(port);
+	    videoSocket.start();
+
+	    serverSocket = new DatagramSocket(port);
+	    serverSocket.setBroadcast(true);
+	    serverSocket.setReuseAddress(true);
+	    m_ServerProto = new UDPServerProtocolManager(serverSocket);
+
+	    playerManager = new PlayerManager(m_ServerProto);
+	    playerManager.setVideoServer(videoSocket);
+	    m_ServerProto.setPlayerManager(playerManager);
+
+	    m_ServerProto.addConnectionListener(this.connectionListener);
+	    m_ServerProto.startTimerThread();
+
+	    // how is the protocol connected to the logic ?
+	} catch (SocketException e) {
+	    // TODO Auto-generated catch block
+	    e.printStackTrace();
+	} catch (IOException e) {
+	    // TODO Auto-generated catch block
+	    e.printStackTrace();
 	}
+    }
 
-	public void start() {
+    public void shutdown() {
+	videoSocket.shutdown();
+	playerManager.shutdown();
+	m_ServerProto.shutdown();
+	serverSocket.close();
+    }
 
-		running = true;
+    public boolean isRunning() {
+	return running;
+    }
 
-		try {
-			videoSocket = new TCPVideoServer(port);
-			videoSocket.start();
-			
-			serverSocket = new DatagramSocket(port);
-			serverSocket.setBroadcast(true);
-			serverSocket.setReuseAddress(true);
-			m_ServerProto = new UDPServerProtocolManager(serverSocket);
-			
-			playerManager = new PlayerManager(m_ServerProto);
-			playerManager.setVideoServer(videoSocket);
-			m_ServerProto.setPlayerManager(playerManager);
-			
-			m_ServerProto.addConnectionListener(this.connectionListener);
-			m_ServerProto.startTimerThread();
-			
-		// how is the protocol connected to the logic ?
-		} catch (SocketException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-
-	public void shutdown() {
-		videoSocket.shutdown();
-		playerManager.shutdown();
-		m_ServerProto.shutdown();
-		serverSocket.close();
-	}
-
-	public boolean isRunning() {
-		return running;
-	}
-
-	public void switchMovie(BLMHeader blmHeader) {
-		playerManager.switchMovie(blmHeader);
-	}
+    public void switchMovie(BLMHeader blmHeader) {
+	playerManager.switchMovie(blmHeader);
+    }
 }

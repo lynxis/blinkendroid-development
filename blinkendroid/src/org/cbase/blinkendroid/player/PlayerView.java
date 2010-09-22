@@ -131,20 +131,17 @@ public class PlayerView extends View implements Runnable {
 		    } else {
 			paint.setColor(Color.argb(255, value, value, value));
 		    }
-		    canvas
-			    .drawRect(
-				    pixelWidth * clippedX + PIXEL_PADDING,
-				    pixelHeight * clippedY + PIXEL_PADDING,
-				    pixelWidth * (clippedX + 1) - PIXEL_PADDING,
-				    pixelHeight * (clippedY + 1)
-					    - PIXEL_PADDING, paint);
+		    canvas.drawRect(pixelWidth * clippedX + PIXEL_PADDING,
+			    pixelHeight * clippedY + PIXEL_PADDING, pixelWidth
+				    * (clippedX + 1) - PIXEL_PADDING,
+			    pixelHeight * (clippedY + 1) - PIXEL_PADDING, paint);
 		}
 	    }
 	}
     }
 
     @Override
-	public void run() {
+    public void run() {
 
 	// time into movie, taking endless looping into account
 	final long serverTime = System.nanoTime() / 1000000 - timeDelta;

@@ -32,132 +32,131 @@ import org.cbase.blinkendroid.server.PlayerManager;
 
 import android.util.Log;
 
-public class UDPServerProtocolManager extends UDPAbstractBlinkendroidProtocol implements CommandHandler, ConnectionListener {
+public class UDPServerProtocolManager extends UDPAbstractBlinkendroidProtocol
+	implements CommandHandler, ConnectionListener {
 
-	protected GlobalTimerThread globalTimerThread;
-	private PlayerManager m_PlayerManager;
+    protected GlobalTimerThread globalTimerThread;
+    private PlayerManager m_PlayerManager;
 
-	public void setPlayerManager(PlayerManager mPlayerManager) {
-		m_PlayerManager = mPlayerManager;
+    public void setPlayerManager(PlayerManager mPlayerManager) {
+	m_PlayerManager = mPlayerManager;
+    }
+
+    public UDPServerProtocolManager(final DatagramSocket socket)
+	    throws IOException {
+	super(socket);
+    }
+
+    public void startTimerThread() {
+	if (globalTimerThread != null) {
+	    globalTimerThread.shutdown();
 	}
+	globalTimerThread = new GlobalTimerThread();
+	globalTimerThread.start();
+    }
 
-	public UDPServerProtocolManager(final DatagramSocket socket) throws IOException {
-		super(socket);
-	}
+    @Override
+    public void shutdown() {
+	if (null != globalTimerThread)
+	    globalTimerThread.shutdown();
+	super.shutdown();
+    }
 
-	public void startTimerThread() {
-		if (globalTimerThread != null) {
-			globalTimerThread.shutdown();
-		}
-		globalTimerThread = new GlobalTimerThread();
-		globalTimerThread.start();
+    @Override
+    protected void receive(DatagramPacket packet) throws IOException {
+	InetSocketAddress from = new InetSocketAddress(packet.getAddress(),
+		packet.getPort());
+
+	/* every Client has his own connectionHandler ! */
+
+	ByteBuffer in = ByteBuffer.wrap(packet.getData());
+	int proto = in.getInt();
+	// System.out.println("server recieve "+proto);
+
+	CommandHandler handler = handlers.get(proto);
+	if (null != handler) {
+	    handler.handle(from, in);
+	} else {
+	    if (m_PlayerManager != null) {
+		m_PlayerManager.handle(this, from, proto, in);
+	    }
 	}
+    }
+
+    public void sendBroadcast(ByteBuffer out) {
+	try {
+	    send(new InetSocketAddress(
+		    InetAddress.getAllByName("255.255.255.255")[0],
+		    Constants.BROADCAST_CLIENT_PORT), out);
+	} catch (UnknownHostException e) {
+	    // TODO Auto-generated catch block
+	    e.printStackTrace();
+	} catch (IOException e) {
+	    // TODO Auto-generated catch block
+	    e.printStackTrace();
+	}
+    }
+
+    @Override
+    public void handle(SocketAddress socketAddr, ByteBuffer bybuff)
+	    throws IOException {
+	// System.out.println("handle nothing");
+    }
+
+    /**
+     * This thread sends the global time to connected devices.
+     */
+    class GlobalTimerThread extends Thread {
+
+	volatile private boolean running = true;
 
 	@Override
-	public void shutdown() {
-		if (null != globalTimerThread)
-			globalTimerThread.shutdown();
-		super.shutdown();
-	}
-
-	@Override
-	protected void receive(DatagramPacket packet) throws IOException {
-		InetSocketAddress from = new InetSocketAddress(packet.getAddress(), packet.getPort());
-		
-		/* every Client has his own connectionHandler ! */
-
-		ByteBuffer in = ByteBuffer.wrap(packet.getData());
-		int proto = in.getInt();
-//		System.out.println("server recieve "+proto);
-		
-        CommandHandler handler = handlers.get(proto);
-        if (null != handler) {
-            handler.handle(from, in);
-        }
-        else {
-        	if (m_PlayerManager != null) {
-        		m_PlayerManager.handle(this, from, proto, in);
-        	}
-        }
-	}
-
-
-	
-	public void sendBroadcast(ByteBuffer out) {
+	public void run() {
+	    this.setName("SRV Send GlobalTimer");
+	    Log.i(Constants.LOG_TAG, "GlobalTimerThread started");
+	    while (running) {
 		try {
-			send(new InetSocketAddress(InetAddress.getAllByName("255.255.255.255")[0], Constants.BROADCAST_CLIENT_PORT), out);
-		} catch (UnknownHostException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		    Thread.sleep(1000);
+		} catch (InterruptedException e) {
+		    // swallow
 		}
+		if (!running) // fast exit
+		    break;
+
+		long t = System.currentTimeMillis();
+		ByteBuffer out = ByteBuffer.allocate(128);
+		out.putInt(Constants.PROTOCOL_CONNECTION);
+		out.putInt(ConnectionState.Command.HEARTBEAT.ordinal());
+		out.putInt(0); // Connection ID
+		out.putLong(t);
+		sendBroadcast(out);
+		out.position(0);
+		out.putInt(Constants.PROTOCOL_PLAYER);
+		out.putInt(BlinkendroidProtocol.COMMAND_PLAYER_TIME);
+		out.putLong(System.currentTimeMillis());
+		sendBroadcast(out);
+	    }
+	    Log.d(Constants.LOG_TAG, "GlobalTimerThread stopped");
 	}
 
-
-	@Override
-	public void handle(SocketAddress socketAddr, ByteBuffer bybuff)
-			throws IOException {
-//System.out.println("handle nothing");
+	public void shutdown() {
+	    running = false;
+	    interrupt();
+	    Log.d(Constants.LOG_TAG, "GlobalTimerThread initiating shutdown");
 	}
-	
-	
-	/**
-	 * This thread sends the global time to connected devices.
-	 */
-	class GlobalTimerThread extends Thread {
+    }
 
-		volatile private boolean running = true;
-
-		@Override
-		public void run() {
-			this.setName("SRV Send GlobalTimer");
-			Log.i(Constants.LOG_TAG, "GlobalTimerThread started");
-			while (running) {
-				try {
-					Thread.sleep(1000);
-				} catch (InterruptedException e) {
-					// swallow
-				}
-				if (!running) // fast exit
-					break;
-
-				long t = System.currentTimeMillis();
-				ByteBuffer out = ByteBuffer.allocate(128);
-				out.putInt(Constants.PROTOCOL_CONNECTION);
-				out.putInt(ConnectionState.Command.HEARTBEAT.ordinal());
-				out.putInt(0); // Connection ID
-				out.putLong(t);
-				sendBroadcast(out);
-				out.position(0);
-				out.putInt(Constants.PROTOCOL_PLAYER);
-				out.putInt(BlinkendroidProtocol.COMMAND_PLAYER_TIME);
-				out.putLong(System.currentTimeMillis());
-				sendBroadcast(out);
-			}
-			Log.d(Constants.LOG_TAG, "GlobalTimerThread stopped");
-		}
-
-		public void shutdown() {
-			running = false;
-			interrupt();
-			Log.d(Constants.LOG_TAG, "GlobalTimerThread initiating shutdown");
-		}
+    @Override
+    public void connectionClosed(ClientSocket clientSocket) {
+	for (ConnectionListener connListener : connectionListener) {
+	    connListener.connectionClosed(clientSocket);
 	}
+    }
 
-
-	@Override
-	public void connectionClosed(ClientSocket clientSocket) {
-		for (ConnectionListener connListener : connectionListener) {
-			connListener.connectionClosed(clientSocket);
-		}
+    @Override
+    public void connectionOpened(ClientSocket clientSocket) {
+	for (ConnectionListener connListener : connectionListener) {
+	    connListener.connectionOpened(clientSocket);
 	}
-
-	@Override
-	public void connectionOpened(ClientSocket clientSocket) {
-		for (ConnectionListener connListener : connectionListener) {
-			connListener.connectionOpened(clientSocket);
-		}
-	}
+    }
 }

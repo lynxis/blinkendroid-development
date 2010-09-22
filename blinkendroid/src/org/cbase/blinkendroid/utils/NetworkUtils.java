@@ -31,27 +31,27 @@ import android.util.Log;
  */
 public class NetworkUtils {
 
-	/**
-	 * Gets the IPAdress of the local device
-	 * 
-	 * @return The IPAdress or null if none was found
-	 */
-	public static String getLocalIpAddress() {
-		try {
-			for (Enumeration<NetworkInterface> en = NetworkInterface
-					.getNetworkInterfaces(); en.hasMoreElements();) {
-				NetworkInterface intf = en.nextElement();
-				for (Enumeration<InetAddress> enumIpAddr = intf
-						.getInetAddresses(); enumIpAddr.hasMoreElements();) {
-					InetAddress inetAddress = enumIpAddr.nextElement();
-					if (!inetAddress.isLoopbackAddress()) {
-						return inetAddress.getHostAddress().toString();
-					}
-				}
-			}
-		} catch (SocketException ex) {
-			Log.e(Constants.LOG_TAG, ex.toString());
+    /**
+     * Gets the IPAdress of the local device
+     * 
+     * @return The IPAdress or null if none was found
+     */
+    public static String getLocalIpAddress() {
+	try {
+	    for (Enumeration<NetworkInterface> en = NetworkInterface
+		    .getNetworkInterfaces(); en.hasMoreElements();) {
+		NetworkInterface intf = en.nextElement();
+		for (Enumeration<InetAddress> enumIpAddr = intf
+			.getInetAddresses(); enumIpAddr.hasMoreElements();) {
+		    InetAddress inetAddress = enumIpAddr.nextElement();
+		    if (!inetAddress.isLoopbackAddress()) {
+			return inetAddress.getHostAddress().toString();
+		    }
 		}
-		return null;
+	    }
+	} catch (SocketException ex) {
+	    Log.e(Constants.LOG_TAG, ex.toString());
 	}
+	return null;
+    }
 }

@@ -19,13 +19,13 @@ public class BLMManager {
 
     public BLMManager() {
 	blmHeader = new ArrayList<BLMHeader>();
-	/*Adding the default movie*/
+	/* Adding the default movie */
 	BLMHeader defaultMovie = new BLMHeader();
 	defaultMovie.filename = null;
 	defaultMovie.title = "Blinkendroid - Default";
 	defaultMovie.height = 32;
 	defaultMovie.width = 32;
-	
+
 	blmHeader.add(defaultMovie);
     }
 
@@ -73,9 +73,9 @@ public class BLMManager {
 	for (BLMHeader header : blmHeader) {
 
 	    if (null == header) {
-		//TODO null check
+		// TODO null check
 	    } else if (null == header.filename && null == header.title) {
-		//TODO null check
+		// TODO null check
 	    } else {
 		String title = header.title + "(" + header.width + "*"
 			+ header.height + ")";
