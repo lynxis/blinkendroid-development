@@ -55,6 +55,8 @@ public class SenderThread extends Thread {
 	    this.setName("SRV Send Annouce");
 	    socket = new DatagramSocket(
 		    Constants.BROADCAST_ANNOUCEMENT_SERVER_PORT);
+	    socket.setReuseAddress(true);
+	    socket.setBroadcast(true);
 	    group = InetAddress.getByName("255.255.255.255");
 	    Log.i(Constants.LOG_TAG, "Server ip: " + group.toString());
 

@@ -73,7 +73,9 @@ public class ReceiverThread extends Thread {
 	try {
 	    socket = new DatagramSocket(
 		    Constants.BROADCAST_ANNOUCEMENT_CLIENT_PORT);
-
+	    socket.setReuseAddress(true);
+	    socket.setBroadcast(true);
+	    
 	    while (running) {
 
 		final byte[] buf = new byte[512];
