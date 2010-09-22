@@ -1,21 +1,13 @@
 package org.cbase.blinkendroid.server;
 
-import java.io.IOException;
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
 import java.net.SocketAddress;
-import java.nio.ByteBuffer;
 import java.util.HashMap;
 
 import org.cbase.blinkendroid.Constants;
-import org.cbase.blinkendroid.network.ConnectionListener;
 import org.cbase.blinkendroid.network.udp.BlinkendroidServerProtocol;
 import org.cbase.blinkendroid.network.udp.ClientSocket;
 import org.cbase.blinkendroid.network.udp.CommandHandler;
 import org.cbase.blinkendroid.network.udp.ConnectionState;
-import org.cbase.blinkendroid.network.udp.UDPAbstractBlinkendroidProtocol;
-
-import android.util.Log;
 
 public class PlayerClient extends ConnectionState {
 

@@ -19,17 +19,12 @@ package org.cbase.blinkendroid.server;
 
 import java.io.IOException;
 import java.net.DatagramSocket;
-import java.net.Socket;
 import java.net.SocketException;
 
-import org.cbase.blinkendroid.Constants;
-import org.cbase.blinkendroid.ServerActivity;
 import org.cbase.blinkendroid.network.ConnectionListener;
 import org.cbase.blinkendroid.network.tcp.TCPVideoServer;
 import org.cbase.blinkendroid.network.udp.UDPServerProtocolManager;
 import org.cbase.blinkendroid.player.bml.BLMHeader;
-
-import android.util.Log;
 
 public class BlinkendroidServer {//TODO schtief warum hier kein thread in server ui?
 

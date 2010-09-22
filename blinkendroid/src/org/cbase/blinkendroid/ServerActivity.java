@@ -1,7 +1,5 @@
 package org.cbase.blinkendroid;
 
-import java.net.InetAddress;
-
 import org.cbase.blinkendroid.network.ConnectionListener;
 import org.cbase.blinkendroid.network.broadcast.SenderThread;
 import org.cbase.blinkendroid.network.udp.ClientSocket;
@@ -69,6 +67,7 @@ public class ServerActivity extends Activity implements ConnectionListener,
 
 		movieSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
 
+			@Override
 			public void onItemSelected(AdapterView<?> arg0, View arg1,
 					int listElement, long arg3) {
 				// already running?
@@ -78,12 +77,14 @@ public class ServerActivity extends Activity implements ConnectionListener,
 				}
 			}
 
+			@Override
 			public void onNothingSelected(AdapterView<?> arg0) {
 			}
 		});
 
 		startButton.setOnClickListener(new OnClickListener() {
 
+			@Override
 			public void onClick(View v) {
 
 				senderThread = new SenderThread(serverNameView.getText()
@@ -102,6 +103,7 @@ public class ServerActivity extends Activity implements ConnectionListener,
 
 		stopButton.setOnClickListener(new OnClickListener() {
 
+			@Override
 			public void onClick(View v) {
 
 				senderThread.shutdown();
@@ -118,6 +120,7 @@ public class ServerActivity extends Activity implements ConnectionListener,
 
 		clientButton.setOnClickListener(new OnClickListener() {
 
+			@Override
 			public void onClick(View v) {
 
 				final Intent intent = new Intent(ServerActivity.this,
@@ -147,28 +150,34 @@ public class ServerActivity extends Activity implements ConnectionListener,
 		super.onDestroy();
 	}
 
+	@Override
 	public void connectionOpened(final ClientSocket clientSocket) {
 		Log.d(Constants.LOG_TAG, "ServerActivity connectionOpened "
 				+ clientSocket.getDestinationAddress().toString());
 		runOnUiThread(new Runnable() {
+			@Override
 			public void run() {
 				clientAdapter.add(clientSocket.getDestinationAddress().toString());
 			}
 		});
 	}
 
+	@Override
 	public void connectionClosed(final ClientSocket clientSocket) {
 		Log.d(Constants.LOG_TAG, "ServerActivity connectionClosed "
 				+ clientSocket.getDestinationAddress().toString());
 		runOnUiThread(new Runnable() {
+			@Override
 			public void run() {
 				clientAdapter.remove(clientSocket.getDestinationAddress().toString());
 			}
 		});
 	}
 
+	@Override
 	public void moviesReady() {
 		runOnUiThread(new Runnable() {
+			@Override
 			public void run() {
 				blmManager.fillArrayAdapter(movieAdapter);
 				Toast.makeText(ServerActivity.this, "Movies ready",

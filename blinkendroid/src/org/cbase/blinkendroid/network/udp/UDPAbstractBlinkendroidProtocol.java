@@ -6,9 +6,7 @@ import java.io.IOException;
 import java.io.InterruptedIOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
-import java.net.InetAddress;
 import java.net.InetSocketAddress;
-import java.net.SocketAddress;
 import java.net.SocketException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -138,6 +136,7 @@ public class UDPAbstractBlinkendroidProtocol implements UDPDirectConnection {
 	}
 	
 
+	@Override
 	public void send(InetSocketAddress socketAddr, ByteBuffer out) throws IOException {
 		m_Socket.send(new DatagramPacket(out.array(), out.position(), socketAddr));
 	}

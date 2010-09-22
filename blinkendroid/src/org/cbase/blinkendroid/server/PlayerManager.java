@@ -1,7 +1,6 @@
 package org.cbase.blinkendroid.server;
 
 import java.io.IOException;
-import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.net.SocketException;
@@ -13,12 +12,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.cbase.blinkendroid.Constants;
 import org.cbase.blinkendroid.network.ConnectionListener;
-import org.cbase.blinkendroid.network.tcp.BlinkendroidVideoServerProtocol;
 import org.cbase.blinkendroid.network.tcp.TCPVideoServer;
 import org.cbase.blinkendroid.network.udp.ClientSocket;
 import org.cbase.blinkendroid.network.udp.CommandHandler;
 import org.cbase.blinkendroid.network.udp.ConnectionState;
-import org.cbase.blinkendroid.network.udp.UDPAbstractBlinkendroidProtocol;
 import org.cbase.blinkendroid.network.udp.UDPDirectConnection;
 import org.cbase.blinkendroid.player.bml.BLMHeader;
 
@@ -356,7 +353,8 @@ public class PlayerManager implements ConnectionListener {
 	return null;
     }
 
-    public void connectionClosed(ClientSocket clientSocket) {
+    @Override
+	public void connectionClosed(ClientSocket clientSocket) {
 	// TODO Auto-generated method stub
 	// TODO remove Client
 	// search for the client
@@ -370,7 +368,8 @@ public class PlayerManager implements ConnectionListener {
 	connectionListenerManager.connectionClosed(clientSocket);
     }
 
-    public void connectionOpened(ClientSocket clientSocket) {
+    @Override
+	public void connectionOpened(ClientSocket clientSocket) {
 	// TODO Auto-generated method stub
 	// TODO addClient
 	addClientToMatrix(clientSocket);
@@ -439,7 +438,7 @@ public class PlayerManager implements ConnectionListener {
 	    Log.i(Constants.LOG_TAG, "TimeouterThread started");
 	    while (running) {
 		try {
-		    TimeouterThread.sleep(3000);
+		    Thread.sleep(3000);
 		} catch (InterruptedException e) {
 		    // swallow
 		}

@@ -1,7 +1,6 @@
 package org.cbase.blinkendroid.network.udp;
 
 import java.io.IOException;
-import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.nio.ByteBuffer;
@@ -57,6 +56,7 @@ public class ConnectionState implements CommandHandler {
 		sendReset();
 	}
 
+	@Override
 	public void handle(SocketAddress socketAddr, ByteBuffer bybuff) throws IOException {
 		final int iCommand = bybuff.getInt();
 		final int connId = bybuff.getInt();

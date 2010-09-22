@@ -78,6 +78,7 @@ public class LoginActivity extends Activity implements Runnable {
 		serverListView.setAdapter(serverListAdapter);
 		serverListView.setOnItemClickListener(new OnItemClickListener() {
 
+			@Override
 			public void onItemClick(AdapterView<?> parent, View v,
 					int position, long id) {
 				final ListEntry entry = serverList.get(position);
@@ -108,9 +109,11 @@ public class LoginActivity extends Activity implements Runnable {
 		receiverThread = new ReceiverThread();
 		receiverThread.addHandler(new IServerHandler() {
 
+			@Override
 			public void foundServer(final String serverName,
 					final String serverIp, final int protocolVersion) {
 				runOnUiThread(new Runnable() {
+					@Override
 					public void run() {
 						ListEntry entry = findServerEntry(serverList,
 								serverName, serverIp);
@@ -128,8 +131,10 @@ public class LoginActivity extends Activity implements Runnable {
 				});
 			}
 
+			@Override
 			public void foundUnknownServer(int protocolVersion) {
 				runOnUiThread(new Runnable() {
+					@Override
 					public void run() {
 						new AlertDialog.Builder(LoginActivity.this)
 								.setIcon(android.R.drawable.ic_dialog_alert)
@@ -138,6 +143,7 @@ public class LoginActivity extends Activity implements Runnable {
 										"New Release available. Some servers won't be discovered.")
 								.setPositiveButton("Check for update",
 										new OnClickListener() {
+											@Override
 											public void onClick(
 													DialogInterface dialog,
 													int which) {
@@ -150,6 +156,7 @@ public class LoginActivity extends Activity implements Runnable {
 											}
 										}).setNegativeButton("Ignore",
 										new OnClickListener() {
+											@Override
 											public void onClick(
 													DialogInterface dialog,
 													int which) {
@@ -166,6 +173,7 @@ public class LoginActivity extends Activity implements Runnable {
 		handler.post(this);
 	}
 
+	@Override
 	public void run() {
 
 		// remove timed-out servers
@@ -218,6 +226,7 @@ public class LoginActivity extends Activity implements Runnable {
 			ip.setText(NetworkUtils.getLocalIpAddress());
 			ip.setOnEditorActionListener(new OnEditorActionListener() {
 
+				@Override
 				public boolean onEditorAction(final TextView v,
 						final int actionId, final KeyEvent event) {
 					dialog.dismiss();
@@ -266,6 +275,7 @@ public class LoginActivity extends Activity implements Runnable {
 			this.serverList = serverList;
 		}
 
+		@Override
 		public View getView(int position, View row, ViewGroup parent) {
 
 			if (row == null)
@@ -282,14 +292,17 @@ public class LoginActivity extends Activity implements Runnable {
 			return row;
 		}
 
+		@Override
 		public long getItemId(int position) {
 			return position;
 		}
 
+		@Override
 		public Object getItem(int position) {
 			return serverList.get(position);
 		}
 
+		@Override
 		public int getCount() {
 			return serverList.size();
 		}

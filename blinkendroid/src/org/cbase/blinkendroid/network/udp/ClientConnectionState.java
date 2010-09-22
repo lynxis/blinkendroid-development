@@ -1,7 +1,6 @@
 package org.cbase.blinkendroid.network.udp;
 
 import java.io.IOException;
-import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.nio.ByteBuffer;
 
@@ -58,7 +57,7 @@ public class ClientConnectionState extends ConnectionState implements CommandHan
 			Log.i(Constants.LOG_TAG, "ClientConnectionState started");
 			while (running) {
 				try {
-					ClientConnectionHeartbeat.sleep(1000);
+					Thread.sleep(1000);
 				} catch (InterruptedException e) {
 					// swallow
 				}

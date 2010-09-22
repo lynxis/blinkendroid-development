@@ -1,10 +1,6 @@
 package org.cbase.blinkendroid.network.udp;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.SocketAddress;
 import java.nio.ByteBuffer;
 
 import org.cbase.blinkendroid.Constants;

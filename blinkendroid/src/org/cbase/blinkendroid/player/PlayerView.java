@@ -143,7 +143,8 @@ public class PlayerView extends View implements Runnable {
 	}
     }
 
-    public void run() {
+    @Override
+	public void run() {
 
 	// time into movie, taking endless looping into account
 	final long serverTime = System.nanoTime() / 1000000 - timeDelta;

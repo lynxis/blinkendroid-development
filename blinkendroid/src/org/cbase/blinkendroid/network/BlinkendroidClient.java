@@ -19,15 +19,12 @@ package org.cbase.blinkendroid.network;
 
 import java.io.IOException;
 import java.net.DatagramSocket;
-import java.net.InetAddress;
 import java.net.InetSocketAddress;
 
 import org.cbase.blinkendroid.Constants;
 import org.cbase.blinkendroid.network.udp.BlinkendroidClientProtocol;
 import org.cbase.blinkendroid.network.udp.ClientConnectionState;
 import org.cbase.blinkendroid.network.udp.ClientSocket;
-import org.cbase.blinkendroid.network.udp.ConnectionState;
-import org.cbase.blinkendroid.network.udp.UDPAbstractBlinkendroidProtocol;
 import org.cbase.blinkendroid.network.udp.UDPClientProtocolManager;
 
 import android.util.Log;

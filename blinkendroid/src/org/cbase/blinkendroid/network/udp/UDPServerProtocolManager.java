@@ -17,22 +17,17 @@
 
 package org.cbase.blinkendroid.network.udp;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
-import java.net.Socket;
 import java.net.SocketAddress;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 
 import org.cbase.blinkendroid.Constants;
 import org.cbase.blinkendroid.network.ConnectionListener;
-import org.cbase.blinkendroid.server.PlayerClient;
 import org.cbase.blinkendroid.server.PlayerManager;
 
 import android.util.Log;
@@ -101,6 +96,7 @@ public class UDPServerProtocolManager extends UDPAbstractBlinkendroidProtocol im
 	}
 
 
+	@Override
 	public void handle(SocketAddress socketAddr, ByteBuffer bybuff)
 			throws IOException {
 //System.out.println("handle nothing");
@@ -120,7 +116,7 @@ public class UDPServerProtocolManager extends UDPAbstractBlinkendroidProtocol im
 			Log.i(Constants.LOG_TAG, "GlobalTimerThread started");
 			while (running) {
 				try {
-					GlobalTimerThread.sleep(1000);
+					Thread.sleep(1000);
 				} catch (InterruptedException e) {
 					// swallow
 				}
@@ -151,12 +147,14 @@ public class UDPServerProtocolManager extends UDPAbstractBlinkendroidProtocol im
 	}
 
 
+	@Override
 	public void connectionClosed(ClientSocket clientSocket) {
 		for (ConnectionListener connListener : connectionListener) {
 			connListener.connectionClosed(clientSocket);
 		}
 	}
 
+	@Override
 	public void connectionOpened(ClientSocket clientSocket) {
 		for (ConnectionListener connListener : connectionListener) {
 			connListener.connectionOpened(clientSocket);
