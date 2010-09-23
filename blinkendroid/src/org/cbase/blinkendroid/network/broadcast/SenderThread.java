@@ -57,7 +57,9 @@ public class SenderThread extends Thread {
 		    Constants.BROADCAST_ANNOUCEMENT_SERVER_PORT);
 	    socket.setReuseAddress(true);
 	    socket.setBroadcast(true);
-	    group = InetAddress.getByName("255.255.255.255");
+	    System.out.println("Sender thread started.");
+	    //TODO have to figure out whether getAllByName("255.255.255.255")[0]; or getByName("255.255.255.255"); is more useful.
+	    group = InetAddress.getAllByName("255.255.255.255")[0];
 	    Log.i(Constants.LOG_TAG, "Server ip: " + group.toString());
 
 	    while (running) {

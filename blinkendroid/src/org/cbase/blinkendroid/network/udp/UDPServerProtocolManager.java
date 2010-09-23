@@ -85,6 +85,7 @@ public class UDPServerProtocolManager extends UDPAbstractBlinkendroidProtocol
 
     public void sendBroadcast(ByteBuffer out) {
 	try {
+	    //TODO: view SenderThread in broadcast and increase performance by removing constant creation of InetSocketAddresses
 	    send(new InetSocketAddress(
 		    InetAddress.getAllByName("255.255.255.255")[0],
 		    Constants.BROADCAST_CLIENT_PORT), out);

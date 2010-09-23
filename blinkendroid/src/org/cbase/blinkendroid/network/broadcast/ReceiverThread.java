@@ -75,14 +75,15 @@ public class ReceiverThread extends Thread {
 		    Constants.BROADCAST_ANNOUCEMENT_CLIENT_PORT);
 	    socket.setReuseAddress(true);
 	    socket.setBroadcast(true);
-	    
+	    System.out.println("Receiver thread started.");
 	    while (running) {
 
 		final byte[] buf = new byte[512];
 		final DatagramPacket packet = new DatagramPacket(buf,
 			buf.length);
+		System.out.println("Receiving.");
 		receive(packet);
-
+		System.out.println("Received.");
 		if (!running) // fast exit
 		    break;
 
@@ -128,6 +129,7 @@ public class ReceiverThread extends Thread {
 	} catch (final SocketException x) {
 	    // swallow, this is expected when being interrupted by
 	    // socket.close()
+	    x.printStackTrace();
 	}
     }
 
