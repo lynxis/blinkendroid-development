@@ -87,6 +87,10 @@ public class SenderThread extends Thread {
     public void shutdown() {
 	Log.d(Constants.LOG_TAG, "SenderThread: initiating shutdown");
 	running = false;
+	
+	if (socket != null) {
+	    socket.close();
+	}
 	interrupt();
 	try {
 	    join();
