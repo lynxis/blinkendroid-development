@@ -7,4 +7,6 @@
 <string name="owner_hint">Hint: Setting an owner name in the preferences helps identifying your phone in the matrix.</string>
 <string name="about">About</string>
 <string name="ticket_size">Tickets</string>
+<string name="start">Start</string>
+<string name="stop">Stop</string>
 </resources>

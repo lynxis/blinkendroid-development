@@ -11,25 +11,24 @@
 	<Spinner android:id="@+id/server_movie" android:layout_width="fill_parent"
 		android:layout_height="wrap_content" />
 
-	<Spinner android:text="@+id/ticket_size" android:id="@+id/ticket_size"
+	<Spinner android:text="@string/ticket_size" android:id="@+id/ticket_size"
 		android:layout_width="fill_parent" android:layout_height="wrap_content" />
 
 	<LinearLayout android:orientation="horizontal"
 		android:layout_width="fill_parent" android:layout_height="wrap_content">
-		
-		<Button android:id="@+id/server_start" android:text="Start"
-			android:layout_width="wrap_content" android:layout_height="wrap_content" />
 
-		<Button android:id="@+id/server_stop" android:text="Stop"
-			android:layout_width="wrap_content" android:layout_height="wrap_content"
-			android:enabled="false" />
+		<Button android:id="@+id/server_start_stop" android:text="@string/start"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"  android:layout_weight="1"/>
+
+		<!-- <Button android:id="@+id/server_stop" android:text="Stop" android:layout_width="wrap_content" 
+			android:layout_height="wrap_content" android:enabled="false" /> -->
 
 		<Button android:id="@+id/server_client" android:text="Start client"
-			android:layout_width="wrap_content" android:layout_height="wrap_content"
+			android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_weight="1" 
 			android:enabled="false" />
 
 	</LinearLayout>
-	
+
 	<ListView android:id="@+id/server_client_list"
 		android:layout_width="fill_parent" android:layout_height="fill_parent" />
 
