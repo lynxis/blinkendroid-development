@@ -15,6 +15,11 @@ public class TicketManager implements IPeerHandler, ConnectionListener {
     int maxClients = 2;
     int clients = 0;
     private Set<String> tickets = new HashSet<String>();
+    private String ownerName;
+
+    public TicketManager(String ownerName) {
+	this.ownerName = ownerName;
+    }
 
     public void foundPeer(String name, String ip, int protocolVersion) {
 	System.out.printf("foundpeer " + name + ip);
@@ -29,7 +34,7 @@ public class TicketManager implements IPeerHandler, ConnectionListener {
 		InetSocketAddress socketAddr = new InetSocketAddress(ip,
 			Constants.BROADCAST_ANNOUCEMENT_CLIENT_TICKET_PORT);
 		String message = Constants.BROADCAST_PROTOCOL_VERSION + " " + Constants.SERVER_TICKET_COMMAND + " "
-			+ name;
+			+ ownerName;
 		final byte[] messageBytes = message.getBytes("UTF-8");
 		final DatagramPacket packet = new DatagramPacket(messageBytes, messageBytes.length, socketAddr);
 		System.out.printf("UDP SOCKET CREATED");

@@ -60,7 +60,10 @@ public class ServerActivity extends Activity implements ConnectionListener, BLMM
 	blmManager.readMovies(this);
 
 	// Ticketmanager
-	ticketManager = new TicketManager();
+	String ownerName = PreferenceManager.getDefaultSharedPreferences(this).getString("owner", null);
+	if (ownerName == null)
+	    ownerName = System.currentTimeMillis() + "";
+	ticketManager = new TicketManager(ownerName);
 
 	clientAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1);
 	clientList.setAdapter(clientAdapter);
@@ -113,7 +116,7 @@ public class ServerActivity extends Activity implements ConnectionListener, BLMM
 
 	ticketSizeAdapter = new ArrayAdapter<Integer>(this, android.R.layout.simple_spinner_item);
 	ticketSizeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-	
+
 	// TODO change to int i = 20; i <= 200; i += 20 for productive version
 	for (int i = 1; i <= 200; i++) {
 	    ticketSizeAdapter.add(i);
