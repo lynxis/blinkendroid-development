@@ -16,13 +16,13 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.AdapterView.OnItemSelectedListener;
 
 public class ServerActivity extends Activity implements ConnectionListener, BLMManagerListener {
 
@@ -31,10 +31,10 @@ public class ServerActivity extends Activity implements ConnectionListener, BLMM
     private BLMManager blmManager;
     private ArrayAdapter<String> movieAdapter;
     private ArrayAdapter<String> clientAdapter;
+    private ArrayAdapter<Integer> ticketSizeAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
 	super.onCreate(savedInstanceState);
 
 	setContentView(R.layout.server_content);
@@ -42,9 +42,9 @@ public class ServerActivity extends Activity implements ConnectionListener, BLMM
 	final TextView serverNameView = (TextView) findViewById(R.id.server_name);
 	final Spinner movieSpinner = (Spinner) findViewById(R.id.server_movie);
 	final Button startStopButton = (Button) findViewById(R.id.server_start_stop);
-	// final Button stopButton = (Button) findViewById(R.id.server_stop);
 	final Button clientButton = (Button) findViewById(R.id.server_client);
 	final ListView clientList = (ListView) findViewById(R.id.server_client_list);
+	final Spinner ticketSizeSpinner = (Spinner) findViewById(R.id.ticket_size);
 
 	serverNameView.setText(PreferenceManager.getDefaultSharedPreferences(this).getString("owner", null));
 
@@ -97,22 +97,24 @@ public class ServerActivity extends Activity implements ConnectionListener, BLMM
 		}
 	    }
 	});
+	ticketSizeAdapter = new ArrayAdapter<Integer>(this, android.R.layout.simple_list_item_1);
+	// TODO change to int i = 20; i <= 200; i += 20 for productive version
+	for (int i = 1; i <= 200; i++) {
+	    ticketSizeAdapter.add(i);
+	}
+	ticketSizeSpinner.setAdapter(ticketSizeAdapter);
+	ticketSizeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+	ticketSizeSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
 
-	// stopButton.setOnClickListener(new OnClickListener() {
-	//
-	// public void onClick(View v) {
-	//
-	// senderThread.shutdown();
-	// senderThread = null;
-	//
-	// blinkendroidServer.shutdown();
-	// blinkendroidServer = null;
-	//
-	// startButton.setEnabled(true);
-	// stopButton.setEnabled(false);
-	// clientButton.setEnabled(false);
-	// }
-	// });
+	    @Override
+	    public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+		// TODO ben: set selected item to ticketSize
+	    }
+
+	    @Override
+	    public void onNothingSelected(AdapterView<?> arg0) {
+	    }
+	});
 
 	clientButton.setOnClickListener(new OnClickListener() {
 
