@@ -88,7 +88,10 @@ public class ServerActivity extends Activity implements ConnectionListener, BLMM
 		    recieverThread.addHandler(ticketManager);
 		    recieverThread.start();
 
-		    blinkendroidServer = new BlinkendroidServer(ServerActivity.this, Constants.BROADCAST_SERVER_PORT);
+		    blinkendroidServer = new BlinkendroidServer(Constants.BROADCAST_SERVER_PORT);
+		    blinkendroidServer.addConnectionListener(ServerActivity.this);
+		    blinkendroidServer.addConnectionListener(ticketManager);
+
 		    blinkendroidServer.start();
 		    // TODO schtief warum hier kein thread in server ui?
 		    startStopButton.setText(getString(R.string.stop));
@@ -100,7 +103,9 @@ public class ServerActivity extends Activity implements ConnectionListener, BLMM
 		    blinkendroidServer.shutdown();
 		    blinkendroidServer = null;
 
-		    startStopButton.setText(getString(R.string.stop));
+		    ticketManager.reset();
+
+		    startStopButton.setText(getString(R.string.start));
 		    clientButton.setEnabled(false);
 		}
 	    }

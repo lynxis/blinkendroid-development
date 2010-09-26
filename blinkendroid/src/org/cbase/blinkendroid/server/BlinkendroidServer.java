@@ -20,6 +20,8 @@ package org.cbase.blinkendroid.server;
 import java.io.IOException;
 import java.net.DatagramSocket;
 import java.net.SocketException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.cbase.blinkendroid.network.ConnectionListener;
 import org.cbase.blinkendroid.network.tcp.TCPVideoServer;
@@ -27,22 +29,27 @@ import org.cbase.blinkendroid.network.udp.UDPServerProtocolManager;
 import org.cbase.blinkendroid.player.bml.BLMHeader;
 
 public class BlinkendroidServer {// TODO schtief warum hier kein thread in
-				 // server ui?
+    // server ui?
 
     volatile private boolean running = false;
     volatile private DatagramSocket serverSocket;
     private int port = -1;
     private PlayerManager playerManager;
-    private ConnectionListener connectionListener; // TODO muss der Server
-						   // wissen
-						   // wer der PlayerManager ist
-						   // ?
+    private List<ConnectionListener> connectionListeners; // TODO muss der
+    // Server
+    // wissen
+    // wer der PlayerManager ist
+    // ?
     private UDPServerProtocolManager m_ServerProto;
     private TCPVideoServer videoSocket;
 
-    public BlinkendroidServer(ConnectionListener connectionListener, int port) {
-	this.connectionListener = connectionListener;
+    public BlinkendroidServer(int port) {
+	this.connectionListeners = new ArrayList<ConnectionListener>();
 	this.port = port;
+    }
+
+    public void addConnectionListener(ConnectionListener connectionListener) {
+	this.connectionListeners.add(connectionListener);
     }
 
     public void start() {
@@ -62,7 +69,10 @@ public class BlinkendroidServer {// TODO schtief warum hier kein thread in
 	    playerManager.setVideoServer(videoSocket);
 	    m_ServerProto.setPlayerManager(playerManager);
 
-	    m_ServerProto.addConnectionListener(this.connectionListener);
+	    for (ConnectionListener connectionListener : connectionListeners) {
+		m_ServerProto.addConnectionListener(connectionListener);
+	    }
+
 	    m_ServerProto.startTimerThread();
 
 	    // how is the protocol connected to the logic ?
