@@ -36,34 +36,34 @@ import android.util.Log;
 public class ReceiverThread extends Thread {
 
     volatile private boolean running = true;
-    private List<IServerHandler> handlers = Collections
-	    .synchronizedList(new ArrayList<IServerHandler>());
+    private List<IPeerHandler> handlers = Collections.synchronizedList(new ArrayList<IPeerHandler>());
     private DatagramSocket socket;
+    private int port;
+    private String command;
+
+    public ReceiverThread(int port, String command) {
+	super();
+	this.port = port;
+	this.command = command;
+    }
 
     /**
      * Adds a handler to the {@link ReceiverThread}.
      */
-    public void addHandler(IServerHandler handler) {
+    public void addHandler(IPeerHandler handler) {
 	handlers.add(handler);
     }
 
-    public void removeHandler(IServerHandler handler) {
+    public void removeHandler(IPeerHandler handler) {
 	handlers.remove(handler);
     }
 
     /**
      * Notifies the registered handlers
      */
-    private void notifyHandlers(final int protocolVersion, String serverName,
-	    String serverIp) {
-	for (IServerHandler h : handlers) {
-	    h.foundServer(serverName, serverIp, protocolVersion);
-	}
-    }
-
-    private void notifyHandlers(final int protocolVersion) {
-	for (IServerHandler h : handlers) {
-	    h.foundUnknownServer(protocolVersion);
+    private void notifyHandlers(final int protocolVersion, String name, String ip) {
+	for (IPeerHandler h : handlers) {
+	    h.foundPeer(name, ip, protocolVersion);
 	}
     }
 
@@ -71,50 +71,42 @@ public class ReceiverThread extends Thread {
     public void run() {
 	this.setName("CLI Annoucement Receiver");
 	try {
-	    socket = new DatagramSocket(
-		    Constants.BROADCAST_ANNOUCEMENT_CLIENT_PORT);
+	    socket = new DatagramSocket(port);
 	    socket.setReuseAddress(true);
 	    socket.setBroadcast(true);
 	    System.out.println("Receiver thread started.");
 	    while (running) {
 
 		final byte[] buf = new byte[512];
-		final DatagramPacket packet = new DatagramPacket(buf,
-			buf.length);
+		final DatagramPacket packet = new DatagramPacket(buf, buf.length);
 		System.out.println("Receiving.");
 		receive(packet);
 		System.out.println("Received.");
 		if (!running) // fast exit
 		    break;
 
-		final String receivedString = new String(packet.getData(), 0,
-			packet.getLength(), "UTF-8");
-		Log.d(Constants.LOG_TAG, "received via broadcast: '"
-			+ receivedString + "'");
+		final String receivedString = new String(packet.getData(), 0, packet.getLength(), "UTF-8");
+		Log.d(Constants.LOG_TAG, "received via broadcast: '" + receivedString + "'");
 		final String[] receivedParts = receivedString.split(" ");
 
 		final int protocolVersion = Integer.parseInt(receivedParts[0]);
-		if (protocolVersion <= Constants.BROADCAST_PROTOCOL_VERSION) {
+		// if (protocolVersion <= Constants.BROADCAST_PROTOCOL_VERSION)
+		// {
 
-		    if (!receivedParts[1]
-			    .equals(Constants.SERVER_BROADCAST_COMMAND)) {
-			continue;
-		    }
-
-		    final InetAddress address = packet.getAddress();
-		    final String serverName = receivedParts.length >= 3 ? receivedParts[2]
-			    : "";
-
-		    notifyHandlers(protocolVersion, serverName,
-			    address.getHostAddress());
-
-		    Log.i(Constants.LOG_TAG,
-			    receivedString + " " + packet.getAddress()
-				    + " Thread: "
-				    + Thread.currentThread().getId());
-		} else {
-		    notifyHandlers(protocolVersion);
+		if (!receivedParts[1].equals(command)) {
+		    continue;
 		}
+
+		final InetAddress address = packet.getAddress();
+		final String name = receivedParts.length >= 3 ? receivedParts[2] : "";
+
+		notifyHandlers(protocolVersion, name, address.getHostAddress());
+
+		Log.i(Constants.LOG_TAG, receivedString + " " + packet.getAddress() + " Thread: "
+			+ Thread.currentThread().getId());
+		// } else {
+		// notifyHandlers(protocolVersion);
+		// }
 	    }
 	    socket.close();
 	    Log.d(Constants.LOG_TAG, "ReceiverThread: shutdown complete");

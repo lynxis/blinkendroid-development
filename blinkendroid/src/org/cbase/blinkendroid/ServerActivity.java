@@ -1,11 +1,12 @@
 package org.cbase.blinkendroid;
 
 import org.cbase.blinkendroid.network.ConnectionListener;
-import org.cbase.blinkendroid.network.broadcast.SenderThread;
+import org.cbase.blinkendroid.network.broadcast.ReceiverThread;
 import org.cbase.blinkendroid.network.udp.ClientSocket;
 import org.cbase.blinkendroid.player.bml.BLMManager;
 import org.cbase.blinkendroid.player.bml.BLMManager.BLMManagerListener;
 import org.cbase.blinkendroid.server.BlinkendroidServer;
+import org.cbase.blinkendroid.server.TicketManager;
 import org.cbase.blinkendroid.utils.NetworkUtils;
 
 import android.app.Activity;
@@ -16,17 +17,18 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.AdapterView.OnItemSelectedListener;
 
 public class ServerActivity extends Activity implements ConnectionListener, BLMManagerListener {
 
-    private SenderThread senderThread;
+    private ReceiverThread recieverThread;
+    private TicketManager ticketManager;
     private BlinkendroidServer blinkendroidServer;
     private BLMManager blmManager;
     private ArrayAdapter<String> movieAdapter;
@@ -77,8 +79,13 @@ public class ServerActivity extends Activity implements ConnectionListener, BLMM
 
 	    public void onClick(View v) {
 		if (!blinkendroidServer.isRunning()) {
-		    senderThread = new SenderThread(serverNameView.getText().toString());
-		    senderThread.start();
+		    // Ticketmanager
+		    ticketManager = new TicketManager();
+		    // start recieverthread
+		    recieverThread = new ReceiverThread(Constants.BROADCAST_ANNOUCEMENT_SERVER_PORT,
+			    Constants.CLIENT_BROADCAST_COMMAND);
+		    recieverThread.addHandler(ticketManager);
+		    recieverThread.start();
 
 		    blinkendroidServer = new BlinkendroidServer(ServerActivity.this, Constants.BROADCAST_SERVER_PORT);
 		    blinkendroidServer.start();
@@ -86,8 +93,8 @@ public class ServerActivity extends Activity implements ConnectionListener, BLMM
 		    startStopButton.setText(getString(R.string.stop));
 		    clientButton.setEnabled(true);
 		} else {
-		    senderThread.shutdown();
-		    senderThread = null;
+		    recieverThread.shutdown();
+		    recieverThread = null;
 
 		    blinkendroidServer.shutdown();
 		    blinkendroidServer = null;
@@ -97,6 +104,7 @@ public class ServerActivity extends Activity implements ConnectionListener, BLMM
 		}
 	    }
 	});
+
 	ticketSizeAdapter = new ArrayAdapter<Integer>(this, android.R.layout.simple_list_item_1);
 	// TODO change to int i = 20; i <= 200; i += 20 for productive version
 	for (int i = 1; i <= 200; i++) {
@@ -106,12 +114,10 @@ public class ServerActivity extends Activity implements ConnectionListener, BLMM
 	ticketSizeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 	ticketSizeSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
 
-	    @Override
 	    public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
 		// TODO ben: set selected item to ticketSize
 	    }
 
-	    @Override
 	    public void onNothingSelected(AdapterView<?> arg0) {
 	    }
 	});
@@ -131,9 +137,9 @@ public class ServerActivity extends Activity implements ConnectionListener, BLMM
     @Override
     protected void onDestroy() {
 
-	if (senderThread != null) {
-	    senderThread.shutdown();
-	    senderThread = null;
+	if (recieverThread != null) {
+	    recieverThread.shutdown();
+	    recieverThread = null;
 	}
 
 	if (blinkendroidServer != null) {

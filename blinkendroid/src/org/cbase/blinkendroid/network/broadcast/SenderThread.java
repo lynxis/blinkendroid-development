@@ -42,31 +42,30 @@ public class SenderThread extends Thread {
      * @param serverName
      *            The server's name.
      */
-    public SenderThread(String serverName) {
+    public SenderThread(String name) {
 	// workaround: remove spaces, as those currently break the protocol
-	serverName = serverName.replaceAll("\\s", "");
-	message = Constants.BROADCAST_PROTOCOL_VERSION + " "
-		+ Constants.SERVER_BROADCAST_COMMAND + " " + serverName;
+	name = name.replaceAll("\\s", "");
+	message = Constants.BROADCAST_PROTOCOL_VERSION + " " + Constants.CLIENT_BROADCAST_COMMAND + " " + name;
     }
 
     @Override
     public void run() {
 	try {
 	    this.setName("SRV Send Annouce");
-	    socket = new DatagramSocket(
-		    Constants.BROADCAST_ANNOUCEMENT_SERVER_PORT);
+	    socket = new DatagramSocket(Constants.BROADCAST_ANNOUCEMENT_CLIENT_PORT);
 	    socket.setReuseAddress(true);
 	    socket.setBroadcast(true);
 	    System.out.println("Sender thread started.");
-	    //TODO have to figure out whether getAllByName("255.255.255.255")[0]; or getByName("255.255.255.255"); is more useful.
+	    // TODO have to figure out whether
+	    // getAllByName("255.255.255.255")[0]; or
+	    // getByName("255.255.255.255"); is more useful.
 	    group = InetAddress.getAllByName("255.255.255.255")[0];
 	    Log.i(Constants.LOG_TAG, "Server ip: " + group.toString());
 
 	    while (running) {
 		final byte[] messageBytes = message.getBytes("UTF-8");
-		final DatagramPacket initPacket = new DatagramPacket(
-			messageBytes, messageBytes.length, group,
-			Constants.BROADCAST_ANNOUCEMENT_CLIENT_PORT);
+		final DatagramPacket initPacket = new DatagramPacket(messageBytes, messageBytes.length, group,
+			Constants.BROADCAST_ANNOUCEMENT_SERVER_PORT);
 		Log.d("Broadcasting Paket", "");
 		socket.send(initPacket);
 
