@@ -9,4 +9,5 @@
 <string name="ticket_size">Tickets</string>
 <string name="start">Start</string>
 <string name="stop">Stop</string>
+<string name="ticket_hint">Select the maximum number of tickets</string>
 </resources>

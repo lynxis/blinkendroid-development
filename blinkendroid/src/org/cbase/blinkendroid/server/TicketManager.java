@@ -47,4 +47,12 @@ public class TicketManager implements IPeerHandler, ConnectionListener {
 	// TODO clients merken und abhaken
 
     }
+
+    public int getMaxClients() {
+        return maxClients;
+    }
+
+    public void setMaxClients(int maxClients) {
+        this.maxClients = maxClients;
+    }
 }

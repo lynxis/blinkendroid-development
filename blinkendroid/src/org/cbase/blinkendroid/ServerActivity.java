@@ -59,6 +59,9 @@ public class ServerActivity extends Activity implements ConnectionListener, BLMM
 	blmManager = new BLMManager();
 	blmManager.readMovies(this);
 
+	// Ticketmanager
+	ticketManager = new TicketManager();
+	
 	clientAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1);
 	clientList.setAdapter(clientAdapter);
 
@@ -74,13 +77,11 @@ public class ServerActivity extends Activity implements ConnectionListener, BLMM
 	    public void onNothingSelected(AdapterView<?> arg0) {
 	    }
 	});
-
+	    
 	startStopButton.setOnClickListener(new OnClickListener() {
 
 	    public void onClick(View v) {
 		if (!blinkendroidServer.isRunning()) {
-		    // Ticketmanager
-		    ticketManager = new TicketManager();
 		    // start recieverthread
 		    recieverThread = new ReceiverThread(Constants.BROADCAST_ANNOUCEMENT_SERVER_PORT,
 			    Constants.CLIENT_BROADCAST_COMMAND);
@@ -112,16 +113,21 @@ public class ServerActivity extends Activity implements ConnectionListener, BLMM
 	}
 	ticketSizeSpinner.setAdapter(ticketSizeAdapter);
 	ticketSizeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+	
 	ticketSizeSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
 
-	    public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-		// TODO ben: set selected item to ticketSize
+	    public void onItemSelected(AdapterView<?> arg0, View arg1, int maxClients, long arg3) {
+		if (ticketManager != null) {
+		    ticketManager.setMaxClients(maxClients);
+		}
 	    }
 
 	    public void onNothingSelected(AdapterView<?> arg0) {
 	    }
 	});
-
+	
+	ticketSizeSpinner.setSelection(ticketManager.getMaxClients() - 1);
+//	ticketSizeAdapter.getPosition(ticketManager.getMaxClients());
 	clientButton.setOnClickListener(new OnClickListener() {
 
 	    public void onClick(View v) {
