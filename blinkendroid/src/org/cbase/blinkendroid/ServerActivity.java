@@ -111,13 +111,14 @@ public class ServerActivity extends Activity implements ConnectionListener, BLMM
 	    }
 	});
 
-	ticketSizeAdapter = new ArrayAdapter<Integer>(this, android.R.layout.simple_list_item_1);
+	ticketSizeAdapter = new ArrayAdapter<Integer>(this, android.R.layout.simple_spinner_item);
+	ticketSizeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+	
 	// TODO change to int i = 20; i <= 200; i += 20 for productive version
 	for (int i = 1; i <= 200; i++) {
 	    ticketSizeAdapter.add(i);
 	}
 	ticketSizeSpinner.setAdapter(ticketSizeAdapter);
-	ticketSizeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
 	ticketSizeSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
 
