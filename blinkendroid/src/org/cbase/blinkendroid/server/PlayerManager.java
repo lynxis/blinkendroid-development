@@ -37,8 +37,8 @@ public class PlayerManager implements ConnectionListener {
     private boolean running = true;
     private String filename = null;
     private TimeouterThread timeouter = new TimeouterThread();
-    private AtomicInteger arrowColorIndex = new AtomicInteger(
-	    new Random().nextInt(ARROW_COLORS.length));
+    private AtomicInteger arrowColorIndex = new AtomicInteger(new Random()
+	    .nextInt(ARROW_COLORS.length));
     // private long serverPlayer = System.currentTimeMillis();
     private TCPVideoServer videoServer;
 
@@ -353,7 +353,6 @@ public class PlayerManager implements ConnectionListener {
 	return null;
     }
 
-    @Override
     public void connectionClosed(ClientSocket clientSocket) {
 	// TODO Auto-generated method stub
 	// TODO remove Client
@@ -368,7 +367,6 @@ public class PlayerManager implements ConnectionListener {
 	connectionListenerManager.connectionClosed(clientSocket);
     }
 
-    @Override
     public void connectionOpened(ClientSocket clientSocket) {
 	// TODO Auto-generated method stub
 	// TODO addClient
@@ -398,7 +396,7 @@ public class PlayerManager implements ConnectionListener {
 		}
 	    }
 	} else { // no client found
-		 // System.out.println("handle without client");
+	    // System.out.println("handle without client");
 	    if (proto == Constants.PROTOCOL_CONNECTION) {
 		int data = protoData.getInt();
 		System.out.println("Playermanager data " + data);

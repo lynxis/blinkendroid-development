@@ -82,11 +82,10 @@ public class PlayerActivity extends Activity implements BlinkendroidListener,
 	ownerView = (TextView) findViewById(R.id.player_owner);
 	playerView.setOnTouchListener(new OnTouchListener() {
 
-	    @Override
 	    public boolean onTouch(View v, MotionEvent event) {
 		ownerView.setVisibility(View.VISIBLE);
 		handler.postDelayed(new Runnable() {
-		    @Override
+
 		    public void run() {
 			ownerView.setVisibility(View.INVISIBLE);
 		    }
@@ -165,30 +164,27 @@ public class PlayerActivity extends Activity implements BlinkendroidListener,
 	super.onPause();
     }
 
-    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 	getMenuInflater().inflate(R.menu.player_options, menu);
 	return true;
     }
 
-    @Override
     public void serverTime(final long serverTime) {
 	Log.d(Constants.LOG_TAG, "*** time " + serverTime);
 	final long timeDelta = System.nanoTime() / 1000000 - serverTime;
 	runOnUiThread(new Runnable() {
-	    @Override
+
 	    public void run() {
 		playerView.setTimeDelta(timeDelta);
 	    }
 	});
     }
 
-    @Override
     public void play(final int x, final int y, final long startTime,
 	    final BLM movie) {
 	Log.d(Constants.LOG_TAG, "*** play " + startTime);
 	runOnUiThread(new Runnable() {
-	    @Override
+
 	    public void run() {
 		blm = movie;
 		if (blm == null)
@@ -202,24 +198,22 @@ public class PlayerActivity extends Activity implements BlinkendroidListener,
 	});
     }
 
-    @Override
     public void clip(final float startX, final float startY, final float endX,
 	    final float endY) {
 	Log.d(Constants.LOG_TAG, "*** clip " + startX + "," + startY + ","
 		+ endX + "," + endY);
 	runOnUiThread(new Runnable() {
-	    @Override
+
 	    public void run() {
 		playerView.setClipping(startX, startY, endX, endY);
 	    }
 	});
     }
 
-    @Override
     public void arrow(final long duration, final float angle, final int color) {
 	Log.d(Constants.LOG_TAG, "*** arrow " + angle + " " + duration);
 	runOnUiThread(new Runnable() {
-	    @Override
+
 	    public void run() {
 		final int id = arrowView.addArrow(angle, color);
 		boolean startPost = arrowDurations.isEmpty();
@@ -230,12 +224,11 @@ public class PlayerActivity extends Activity implements BlinkendroidListener,
 	});
     }
 
-    @Override
     public void connectionOpened(final ClientSocket clientSocket) {
 	Log.d(Constants.LOG_TAG, "*** connectionOpened "
 		+ clientSocket.getDestinationAddress().toString());
 	runOnUiThread(new Runnable() {
-	    @Override
+
 	    public void run() {
 		Toast.makeText(PlayerActivity.this, "connected",
 			Toast.LENGTH_SHORT).show();
@@ -243,12 +236,11 @@ public class PlayerActivity extends Activity implements BlinkendroidListener,
 	});
     }
 
-    @Override
     public void connectionClosed(final ClientSocket clientSocket) {
 	Log.d(Constants.LOG_TAG, "*** connectionClosed "
 		+ clientSocket.getDestinationAddress().toString());
 	runOnUiThread(new Runnable() {
-	    @Override
+
 	    public void run() {
 		Toast.makeText(PlayerActivity.this,
 			"connection to server closed", Toast.LENGTH_LONG)
@@ -259,20 +251,18 @@ public class PlayerActivity extends Activity implements BlinkendroidListener,
 	});
     }
 
-    @Override
     public void connectionFailed(final String message) {
 	runOnUiThread(new Runnable() {
-	    @Override
+
 	    public void run() {
 		Log.w(Constants.LOG_TAG, "connection failed: " + message);
 		playerView.stopPlaying();
 		ownerView.setVisibility(View.VISIBLE);
-		new AlertDialog.Builder(PlayerActivity.this)
-			.setIcon(android.R.drawable.ic_dialog_alert)
-			.setTitle("Cannot connect to server")
-			.setMessage(message)
+		new AlertDialog.Builder(PlayerActivity.this).setIcon(
+			android.R.drawable.ic_dialog_alert).setTitle(
+			"Cannot connect to server").setMessage(message)
 			.setOnCancelListener(new OnCancelListener() {
-			    @Override
+
 			    public void onCancel(DialogInterface dialog) {
 				finish();
 			    }
@@ -281,7 +271,6 @@ public class PlayerActivity extends Activity implements BlinkendroidListener,
 	});
     }
 
-    @Override
     public void run() {
 
 	arrowScale += 0.5f;

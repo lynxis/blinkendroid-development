@@ -134,7 +134,6 @@ public class UDPAbstractBlinkendroidProtocol implements UDPDirectConnection {
 	}
     }
 
-    @Override
     public void send(InetSocketAddress socketAddr, ByteBuffer out)
 	    throws IOException {
 	m_Socket.send(new DatagramPacket(out.array(), out.position(),

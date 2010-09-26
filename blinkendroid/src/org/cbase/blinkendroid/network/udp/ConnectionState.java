@@ -53,7 +53,6 @@ public class ConnectionState implements CommandHandler {
 	sendReset();
     }
 
-    @Override
     public void handle(SocketAddress socketAddr, ByteBuffer bybuff)
 	    throws IOException {
 	final int iCommand = bybuff.getInt();

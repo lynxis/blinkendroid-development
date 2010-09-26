@@ -20,7 +20,6 @@ public class BlinkendroidClientProtocol extends BlinkendroidProtocol implements
 	mListener = listener;
     }
 
-    @Override
     public void handle(SocketAddress from, ByteBuffer in) throws IOException {
 	int command = in.getInt();
 

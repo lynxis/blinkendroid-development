@@ -67,7 +67,6 @@ public class ServerActivity extends Activity implements ConnectionListener,
 
 	movieSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
 
-	    @Override
 	    public void onItemSelected(AdapterView<?> arg0, View arg1,
 		    int listElement, long arg3) {
 		// already running?
@@ -77,14 +76,12 @@ public class ServerActivity extends Activity implements ConnectionListener,
 		}
 	    }
 
-	    @Override
 	    public void onNothingSelected(AdapterView<?> arg0) {
 	    }
 	});
 
 	startButton.setOnClickListener(new OnClickListener() {
 
-	    @Override
 	    public void onClick(View v) {
 
 		senderThread = new SenderThread(serverNameView.getText()
@@ -94,8 +91,8 @@ public class ServerActivity extends Activity implements ConnectionListener,
 		blinkendroidServer = new BlinkendroidServer(
 			ServerActivity.this, Constants.BROADCAST_SERVER_PORT);
 		blinkendroidServer.start();// TODO schtief warum hier kein
-					   // thread in
-					   // server ui?
+		// thread in
+		// server ui?
 
 		startButton.setEnabled(false);
 		stopButton.setEnabled(true);
@@ -105,7 +102,6 @@ public class ServerActivity extends Activity implements ConnectionListener,
 
 	stopButton.setOnClickListener(new OnClickListener() {
 
-	    @Override
 	    public void onClick(View v) {
 
 		senderThread.shutdown();
@@ -122,13 +118,12 @@ public class ServerActivity extends Activity implements ConnectionListener,
 
 	clientButton.setOnClickListener(new OnClickListener() {
 
-	    @Override
 	    public void onClick(View v) {
 
 		final Intent intent = new Intent(ServerActivity.this,
 			PlayerActivity.class);
-		intent.putExtra(PlayerActivity.INTENT_EXTRA_IP,
-			NetworkUtils.getLocalIpAddress());
+		intent.putExtra(PlayerActivity.INTENT_EXTRA_IP, NetworkUtils
+			.getLocalIpAddress());
 		intent.putExtra(PlayerActivity.INTENT_EXTRA_PORT,
 			Constants.BROADCAST_SERVER_PORT);
 		startActivity(intent);
@@ -152,12 +147,11 @@ public class ServerActivity extends Activity implements ConnectionListener,
 	super.onDestroy();
     }
 
-    @Override
     public void connectionOpened(final ClientSocket clientSocket) {
 	Log.d(Constants.LOG_TAG, "ServerActivity connectionOpened "
 		+ clientSocket.getDestinationAddress().toString());
 	runOnUiThread(new Runnable() {
-	    @Override
+
 	    public void run() {
 		clientAdapter.add(clientSocket.getDestinationAddress()
 			.toString());
@@ -165,12 +159,11 @@ public class ServerActivity extends Activity implements ConnectionListener,
 	});
     }
 
-    @Override
     public void connectionClosed(final ClientSocket clientSocket) {
 	Log.d(Constants.LOG_TAG, "ServerActivity connectionClosed "
 		+ clientSocket.getDestinationAddress().toString());
 	runOnUiThread(new Runnable() {
-	    @Override
+
 	    public void run() {
 		clientAdapter.remove(clientSocket.getDestinationAddress()
 			.toString());
@@ -178,10 +171,9 @@ public class ServerActivity extends Activity implements ConnectionListener,
 	});
     }
 
-    @Override
     public void moviesReady() {
 	runOnUiThread(new Runnable() {
-	    @Override
+
 	    public void run() {
 		blmManager.fillArrayAdapter(movieAdapter);
 		Toast.makeText(ServerActivity.this, "Movies ready",

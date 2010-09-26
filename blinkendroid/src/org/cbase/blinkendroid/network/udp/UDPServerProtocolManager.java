@@ -85,9 +85,10 @@ public class UDPServerProtocolManager extends UDPAbstractBlinkendroidProtocol
 
     public void sendBroadcast(ByteBuffer out) {
 	try {
-	    //TODO: view SenderThread in broadcast and increase performance by removing constant creation of InetSocketAddresses
-	    send(new InetSocketAddress(
-		    InetAddress.getAllByName("255.255.255.255")[0],
+	    // TODO: view SenderThread in broadcast and increase performance by
+	    // removing constant creation of InetSocketAddresses
+	    send(new InetSocketAddress(InetAddress
+		    .getAllByName("255.255.255.255")[0],
 		    Constants.BROADCAST_CLIENT_PORT), out);
 	} catch (UnknownHostException e) {
 	    // TODO Auto-generated catch block
@@ -98,7 +99,6 @@ public class UDPServerProtocolManager extends UDPAbstractBlinkendroidProtocol
 	}
     }
 
-    @Override
     public void handle(SocketAddress socketAddr, ByteBuffer bybuff)
 	    throws IOException {
 	// System.out.println("handle nothing");
@@ -147,14 +147,12 @@ public class UDPServerProtocolManager extends UDPAbstractBlinkendroidProtocol
 	}
     }
 
-    @Override
     public void connectionClosed(ClientSocket clientSocket) {
 	for (ConnectionListener connListener : connectionListener) {
 	    connListener.connectionClosed(clientSocket);
 	}
     }
 
-    @Override
     public void connectionOpened(ClientSocket clientSocket) {
 	for (ConnectionListener connListener : connectionListener) {
 	    connListener.connectionOpened(clientSocket);
