@@ -183,7 +183,10 @@ public class LoginActivity extends Activity implements Runnable {
 	    receiverThread.shutdown();
 	    receiverThread = null;
 	}
-
+	if (senderThread != null) {
+	    senderThread.shutdown();
+	    senderThread = null;
+	}
 	super.onPause();
     }
 
