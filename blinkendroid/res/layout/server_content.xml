@@ -7,11 +7,13 @@
 	<EditText android:id="@+id/server_name" android:singleLine="true"
 		android:capitalize="words" android:textSize="36dp" android:hint="server name"
 		android:layout_width="fill_parent" android:layout_height="wrap_content" />
-		
-	<TextView android:id="@+id/server_hint_view" android:text="@+string/movie_hint" />
+
+	<TextView android:id="@+id/server_hint_view" android:text="@+string/movie_hint"
+		android:layout_width="fill_parent" android:layout_height="18dp" />
 	<Spinner android:id="@+id/server_movie" android:layout_width="fill_parent"
 		android:layout_height="wrap_content" />
-	<TextView android:id="@+id/ticket_hint_view" android:text="@+string/ticket_hint" />
+	<TextView android:id="@+id/ticket_hint_view" android:text="@+string/ticket_hint"
+		android:layout_width="fill_parent" android:layout_height="18dp" />
 	<Spinner android:id="@+id/ticket_size" android:layout_width="fill_parent"
 		android:layout_height="wrap_content" android:hint="@string/ticket_hint" />
 
