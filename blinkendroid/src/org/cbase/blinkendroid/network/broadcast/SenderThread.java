@@ -31,71 +31,73 @@ import android.util.Log;
  */
 public class SenderThread extends Thread {
 
-    final private String message;
-    private InetAddress group;
-    volatile private boolean running = true;
-    private DatagramSocket socket;
+  final private String message;
+  private InetAddress group;
+  volatile private boolean running = true;
+  private DatagramSocket socket;
 
-    /**
-     * Creates a new {@link SenderThread}
-     * 
-     * @param serverName
-     *            The server's name.
-     */
-    public SenderThread(String name) {
+  /**
+   * Creates a new {@link SenderThread}
+   * 
+   * @param serverName
+   *          The server's name.
+   */
+  public SenderThread(String name) {
 	// workaround: remove spaces, as those currently break the protocol
 	name = name.replaceAll("\\s", "");
-	message = Constants.BROADCAST_PROTOCOL_VERSION + " " + Constants.CLIENT_BROADCAST_COMMAND + " " + name;
-    }
+	message = Constants.BROADCAST_PROTOCOL_VERSION + " "
+		+ Constants.CLIENT_BROADCAST_COMMAND + " " + name;
+  }
 
-    @Override
-    public void run() {
+  @Override
+  public void run() {
 	try {
-	    this.setName("SRV Send Annouce");
-	    socket = new DatagramSocket(Constants.BROADCAST_ANNOUCEMENT_CLIENT_PORT);
-	    socket.setReuseAddress(true);
-	    socket.setBroadcast(true);
-	    System.out.println("Sender thread started.");
-	    // TODO have to figure out whether
-	    // getAllByName("255.255.255.255")[0]; or
-	    // getByName("255.255.255.255"); is more useful.
-	    group = InetAddress.getAllByName("255.255.255.255")[0];
-	    Log.i(Constants.LOG_TAG, "Server ip: " + group.toString());
+	  this.setName("SRV Send Annouce");
+	  socket = new DatagramSocket(Constants.BROADCAST_ANNOUCEMENT_CLIENT_PORT);
+	  socket.setReuseAddress(true);
+	  socket.setBroadcast(true);
+	  Log.d(Constants.LOG_TAG, "Sender thread started.");
+	  // TODO have to figure out whether
+	  // getAllByName("255.255.255.255")[0]; or
+	  // getByName("255.255.255.255"); is more useful.
+	  group = InetAddress.getAllByName("255.255.255.255")[0];
+	  Log.i(Constants.LOG_TAG, "Server ip: " + group.toString());
 
-	    while (running) {
+	  while (running) {
 		final byte[] messageBytes = message.getBytes("UTF-8");
-		final DatagramPacket initPacket = new DatagramPacket(messageBytes, messageBytes.length, group,
+		final DatagramPacket initPacket = new DatagramPacket(messageBytes,
+			messageBytes.length, group,
 			Constants.BROADCAST_ANNOUCEMENT_SERVER_PORT);
-		Log.d("Broadcasting Paket", "");
+		Log.d(Constants.LOG_TAG, "Broadcasting Packet");
 		socket.send(initPacket);
 
 		Log.d(Constants.LOG_TAG, "Broadcasting: '" + message + "'");
 		try {
-		    Thread.sleep(5000);
+		  Thread.sleep(5000);
 		} catch (final InterruptedException x) {
-		    // swallow, this is expected when being interrupted
+		  // swallow, this is expected when being interrupted
 		}
-	    }
+	  }
 
-	    socket.close();
+	  socket.close();
 
 	} catch (final IOException x) {
-	    Log.e(Constants.LOG_TAG, "problem sending", x);
+	  Log.e(Constants.LOG_TAG, "problem sending", x);
 	}
-    }
+  }
 
-    public void shutdown() {
+  public void shutdown() {
 	Log.d(Constants.LOG_TAG, "SenderThread: initiating shutdown");
 	running = false;
-	
+
 	if (socket != null) {
-	    socket.close();
+	  socket.close();
 	}
 	interrupt();
 	try {
-	    join();
+	  join();
 	} catch (final InterruptedException x) {
-	    throw new RuntimeException(x);
+	  throw new RuntimeException(x);
 	}
-    }
+  }
 }

@@ -70,20 +70,23 @@ public class ServerActivity extends Activity implements ConnectionListener, BLMM
 
 	movieSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
 
-	    public void onItemSelected(AdapterView<?> arg0, View arg1, int listElement, long arg3) {
+	    @Override
+		public void onItemSelected(AdapterView<?> arg0, View arg1, int listElement, long arg3) {
 		// already running?
 		if (null != blinkendroidServer) {
 		    blinkendroidServer.switchMovie(blmManager.getBLMHeader(listElement));
 		}
 	    }
 
-	    public void onNothingSelected(AdapterView<?> arg0) {
+	    @Override
+		public void onNothingSelected(AdapterView<?> arg0) {
 	    }
 	});
 
 	startStopButton.setOnClickListener(new OnClickListener() {
 
-	    public void onClick(View v) {
+	    @Override
+		public void onClick(View v) {
 		if (null == blinkendroidServer) {
 		    // start recieverthread
 		    recieverThread = new ReceiverThread(Constants.BROADCAST_ANNOUCEMENT_SERVER_PORT,
@@ -125,13 +128,15 @@ public class ServerActivity extends Activity implements ConnectionListener, BLMM
 
 	ticketSizeSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
 
-	    public void onItemSelected(AdapterView<?> arg0, View arg1, int maxClients, long arg3) {
+	    @Override
+		public void onItemSelected(AdapterView<?> arg0, View arg1, int maxClients, long arg3) {
 		if (ticketManager != null) {
 		    ticketManager.setMaxClients(maxClients);
 		}
 	    }
 
-	    public void onNothingSelected(AdapterView<?> arg0) {
+	    @Override
+		public void onNothingSelected(AdapterView<?> arg0) {
 	    }
 	});
 
@@ -139,7 +144,8 @@ public class ServerActivity extends Activity implements ConnectionListener, BLMM
 	// ticketSizeAdapter.getPosition(ticketManager.getMaxClients());
 	clientButton.setOnClickListener(new OnClickListener() {
 
-	    public void onClick(View v) {
+	    @Override
+		public void onClick(View v) {
 
 		final Intent intent = new Intent(ServerActivity.this, PlayerActivity.class);
 		intent.putExtra(PlayerActivity.INTENT_EXTRA_IP, NetworkUtils.getLocalIpAddress());
@@ -165,30 +171,36 @@ public class ServerActivity extends Activity implements ConnectionListener, BLMM
 	super.onDestroy();
     }
 
-    public void connectionOpened(final ClientSocket clientSocket) {
+    @Override
+	public void connectionOpened(final ClientSocket clientSocket) {
 	Log.d(Constants.LOG_TAG, "ServerActivity connectionOpened " + clientSocket.getDestinationAddress().toString());
 	runOnUiThread(new Runnable() {
 
-	    public void run() {
+	    @Override
+		public void run() {
 		clientAdapter.add(clientSocket.getDestinationAddress().toString());
 	    }
 	});
     }
 
-    public void connectionClosed(final ClientSocket clientSocket) {
+    @Override
+	public void connectionClosed(final ClientSocket clientSocket) {
 	Log.d(Constants.LOG_TAG, "ServerActivity connectionClosed " + clientSocket.getDestinationAddress().toString());
 	runOnUiThread(new Runnable() {
 
-	    public void run() {
+	    @Override
+		public void run() {
 		clientAdapter.remove(clientSocket.getDestinationAddress().toString());
 	    }
 	});
     }
 
-    public void moviesReady() {
+    @Override
+	public void moviesReady() {
 	runOnUiThread(new Runnable() {
 
-	    public void run() {
+	    @Override
+		public void run() {
 		blmManager.fillArrayAdapter(movieAdapter);
 		Toast.makeText(ServerActivity.this, "Movies ready", Toast.LENGTH_SHORT).show();
 	    }

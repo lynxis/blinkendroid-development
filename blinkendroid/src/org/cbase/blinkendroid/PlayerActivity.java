@@ -55,21 +55,20 @@ import android.widget.Toast;
 public class PlayerActivity extends Activity implements BlinkendroidListener,
 	Runnable {
 
-    public static final String INTENT_EXTRA_IP = "ip";
-    public static final String INTENT_EXTRA_PORT = "port";
+  public static final String INTENT_EXTRA_IP = "ip";
+  public static final String INTENT_EXTRA_PORT = "port";
 
-    private PlayerView playerView;
-    private ArrowView arrowView;
-    private TextView ownerView;
-    private BlinkendroidClient blinkendroidClient;
-    private BLM blm;
-    private boolean playing = false;
-    private Map<Integer, Long> arrowDurations = new HashMap<Integer, Long>();
-    private float arrowScale = 0f;
-    private final Handler handler = new Handler();
+  private PlayerView playerView;
+  private ArrowView arrowView;
+  private TextView ownerView;
+  private BlinkendroidClient blinkendroidClient;
+  private BLM blm;
+  private Map<Integer, Long> arrowDurations = new HashMap<Integer, Long>();
+  private float arrowScale = 0f;
+  private final Handler handler = new Handler();
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
+  @Override
+  protected void onCreate(Bundle savedInstanceState) {
 
 	super.onCreate(savedInstanceState);
 
@@ -82,16 +81,18 @@ public class PlayerActivity extends Activity implements BlinkendroidListener,
 	ownerView = (TextView) findViewById(R.id.player_owner);
 	playerView.setOnTouchListener(new OnTouchListener() {
 
-	    public boolean onTouch(View v, MotionEvent event) {
+	  @Override
+	  public boolean onTouch(View v, MotionEvent event) {
 		ownerView.setVisibility(View.VISIBLE);
 		handler.postDelayed(new Runnable() {
 
-		    public void run() {
+		  @Override
+		  public void run() {
 			ownerView.setVisibility(View.INVISIBLE);
-		    }
+		  }
 		}, Constants.SHOW_OWNER_DURATION);
 		return false;
-	    }
+	  }
 	});
 
 	String owner = getPhoneIdentifier();
@@ -101,34 +102,34 @@ public class PlayerActivity extends Activity implements BlinkendroidListener,
 	WindowManager.LayoutParams lp = getWindow().getAttributes();
 	lp.screenBrightness = 1.0f;
 	getWindow().setAttributes(lp);
-    }
+  }
 
-    /**
-     * Gets the owner's name from the preferences or falls back to the phone's
-     * primary number
-     * 
-     * @return owner name or phone number
-     */
-    private String getPhoneIdentifier() {
+  /**
+   * Gets the owner's name from the preferences or falls back to the phone's
+   * primary number
+   * 
+   * @return owner name or phone number
+   */
+  private String getPhoneIdentifier() {
 	String ownerName = PreferenceManager.getDefaultSharedPreferences(this)
 		.getString("owner", null);
 
 	if (ownerName == null || ownerName.trim().length() == 0) {
-	    TelephonyManager tm = (TelephonyManager) this
-		    .getSystemService(Context.TELEPHONY_SERVICE);
-	    ownerName = tm.getLine1Number();
+	  TelephonyManager tm = (TelephonyManager) this
+		  .getSystemService(Context.TELEPHONY_SERVICE);
+	  ownerName = tm.getLine1Number();
 	}
 
 	return ownerName;
-    }
+  }
 
-    @Override
-    protected void onResume() {
+  @Override
+  protected void onResume() {
 
 	super.onResume();
 	String addr = getIntent().getStringExtra(INTENT_EXTRA_IP);
 	if (addr == null) {
-	    addr = "127.0.0.1";
+	  addr = "127.0.0.1";
 	}
 	int port = getIntent().getIntExtra(INTENT_EXTRA_PORT,
 		Constants.BROADCAST_SERVER_PORT);
@@ -147,149 +148,165 @@ public class PlayerActivity extends Activity implements BlinkendroidListener,
 	 * 
 	 * if (!arrowDurations.isEmpty()) handler.post(this);
 	 */
-    }
+  }
 
-    @Override
-    protected void onPause() {
+  @Override
+  protected void onPause() {
 
 	handler.removeCallbacks(this);
 
 	playerView.stopPlaying();
 
 	if (blinkendroidClient != null) {
-	    blinkendroidClient.shutdown();
-	    blinkendroidClient = null;
+	  blinkendroidClient.shutdown();
+	  blinkendroidClient = null;
 	}
 
 	super.onPause();
-    }
+  }
 
-    public boolean onCreateOptionsMenu(Menu menu) {
+  @Override
+  public boolean onCreateOptionsMenu(Menu menu) {
 	getMenuInflater().inflate(R.menu.player_options, menu);
 	return true;
-    }
+  }
 
-    public void serverTime(final long serverTime) {
+  @Override
+  public void serverTime(final long serverTime) {
 	Log.d(Constants.LOG_TAG, "*** time " + serverTime);
 	final long timeDelta = System.nanoTime() / 1000000 - serverTime;
 	runOnUiThread(new Runnable() {
 
-	    public void run() {
+	  @Override
+	  public void run() {
 		playerView.setTimeDelta(timeDelta);
-	    }
+	  }
 	});
-    }
+  }
 
-    public void play(final int x, final int y, final long startTime,
-	    final BLM movie) {
+  @Override
+  public void play(final int x, final int y, final long startTime,
+	  final BLM movie) {
 	Log.d(Constants.LOG_TAG, "*** play " + startTime);
 	runOnUiThread(new Runnable() {
 
-	    public void run() {
+	  @Override
+	  public void run() {
 		blm = movie;
 		if (blm == null)
-		    blm = new BBMZParser().parseBBMZ(getResources()
-			    .openRawResource(R.raw.blinkendroid1), 14345);
+		  blm = new BBMZParser().parseBBMZ(
+			  getResources().openRawResource(R.raw.blinkendroid1), 14345);
 		playerView.setBLM(blm);
 		playerView.setStartTime(startTime);
 		playerView.startPlaying();
-		playing = true;
-	    }
+	  }
 	});
-    }
+  }
 
-    public void clip(final float startX, final float startY, final float endX,
-	    final float endY) {
-	Log.d(Constants.LOG_TAG, "*** clip " + startX + "," + startY + ","
-		+ endX + "," + endY);
+  @Override
+  public void clip(final float startX, final float startY, final float endX,
+	  final float endY) {
+	Log.d(Constants.LOG_TAG, "*** clip " + startX + "," + startY + "," + endX
+		+ "," + endY);
 	runOnUiThread(new Runnable() {
 
-	    public void run() {
+	  @Override
+	  public void run() {
 		playerView.setClipping(startX, startY, endX, endY);
-	    }
+	  }
 	});
-    }
+  }
 
-    public void arrow(final long duration, final float angle, final int color) {
+  @Override
+  public void arrow(final long duration, final float angle, final int color) {
 	Log.d(Constants.LOG_TAG, "*** arrow " + angle + " " + duration);
 	runOnUiThread(new Runnable() {
 
-	    public void run() {
+	  @Override
+	  public void run() {
 		final int id = arrowView.addArrow(angle, color);
 		boolean startPost = arrowDurations.isEmpty();
 		arrowDurations.put(id, System.currentTimeMillis() + duration);
 		if (startPost)
-		    handler.post(PlayerActivity.this);
-	    }
+		  handler.post(PlayerActivity.this);
+	  }
 	});
-    }
+  }
 
-    public void connectionOpened(final ClientSocket clientSocket) {
+  @Override
+  public void connectionOpened(final ClientSocket clientSocket) {
 	Log.d(Constants.LOG_TAG, "*** connectionOpened "
 		+ clientSocket.getDestinationAddress().toString());
 	runOnUiThread(new Runnable() {
 
-	    public void run() {
-		Toast.makeText(PlayerActivity.this, "connected",
-			Toast.LENGTH_SHORT).show();
-	    }
+	  @Override
+	  public void run() {
+		Toast.makeText(PlayerActivity.this, "connected", Toast.LENGTH_SHORT)
+			.show();
+	  }
 	});
-    }
+  }
 
-    public void connectionClosed(final ClientSocket clientSocket) {
+  @Override
+  public void connectionClosed(final ClientSocket clientSocket) {
 	Log.d(Constants.LOG_TAG, "*** connectionClosed "
 		+ clientSocket.getDestinationAddress().toString());
 	runOnUiThread(new Runnable() {
 
-	    public void run() {
+	  @Override
+	  public void run() {
 		Toast.makeText(PlayerActivity.this,
-			"connection to server closed", Toast.LENGTH_LONG)
-			.show();
+			getString(R.string.connection_closed), Toast.LENGTH_LONG).show();
 		playerView.stopPlaying();
 		ownerView.setVisibility(View.VISIBLE);
-	    }
+	  }
 	});
-    }
+  }
 
-    public void connectionFailed(final String message) {
+  @Override
+  public void connectionFailed(final String message) {
 	runOnUiThread(new Runnable() {
 
-	    public void run() {
-		Log.w(Constants.LOG_TAG, "connection failed: " + message);
+	  @Override
+	  public void run() {
+		Log.w(Constants.LOG_TAG, getString(R.string.connection_failed) + ": "
+			+ message);
 		playerView.stopPlaying();
 		ownerView.setVisibility(View.VISIBLE);
-		new AlertDialog.Builder(PlayerActivity.this).setIcon(
-			android.R.drawable.ic_dialog_alert).setTitle(
-			"Cannot connect to server").setMessage(message)
+		new AlertDialog.Builder(PlayerActivity.this)
+			.setIcon(android.R.drawable.ic_dialog_alert)
+			.setTitle("Cannot connect to server").setMessage(message)
 			.setOnCancelListener(new OnCancelListener() {
 
-			    public void onCancel(DialogInterface dialog) {
+			  @Override
+			  public void onCancel(DialogInterface dialog) {
 				finish();
-			    }
+			  }
 			}).create().show();
-	    }
+	  }
 	});
-    }
+  }
 
-    public void run() {
+  @Override
+  public void run() {
 
 	arrowScale += 0.5f;
 	if (arrowScale >= 2 * Math.PI)
-	    arrowScale -= 2 * Math.PI;
+	  arrowScale -= 2 * Math.PI;
 	final float scale = 0.5f + (float) Math.sin(arrowScale) / 20;
 	arrowView.setScale(scale);
 
-	for (final Iterator<Map.Entry<Integer, Long>> i = arrowDurations
-		.entrySet().iterator(); i.hasNext();) {
-	    final Map.Entry<Integer, Long> entry = i.next();
+	for (final Iterator<Map.Entry<Integer, Long>> i = arrowDurations.entrySet()
+		.iterator(); i.hasNext();) {
+	  final Map.Entry<Integer, Long> entry = i.next();
 
-	    if (System.currentTimeMillis() > entry.getValue()) {
+	  if (System.currentTimeMillis() > entry.getValue()) {
 		arrowView.removeArrow(entry.getKey());
 		i.remove();
-	    }
+	  }
 	}
 
 	if (!arrowDurations.isEmpty())
-	    handler.postDelayed(this, 20);
-    }
+	  handler.postDelayed(this, 20);
+  }
 }

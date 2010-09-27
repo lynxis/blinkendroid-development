@@ -11,66 +11,73 @@ import org.cbase.blinkendroid.network.ConnectionListener;
 import org.cbase.blinkendroid.network.broadcast.IPeerHandler;
 import org.cbase.blinkendroid.network.udp.ClientSocket;
 
+import android.util.Log;
+
 public class TicketManager implements IPeerHandler, ConnectionListener {
-    int maxClients = 2;
-    int clients = 0;
-    private Set<String> tickets = new HashSet<String>();
-    private String ownerName;
+  int maxClients = 2;
+  int clients = 0;
+  private Set<String> tickets = new HashSet<String>();
+  private String ownerName;
 
-    public TicketManager(String ownerName) {
+  public TicketManager(String ownerName) {
 	this.ownerName = ownerName;
-    }
+  }
 
-    public void foundPeer(String name, String ip, int protocolVersion) {
+  @Override
+  public void foundPeer(String name, String ip, int protocolVersion) {
 	System.out.printf("foundpeer " + name + ip);
 	if (tickets.contains(name + ip)) {
-	    System.out.printf("already send ticket for " + name + ip);
-	    return;
+	  Log.d(Constants.LOG_TAG, "already sent ticket for " + name + " " + ip);
+	  return;
 	}
 	// noch platz frei?
 	if (clients < maxClients) {
-	    // send ticket to ip
-	    try {
+	  // send ticket to ip
+	  try {
 		InetSocketAddress socketAddr = new InetSocketAddress(ip,
 			Constants.BROADCAST_ANNOUCEMENT_CLIENT_TICKET_PORT);
-		String message = Constants.BROADCAST_PROTOCOL_VERSION + " " + Constants.SERVER_TICKET_COMMAND + " "
-			+ ownerName;
+		String message = Constants.BROADCAST_PROTOCOL_VERSION + " "
+			+ Constants.SERVER_TICKET_COMMAND + " " + ownerName;
 		final byte[] messageBytes = message.getBytes("UTF-8");
-		final DatagramPacket packet = new DatagramPacket(messageBytes, messageBytes.length, socketAddr);
+		final DatagramPacket packet = new DatagramPacket(messageBytes,
+			messageBytes.length, socketAddr);
 		System.out.printf("UDP SOCKET CREATED");
-		DatagramSocket socket = new DatagramSocket(Constants.BROADCAST_ANNOUCEMENT_SERVER_TICKET_PORT);
+		DatagramSocket socket = new DatagramSocket(
+			Constants.BROADCAST_ANNOUCEMENT_SERVER_TICKET_PORT);
 		socket.setReuseAddress(true);
 		socket.send(packet);
-		System.out.println("send Ticket");
+		Log.d(Constants.LOG_TAG, "send Ticket");
 		clients++;
 		tickets.add(name + ip);
-	    } catch (Exception e) {
-		e.printStackTrace();
-	    }
+	  } catch (Exception e) {
+		Log.e(Constants.LOG_TAG, "Exception in TicketManager", e);
+	  }
 	} else {
-	    System.out.println("voll");
+	  Log.d(Constants.LOG_TAG, "Server is full");
 	}
 	// pech jehabt
-    }
+  }
 
-    public void reset() {
+  public void reset() {
 	tickets.clear();
-    }
+  }
 
-    public void connectionClosed(ClientSocket clientSocket) {
+  @Override
+  public void connectionClosed(ClientSocket clientSocket) {
 	clients--;
-    }
+  }
 
-    public void connectionOpened(ClientSocket clientSocket) {
+  @Override
+  public void connectionOpened(ClientSocket clientSocket) {
 	// TODO clients merken und abhaken
 
-    }
+  }
 
-    public int getMaxClients() {
+  public int getMaxClients() {
 	return maxClients;
-    }
+  }
 
-    public void setMaxClients(int maxClients) {
+  public void setMaxClients(int maxClients) {
 	this.maxClients = maxClients;
-    }
+  }
 }

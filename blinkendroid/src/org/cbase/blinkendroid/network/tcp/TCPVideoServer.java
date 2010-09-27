@@ -4,83 +4,85 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+import org.cbase.blinkendroid.Constants;
+
+import android.util.Log;
+
 public class TCPVideoServer extends Thread {
 
-    volatile private boolean running = true;
-    ServerSocket serverSocket;
-    private String videoName;
-    private int videoPort;
+  volatile private boolean running = true;
+  ServerSocket serverSocket;
+  private String videoName;
+  private int videoPort;
 
-    public TCPVideoServer(int videoPort) {
+  public TCPVideoServer(int videoPort) {
 	this.videoPort = videoPort;
 	this.videoName = null;
-    }
+  }
 
-    @Override
-    public void run() {
+  @Override
+  public void run() {
 	this.setName("SRV VideoTCPServer");
 	try {
-	    serverSocket = new ServerSocket(videoPort);
-	    serverSocket.setReuseAddress(true);
-	    running = true;
+	  serverSocket = new ServerSocket(videoPort);
+	  serverSocket.setReuseAddress(true);
+	  running = true;
 
-	    acceptLoop();
+	  acceptLoop();
 
-	    serverSocket.close();
-	    System.out.println(" VideoThread ended!!!!!!! ");
+	  serverSocket.close();
+	  Log.d(Constants.LOG_TAG, "VideoThread ended!!!!!!! ");
 
 	} catch (IOException e) {
-	    // TODO Auto-generated catch block
-	    e.printStackTrace();
+	  Log.e(Constants.LOG_TAG, "VideoThread fuckup", e);
 	}
-    }
+  }
 
-    private void acceptLoop() {
-	// TODO Auto-generated method stub
+  //TODO do we need this method any longer?
+  private void acceptLoop() {
 
 	try {
-	    while (running) {
+	  while (running) {
 		Socket connectionSocket;
 		connectionSocket = serverSocket.accept();
 		final BlinkendroidVideoServerProtocol blinkenVideoProtocol = new BlinkendroidVideoServerProtocol(
 			connectionSocket, videoName);
 
-	    }
+	  }
 	} catch (IOException e) {
-	    // TODO Auto-generated catch block
-	    e.printStackTrace();
+	  Log.e(Constants.LOG_TAG, "AcceptLoop issue", e);
 	}
 	/*
-	 * try { byte[] buffer = new byte[4]; while (running && in.read(buffer)
-	 * != -1) { inputLine = ByteBuffer.wrap(buffer).getInt(); if (!running)
-	 * // fast exit break;
+	 * try { byte[] buffer = new byte[4]; while (running && in.read(buffer) !=
+	 * -1) { inputLine = ByteBuffer.wrap(buffer).getInt(); if (!running) // fast
+	 * exit break;
 	 * 
 	 * // System.out.println(getMyName() + // " InputThread received: " // +
 	 * inputLine);
 	 * 
-	 * CommandHandler handler = handlers.get(inputLine); if (null !=
-	 * handler) handler.handle(in); } } catch (SocketException e) {
-	 * System.out.println(getMyName() + " Socket closed."); } catch
-	 * (IOException e) { System.out.println(getMyName() +
-	 * " InputThread fucked "); e.printStackTrace(); }
+	 * CommandHandler handler = handlers.get(inputLine); if (null != handler)
+	 * handler.handle(in); } } catch (SocketException e) {
+	 * System.out.println(getMyName() + " Socket closed."); } catch (IOException
+	 * e) { System.out.println(getMyName() + " InputThread fucked ");
+	 * e.printStackTrace(); }
 	 */
-    }
+  }
 
-    public void setVideo(String videoName) {
+  public void setVideo(String videoName) {
 	this.videoName = videoName;
-    }
+  }
 
-    public void shutdown() {
-	System.out.println(" VideoServer shutdown start");
+  public void shutdown() {
+	Log.d(Constants.LOG_TAG, " VideoServer shutdown start");
 	running = false;
 	interrupt();
-	System.out.println(" VideoServer shutdown interrupted");
+	Log.d(Constants.LOG_TAG, " VideoServer shutdown interrupted");
 	// try {
 	// join();
 	// } catch (InterruptedException e) {
 	// System.out.println(getMyName() + " ReceiverThread join failed");
 	// e.printStackTrace();
 	// }
-	System.out.println(" ReceiverThread shutdown end");
-    }
+	Log.d(Constants.LOG_TAG, " ReceiverThread shutdown end");
+  }
 }

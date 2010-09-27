@@ -22,15 +22,15 @@ import android.content.Context;
 import android.telephony.TelephonyManager;
 
 public class DeviceUtils {
-    /**
-     * Gets the IMEI of the running device
-     * 
-     * @param a
-     *            the calling activity.
-     * @return the IMEI
-     */
-    public static String getImei(Activity a) {
-	return ((TelephonyManager) a
-		.getSystemService(Context.TELEPHONY_SERVICE)).getDeviceId();
-    }
+  /**
+   * Gets the IMEI of the running device
+   * 
+   * @param a
+   *          the calling activity.
+   * @return the IMEI
+   */
+  public static String getImei(Activity a) {
+	return ((TelephonyManager) a.getSystemService(Context.TELEPHONY_SERVICE))
+		.getDeviceId();
+  }
 }
