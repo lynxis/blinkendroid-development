@@ -30,6 +30,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.DialogInterface.OnClickListener;
 import android.net.Uri;
 import android.os.Bundle;
@@ -63,6 +64,8 @@ public class LoginActivity extends Activity implements Runnable {
   private Handler handler = new Handler();
   private SenderThread senderThread;
 
+  private static final String PREFS_KEY_OWNER = "owner";
+
   @Override
   protected void onCreate(Bundle savedInstanceState) {
 
@@ -72,6 +75,8 @@ public class LoginActivity extends Activity implements Runnable {
 	setTitle(getTitle() + " - " + getString(R.string.select_server_to_connect));
 	setContentView(R.layout.login_content);
 	setFeatureDrawableResource(Window.FEATURE_LEFT_ICON, R.drawable.icon);
+
+	final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
 	serverListView = (ListView) findViewById(R.id.login_server_list);
 
@@ -89,9 +94,18 @@ public class LoginActivity extends Activity implements Runnable {
 	  }
 	});
 
-	final String owner = PreferenceManager.getDefaultSharedPreferences(this).getString("owner", null);
-	if (owner == null)
+	// force entering owner
+	final String owner = prefs.getString(PREFS_KEY_OWNER, null);
+	if (owner == null || owner.length() == 0) {
+	  final EditText ownerView = new EditText(this);
+	  new AlertDialog.Builder(this).setTitle(R.string.set_owner_title).setView(ownerView).setPositiveButton(
+		  R.string.set_owner_positive, new OnClickListener() {
+			public void onClick(DialogInterface dialog, int which) {
+			  prefs.edit().putString(PREFS_KEY_OWNER, ownerView.getText().toString()).commit();
+			}
+		  }).show();
 	  Toast.makeText(this, getString(R.string.name_hint), Toast.LENGTH_LONG).show();
+	}
   }
 
   @Override
@@ -99,7 +113,7 @@ public class LoginActivity extends Activity implements Runnable {
 
 	super.onResume();
 	// send Broadcast
-	String ownerName = PreferenceManager.getDefaultSharedPreferences(this).getString("owner", null);
+	String ownerName = PreferenceManager.getDefaultSharedPreferences(this).getString(PREFS_KEY_OWNER, null);
 	if (ownerName == null)
 	  ownerName = System.currentTimeMillis() + "";
 	senderThread = new SenderThread(ownerName);
