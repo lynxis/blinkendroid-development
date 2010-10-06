@@ -45,8 +45,7 @@ public class SenderThread extends Thread {
   public SenderThread(String name) {
 	// workaround: remove spaces, as those currently break the protocol
 	name = name.replaceAll("\\s", "");
-	message = Constants.BROADCAST_PROTOCOL_VERSION + " "
-		+ Constants.CLIENT_BROADCAST_COMMAND + " " + name;
+	message = Constants.BROADCAST_PROTOCOL_VERSION + " " + Constants.CLIENT_BROADCAST_COMMAND + " " + name;
   }
 
   @Override
@@ -65,8 +64,7 @@ public class SenderThread extends Thread {
 
 	  while (running) {
 		final byte[] messageBytes = message.getBytes("UTF-8");
-		final DatagramPacket initPacket = new DatagramPacket(messageBytes,
-			messageBytes.length, group,
+		final DatagramPacket initPacket = new DatagramPacket(messageBytes, messageBytes.length, group,
 			Constants.BROADCAST_ANNOUCEMENT_SERVER_PORT);
 		Log.d(Constants.LOG_TAG, "Broadcasting Packet");
 		socket.send(initPacket);

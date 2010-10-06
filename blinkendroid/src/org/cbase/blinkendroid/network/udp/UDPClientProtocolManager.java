@@ -6,13 +6,11 @@ import java.net.DatagramSocket;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 
-public class UDPClientProtocolManager extends UDPAbstractBlinkendroidProtocol
-	implements UDPDirectConnection {
+public class UDPClientProtocolManager extends UDPAbstractBlinkendroidProtocol implements UDPDirectConnection {
 
   private InetSocketAddress m_SocketAddr;
 
-  public UDPClientProtocolManager(DatagramSocket socket,
-	  InetSocketAddress serverAddr) throws IOException {
+  public UDPClientProtocolManager(DatagramSocket socket, InetSocketAddress serverAddr) throws IOException {
 	super(socket);
 	this.m_SocketAddr = serverAddr;
   }

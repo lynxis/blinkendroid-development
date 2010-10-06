@@ -29,13 +29,12 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
-import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
+import android.content.DialogInterface.OnClickListener;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
-import android.test.UiThreadTest;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -44,13 +43,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.TextView.OnEditorActionListener;
 
 /**
  * @author Andreas Schildbach
@@ -81,24 +80,18 @@ public class LoginActivity extends Activity implements Runnable {
 	serverListView.setAdapter(serverListAdapter);
 	serverListView.setOnItemClickListener(new OnItemClickListener() {
 
-	  @Override
-	  public void onItemClick(AdapterView<?> parent, View v, int position,
-		  long id) {
+	  public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
 		final ListEntry entry = serverList.get(position);
-		final Intent intent = new Intent(LoginActivity.this,
-			PlayerActivity.class);
+		final Intent intent = new Intent(LoginActivity.this, PlayerActivity.class);
 		intent.putExtra(PlayerActivity.INTENT_EXTRA_IP, entry.ip);
-		intent.putExtra(PlayerActivity.INTENT_EXTRA_PORT,
-			Constants.BROADCAST_SERVER_PORT);
+		intent.putExtra(PlayerActivity.INTENT_EXTRA_PORT, Constants.BROADCAST_SERVER_PORT);
 		startActivity(intent);
 	  }
 	});
 
-	final String owner = PreferenceManager.getDefaultSharedPreferences(this)
-		.getString("owner", null);
+	final String owner = PreferenceManager.getDefaultSharedPreferences(this).getString("owner", null);
 	if (owner == null)
-	  Toast.makeText(this, getString(R.string.name_hint), Toast.LENGTH_LONG)
-		  .show();
+	  Toast.makeText(this, getString(R.string.name_hint), Toast.LENGTH_LONG).show();
   }
 
   @Override
@@ -106,30 +99,25 @@ public class LoginActivity extends Activity implements Runnable {
 
 	super.onResume();
 	// send Broadcast
-	String ownerName = PreferenceManager.getDefaultSharedPreferences(this)
-		.getString("owner", null);
+	String ownerName = PreferenceManager.getDefaultSharedPreferences(this).getString("owner", null);
 	if (ownerName == null)
 	  ownerName = System.currentTimeMillis() + "";
 	senderThread = new SenderThread(ownerName);
 	senderThread.start();
 
 	// recieve Tickets
-	receiverThread = new ReceiverThread(
-		Constants.BROADCAST_ANNOUCEMENT_CLIENT_TICKET_PORT,
+	receiverThread = new ReceiverThread(Constants.BROADCAST_ANNOUCEMENT_CLIENT_TICKET_PORT,
 		Constants.SERVER_TICKET_COMMAND);
 	receiverThread.addHandler(new IPeerHandler() {
 
-	  @Override
-	  public void foundPeer(final String serverName, final String serverIp,
-		  final int protocolVersion) {
+	  public void foundPeer(final String serverName, final String serverIp, final int protocolVersion) {
 		Log.i(Constants.LOG_TAG, "recieved Ticket");
 		runOnUiThread(new Runnable() {
-		  @Override
+
 		  public void run() {
 			ListEntry entry = findServerEntry(serverList, serverName, serverIp);
 			if (entry == null) {
-			  entry = new ListEntry(serverName, serverIp, System
-				  .currentTimeMillis());
+			  entry = new ListEntry(serverName, serverIp, System.currentTimeMillis());
 			  serverList.add(entry);
 			  serverListAdapter.notifyDataSetChanged();
 			  serverListView.setVisibility(View.VISIBLE);
@@ -144,31 +132,22 @@ public class LoginActivity extends Activity implements Runnable {
 	  public void foundUnknownServer(int protocolVersion) {
 		runOnUiThread(new Runnable() {
 
-		  @Override
 		  public void run() {
-			new AlertDialog.Builder(LoginActivity.this)
-				.setIcon(android.R.drawable.ic_dialog_alert)
-				.setTitle(getString(R.string.warning))
-				.setMessage(getString(R.string.new_release_text))
-				.setPositiveButton(getString(R.string.check_for_update),
-					new OnClickListener() {
+			new AlertDialog.Builder(LoginActivity.this).setIcon(android.R.drawable.ic_dialog_alert).setTitle(
+				getString(R.string.warning)).setMessage(getString(R.string.new_release_text)).setPositiveButton(
+				getString(R.string.check_for_update), new OnClickListener() {
 
-					  @Override
-					  public void onClick(DialogInterface dialog, int which) {
-						startActivity(new Intent(Intent.ACTION_VIEW, Uri
-							.parse(Constants.DOWNLOAD_URL)));
-						finish();
+				  public void onClick(DialogInterface dialog, int which) {
+					startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(Constants.DOWNLOAD_URL)));
+					finish();
 
-					  }
-					})
-				.setNegativeButton(getString(R.string.ignore),
-					new OnClickListener() {
+				  }
+				}).setNegativeButton(getString(R.string.ignore), new OnClickListener() {
 
-					  @Override
-					  public void onClick(DialogInterface dialog, int which) {
-						dialog.dismiss();
-					  }
-					}).create().show();
+			  public void onClick(DialogInterface dialog, int which) {
+				dialog.dismiss();
+			  }
+			}).create().show();
 		  }
 		});
 
@@ -179,7 +158,6 @@ public class LoginActivity extends Activity implements Runnable {
 	handler.post(this);
   }
 
-  @Override
   public void run() {
 
 	// TODO geht nich mehr , da ticket nur einmal kommt
@@ -232,21 +210,15 @@ public class LoginActivity extends Activity implements Runnable {
 	  dialog.setTitle(getString(R.string.enter_server_ip));
 	  dialog.setContentView(R.layout.login_connect_to_ip_dialog_content);
 	  dialog.show();
-	  final EditText ip = (EditText) dialog
-		  .findViewById(R.id.login_connect_to_ip_dialog_ip);
+	  final EditText ip = (EditText) dialog.findViewById(R.id.login_connect_to_ip_dialog_ip);
 	  ip.setText(NetworkUtils.getLocalIpAddress());
 	  ip.setOnEditorActionListener(new OnEditorActionListener() {
 
-		@Override
-		public boolean onEditorAction(final TextView v, final int actionId,
-			final KeyEvent event) {
+		public boolean onEditorAction(final TextView v, final int actionId, final KeyEvent event) {
 		  dialog.dismiss();
-		  final Intent intent = new Intent(LoginActivity.this,
-			  PlayerActivity.class);
-		  intent.putExtra(PlayerActivity.INTENT_EXTRA_IP, ip.getText()
-			  .toString());
-		  intent.putExtra(PlayerActivity.INTENT_EXTRA_PORT,
-			  Constants.BROADCAST_SERVER_PORT);
+		  final Intent intent = new Intent(LoginActivity.this, PlayerActivity.class);
+		  intent.putExtra(PlayerActivity.INTENT_EXTRA_IP, ip.getText().toString());
+		  intent.putExtra(PlayerActivity.INTENT_EXTRA_PORT, Constants.BROADCAST_SERVER_PORT);
 		  startActivity(intent);
 		  return true;
 		}
@@ -260,15 +232,13 @@ public class LoginActivity extends Activity implements Runnable {
 	}
 
 	case R.id.login_options_instructions: {
-	  startActivity(new Intent(Intent.ACTION_VIEW,
-		  Uri.parse(Constants.ABOUT_URL)));
+	  startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(Constants.ABOUT_URL)));
 	  return true;
 	}
 
 	case R.id.login_options_wireless_settings: {
 	  final Intent intent = new Intent();
-	  intent.setClassName("com.android.settings",
-		  "com.android.settings.wifi.WifiSettings");
+	  intent.setClassName("com.android.settings", "com.android.settings.wifi.WifiSettings");
 	  startActivity(intent);
 	  return true;
 	}
@@ -285,34 +255,28 @@ public class LoginActivity extends Activity implements Runnable {
 	  this.serverList = serverList;
 	}
 
-	@Override
 	public View getView(int position, View row, ViewGroup parent) {
 
 	  if (row == null)
-		row = getLayoutInflater().inflate(android.R.layout.two_line_list_item,
-			null);
+		row = getLayoutInflater().inflate(android.R.layout.two_line_list_item, null);
 
 	  final ListEntry entry = serverList.get(position);
 
-	  ((TextView) row.findViewById(android.R.id.text1)).setText(entry.name
-		  .length() > 0 ? entry.name : "<unnamed>");
+	  ((TextView) row.findViewById(android.R.id.text1)).setText(entry.name.length() > 0 ? entry.name : "<unnamed>");
 
 	  ((TextView) row.findViewById(android.R.id.text2)).setText(entry.ip);
 
 	  return row;
 	}
 
-	@Override
 	public long getItemId(int position) {
 	  return position;
 	}
 
-	@Override
 	public Object getItem(int position) {
 	  return serverList.get(position);
 	}
 
-	@Override
 	public int getCount() {
 	  return serverList.size();
 	}
@@ -342,8 +306,7 @@ public class LoginActivity extends Activity implements Runnable {
 	}
   }
 
-  private static ListEntry findServerEntry(final List<ListEntry> serverList,
-	  final String name, final String ip) {
+  private static ListEntry findServerEntry(final List<ListEntry> serverList, final String name, final String ip) {
 	for (final ListEntry entry : serverList)
 	  if (entry.ip.equals(ip) && entry.name.equals(name))
 		return entry;

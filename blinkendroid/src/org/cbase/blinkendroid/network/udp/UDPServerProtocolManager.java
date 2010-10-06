@@ -32,8 +32,8 @@ import org.cbase.blinkendroid.server.PlayerManager;
 
 import android.util.Log;
 
-public class UDPServerProtocolManager extends UDPAbstractBlinkendroidProtocol
-	implements CommandHandler, ConnectionListener {
+public class UDPServerProtocolManager extends UDPAbstractBlinkendroidProtocol implements CommandHandler,
+	ConnectionListener {
 
   protected GlobalTimerThread globalTimerThread;
   private PlayerManager m_PlayerManager;
@@ -42,8 +42,7 @@ public class UDPServerProtocolManager extends UDPAbstractBlinkendroidProtocol
 	m_PlayerManager = mPlayerManager;
   }
 
-  public UDPServerProtocolManager(final DatagramSocket socket)
-	  throws IOException {
+  public UDPServerProtocolManager(final DatagramSocket socket) throws IOException {
 	super(socket);
   }
 
@@ -64,8 +63,7 @@ public class UDPServerProtocolManager extends UDPAbstractBlinkendroidProtocol
 
   @Override
   protected void receive(DatagramPacket packet) throws IOException {
-	InetSocketAddress from = new InetSocketAddress(packet.getAddress(),
-		packet.getPort());
+	InetSocketAddress from = new InetSocketAddress(packet.getAddress(), packet.getPort());
 
 	/* every Client has his own connectionHandler ! */
 
@@ -87,9 +85,7 @@ public class UDPServerProtocolManager extends UDPAbstractBlinkendroidProtocol
 	try {
 	  // TODO: view SenderThread in broadcast and increase performance by
 	  // removing constant creation of InetSocketAddresses
-	  send(new InetSocketAddress(
-		  InetAddress.getAllByName("255.255.255.255")[0],
-		  Constants.BROADCAST_CLIENT_PORT), out);
+	  send(new InetSocketAddress(InetAddress.getAllByName("255.255.255.255")[0], Constants.BROADCAST_CLIENT_PORT), out);
 	} catch (UnknownHostException e) {
 	  Log.e(Constants.LOG_TAG, "Don't know where to send the broadcast", e);
 	} catch (IOException e) {
@@ -97,12 +93,9 @@ public class UDPServerProtocolManager extends UDPAbstractBlinkendroidProtocol
 	}
   }
 
-  @Override
-  public void handle(SocketAddress socketAddr, ByteBuffer bybuff)
-	  throws IOException {
+  public void handle(SocketAddress socketAddr, ByteBuffer bybuff) throws IOException {
 	// Why doesn't this method do anything?
-	throw new IOException(
-		"This method does nothing else but throwing this Exception.");
+	throw new IOException("This method does nothing else but throwing this Exception.");
 	// System.out.println("handle nothing");
   }
 
@@ -149,14 +142,12 @@ public class UDPServerProtocolManager extends UDPAbstractBlinkendroidProtocol
 	}
   }
 
-  @Override
   public void connectionClosed(ClientSocket clientSocket) {
 	for (ConnectionListener connListener : connectionListener) {
 	  connListener.connectionClosed(clientSocket);
 	}
   }
 
-  @Override
   public void connectionOpened(ClientSocket clientSocket) {
 	for (ConnectionListener connListener : connectionListener) {
 	  connListener.connectionOpened(clientSocket);

@@ -54,9 +54,7 @@ public class ConnectionState implements CommandHandler {
 	sendReset();
   }
 
-  @Override
-  public void handle(SocketAddress socketAddr, ByteBuffer bybuff)
-	  throws IOException {
+  public void handle(SocketAddress socketAddr, ByteBuffer bybuff) throws IOException {
 	final int iCommand = bybuff.getInt();
 	final int connId = bybuff.getInt();
 	// System.out.println("handle "+iCommand+" "+connId);

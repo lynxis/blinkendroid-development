@@ -37,8 +37,7 @@ public class PlayerManager implements ConnectionListener {
   private boolean running = true;
   private String filename = null;
   private TimeouterThread timeouter = new TimeouterThread();
-  private AtomicInteger arrowColorIndex = new AtomicInteger(
-	  new Random().nextInt(ARROW_COLORS.length));
+  private AtomicInteger arrowColorIndex = new AtomicInteger(new Random().nextInt(ARROW_COLORS.length));
   // private long serverPlayer = System.currentTimeMillis();
   private TCPVideoServer videoServer;
 
@@ -50,8 +49,8 @@ public class PlayerManager implements ConnectionListener {
 	this.videoServer = videoServer;
   }
 
-  private static int[] ARROW_COLORS = new int[] { Color.RED, Color.BLUE,
-	  Color.GREEN, Color.GRAY, Color.YELLOW, Color.TRANSPARENT };
+  private static int[] ARROW_COLORS = new int[] { Color.RED, Color.BLUE, Color.GREEN, Color.GRAY, Color.YELLOW,
+	  Color.TRANSPARENT };
 
   public PlayerManager(ConnectionListener connectionListenerManager) {
 	this.connectionListenerManager = connectionListenerManager;
@@ -120,8 +119,7 @@ public class PlayerManager implements ConnectionListener {
 		maxX++;
 	  }
 	}
-	Log.i(Constants.LOG_TAG, "added Client at pos " + playerClient.x + ":"
-		+ playerClient.y);
+	Log.i(Constants.LOG_TAG, "added Client at pos " + playerClient.x + ":" + playerClient.y);
 	mMatrixClients[playerClient.y][playerClient.x] = playerClient;
 
 	playerClient.getBlinkenProtocol().play(startTime, null); // send a play
@@ -131,8 +129,8 @@ public class PlayerManager implements ConnectionListener {
 	  clip(true);
 	} else {
 	  clip(false);
-	  playerClient.getBlinkenProtocol().clip(playerClient.startX,
-		  playerClient.startY, playerClient.endX, playerClient.endY);
+	  playerClient.getBlinkenProtocol().clip(playerClient.startX, playerClient.startY, playerClient.endX,
+		  playerClient.endY);
 	}
 
 	return playerClient;
@@ -154,19 +152,14 @@ public class PlayerManager implements ConnectionListener {
 	arrow(pClient, +1, 1, 315);
   }
 
-  private void arrow(final PlayerClient pClient, final int dx, final int dy,
-	  final int deg) {
+  private void arrow(final PlayerClient pClient, final int dx, final int dy, final int deg) {
 
-	final int color = ARROW_COLORS[arrowColorIndex.getAndIncrement()
-		% ARROW_COLORS.length];
+	final int color = ARROW_COLORS[arrowColorIndex.getAndIncrement() % ARROW_COLORS.length];
 
-	if (pClient.y + dy >= 0 && pClient.x + dx >= 0
-		&& null != mMatrixClients[pClient.y + dy][pClient.x + dx]) {
-	  mMatrixClients[pClient.y + dy][pClient.x + dx].getBlinkenProtocol()
-		  .arrow(deg, color);
+	if (pClient.y + dy >= 0 && pClient.x + dx >= 0 && null != mMatrixClients[pClient.y + dy][pClient.x + dx]) {
+	  mMatrixClients[pClient.y + dy][pClient.x + dx].getBlinkenProtocol().arrow(deg, color);
 	  final int inverseDeg = (deg + 180) % 360;
-	  mMatrixClients[pClient.y][pClient.x].getBlinkenProtocol().arrow(
-		  inverseDeg, color);
+	  mMatrixClients[pClient.y][pClient.x].getBlinkenProtocol().arrow(inverseDeg, color);
 	}
   }
 
@@ -184,8 +177,8 @@ public class PlayerManager implements ConnectionListener {
 		  playerClient.endX = startX + (float) (1.0 / maxX);
 		  playerClient.endY = startY + (float) (1.0 / maxY);
 		  if (clipAll)
-			playerClient.getBlinkenProtocol().clip(playerClient.startX,
-				playerClient.startY, playerClient.endX, playerClient.endY);
+			playerClient.getBlinkenProtocol().clip(playerClient.startX, playerClient.startY, playerClient.endX,
+				playerClient.endY);
 		}
 		startX = startX + (float) (1.0 / maxX);
 	  }
@@ -210,8 +203,7 @@ public class PlayerManager implements ConnectionListener {
   }
 
   public synchronized void removeClientFromMatrix(ClientSocket clientSocket) {
-	PlayerClient client = getMatrixClientBySocketAddress(clientSocket
-		.getInetSocketAddress());
+	PlayerClient client = getMatrixClientBySocketAddress(clientSocket.getInetSocketAddress());
 	if (client == null) {
 	  return;
 	} else {
@@ -225,8 +217,7 @@ public class PlayerManager implements ConnectionListener {
 	  return;
 	}
 
-	Log.i(Constants.LOG_TAG, "removeClient " + playerClient.x + ":"
-		+ playerClient.y);
+	Log.i(Constants.LOG_TAG, "removeClient " + playerClient.x + ":" + playerClient.y);
 	mMatrixClients[playerClient.y][playerClient.x] = null;
 
 	boolean newMaxX = true;
@@ -261,8 +252,7 @@ public class PlayerManager implements ConnectionListener {
 	  return;
 	}
 
-	Log.i(Constants.LOG_TAG, "removeClient " + playerClient.x + ":"
-		+ playerClient.y);
+	Log.i(Constants.LOG_TAG, "removeClient " + playerClient.x + ":" + playerClient.y);
 	mMatrixClients[playerClient.y][playerClient.x] = null;
 
 	boolean newMaxX = true;
@@ -301,8 +291,7 @@ public class PlayerManager implements ConnectionListener {
 	  for (int i = 0; i < maxY; i++) {
 		for (int j = 0; j < maxX; j++) {
 		  if (null != mMatrixClients[i][j]) {
-			Log.i(Constants.LOG_TAG, "play PlayerClient " + j + ":" + i + " "
-				+ filename);
+			Log.i(Constants.LOG_TAG, "play PlayerClient " + j + ":" + i + " " + filename);
 			mMatrixClients[i][j].getBlinkenProtocol().play(startTime, filename);
 		  }
 		}
@@ -310,12 +299,10 @@ public class PlayerManager implements ConnectionListener {
 	}
   }
 
-  public synchronized PlayerClient getPlayerClientByClientSocket(
-	  ClientSocket clientSocket) {
+  public synchronized PlayerClient getPlayerClientByClientSocket(ClientSocket clientSocket) {
 	PlayerClient resultPlayer = null;
 	for (PlayerClient clientPlayer : mClients) {
-	  if (clientPlayer.getClientSocketAddress().equals(
-		  clientSocket.getInetSocketAddress())) {
+	  if (clientPlayer.getClientSocketAddress().equals(clientSocket.getInetSocketAddress())) {
 		resultPlayer = clientPlayer;
 		break;
 	  }
@@ -323,8 +310,7 @@ public class PlayerManager implements ConnectionListener {
 	return resultPlayer;
   }
 
-  public synchronized PlayerClient getMatrixClientBySocketAddress(
-	  SocketAddress socketAddr) {
+  public synchronized PlayerClient getMatrixClientBySocketAddress(SocketAddress socketAddr) {
 	for (int i = 0; i < maxY; i++) {
 	  for (int j = 0; j < maxX; j++) {
 		if (null != mMatrixClients[i][j]) {
@@ -337,8 +323,7 @@ public class PlayerManager implements ConnectionListener {
 	return null;
   }
 
-  public synchronized PlayerClient getPlayerClientBySocketAddress(
-	  SocketAddress socketAddr) {
+  public synchronized PlayerClient getPlayerClientBySocketAddress(SocketAddress socketAddr) {
 	for (PlayerClient pClient : mClients) {
 	  if (pClient.getClientSocketAddress().equals(socketAddr))
 		return pClient;
@@ -346,7 +331,6 @@ public class PlayerManager implements ConnectionListener {
 	return null;
   }
 
-  @Override
   public void connectionClosed(ClientSocket clientSocket) {
 	// TODO Auto-generated method stub
 	// TODO remove Client
@@ -361,7 +345,6 @@ public class PlayerManager implements ConnectionListener {
 	connectionListenerManager.connectionClosed(clientSocket);
   }
 
-  @Override
   public void connectionOpened(ClientSocket clientSocket) {
 	// TODO Auto-generated method stub
 	// TODO addClient
@@ -375,8 +358,8 @@ public class PlayerManager implements ConnectionListener {
 	}
   }
 
-  public void handle(UDPDirectConnection blinkendroidprotocol,
-	  InetSocketAddress socketAddr, int proto, ByteBuffer protoData) {
+  public void handle(UDPDirectConnection blinkendroidprotocol, InetSocketAddress socketAddr, int proto,
+	  ByteBuffer protoData) {
 	PlayerClient client = getPlayerClientBySocketAddress(socketAddr);
 
 	if (client != null) {
@@ -398,8 +381,7 @@ public class PlayerManager implements ConnectionListener {
 		if (ConnectionState.Command.SYN.ordinal() == data) {
 		  // new connection
 		  try {
-			client = addClient(new ClientSocket(blinkendroidprotocol,
-				socketAddr));
+			client = addClient(new ClientSocket(blinkendroidprotocol, socketAddr));
 			protoData.rewind();
 			protoData.getInt(); // protocol
 			client.handle(socketAddr, protoData); // dirty direct

@@ -28,8 +28,7 @@ public class UDPAbstractBlinkendroidProtocol implements UDPDirectConnection {
   protected List<ConnectionListener> connectionListener = new ArrayList<ConnectionListener>();
   protected boolean server;
 
-  protected UDPAbstractBlinkendroidProtocol(final DatagramSocket socket)
-	  throws IOException {
+  protected UDPAbstractBlinkendroidProtocol(final DatagramSocket socket) throws IOException {
 	this.m_Socket = socket;
 	receiverThread = new ReceiverThread();
 	receiverThread.start();
@@ -53,11 +52,9 @@ public class UDPAbstractBlinkendroidProtocol implements UDPDirectConnection {
 	  if (!server)// TODO ugly hack, server needs to long
 		in.close();
 	  m_Socket.close();
-	  Log.d(Constants.LOG_TAG, getMyName()
-		  + " BlinkendroidProtocol: Socket closed.");
+	  Log.d(Constants.LOG_TAG, getMyName() + " BlinkendroidProtocol: Socket closed.");
 	} catch (IOException e) {
-	  Log.e(Constants.LOG_TAG, getMyName()
-		  + " BlinkendroidProtocol: closed failed ");
+	  Log.e(Constants.LOG_TAG, getMyName() + " BlinkendroidProtocol: closed failed ");
 	}
   }
 
@@ -72,8 +69,7 @@ public class UDPAbstractBlinkendroidProtocol implements UDPDirectConnection {
 
   protected void receive(DatagramPacket packet) throws IOException {
 
-	InetSocketAddress socketAddress = (InetSocketAddress) packet
-		.getSocketAddress();
+	InetSocketAddress socketAddress = (InetSocketAddress) packet.getSocketAddress();
 	ByteBuffer in = ByteBuffer.wrap(packet.getData());
 	int proto = in.getInt();
 
@@ -123,21 +119,17 @@ public class UDPAbstractBlinkendroidProtocol implements UDPDirectConnection {
 	  Log.d(Constants.LOG_TAG, getMyName() + " ReceiverThread shutdown start");
 	  running = false;
 	  interrupt();
-	  Log.d(Constants.LOG_TAG, getMyName()
-		  + " ReceiverThread shutdown interrupted");
+	  Log.d(Constants.LOG_TAG, getMyName() + " ReceiverThread shutdown interrupted");
 	  try {
 		join();
 	  } catch (InterruptedException e) {
 		Log.e(Constants.LOG_TAG, getMyName() + " ReceiverThread join failed", e);
 	  }
-	  Log.d(Constants.LOG_TAG, getMyName()
-		  + " ReceiverThread shutdown joined & end");
+	  Log.d(Constants.LOG_TAG, getMyName() + " ReceiverThread shutdown joined & end");
 	}
   }
 
-  @Override
-  public void send(InetSocketAddress socketAddr, ByteBuffer out)
-	  throws IOException {
+  public void send(InetSocketAddress socketAddr, ByteBuffer out) throws IOException {
 	m_Socket.send(new DatagramPacket(out.array(), out.position(), socketAddr));
   }
 

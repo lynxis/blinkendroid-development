@@ -30,7 +30,6 @@ public class DeviceUtils {
    * @return the IMEI
    */
   public static String getImei(Activity a) {
-	return ((TelephonyManager) a.getSystemService(Context.TELEPHONY_SERVICE))
-		.getDeviceId();
+	return ((TelephonyManager) a.getSystemService(Context.TELEPHONY_SERVICE)).getDeviceId();
   }
 }

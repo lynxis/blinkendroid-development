@@ -38,7 +38,7 @@ public class TCPVideoServer extends Thread {
 	}
   }
 
-  //TODO do we need this method any longer?
+  // TODO do we need this method any longer?
   private void acceptLoop() {
 
 	try {

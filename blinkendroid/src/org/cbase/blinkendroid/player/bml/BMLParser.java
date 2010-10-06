@@ -79,17 +79,13 @@ public class BMLParser {
 	}
   }
 
-  private BLM parseBLM(final XmlPullParser parser)
-	  throws XmlPullParserException, IOException {
+  private BLM parseBLM(final XmlPullParser parser) throws XmlPullParserException, IOException {
 
 	final BLM blm = new BLM();
 	blm.header = new BLMHeader();
-	blm.header.width = Integer.parseInt(parser.getAttributeValue(null,
-		BLM_ATTR_WIDTH));
-	blm.header.height = Integer.parseInt(parser.getAttributeValue(null,
-		BLM_ATTR_HEIGHT));
-	blm.header.bits = Integer.parseInt(parser.getAttributeValue(null,
-		BLM_ATTR_BITS));
+	blm.header.width = Integer.parseInt(parser.getAttributeValue(null, BLM_ATTR_WIDTH));
+	blm.header.height = Integer.parseInt(parser.getAttributeValue(null, BLM_ATTR_HEIGHT));
+	blm.header.bits = Integer.parseInt(parser.getAttributeValue(null, BLM_ATTR_BITS));
 	blm.frames = new ArrayList<Frame>();
 	int eventType = parser.next();
 	String name = null;
@@ -100,8 +96,7 @@ public class BMLParser {
 		if (parser.getName().equalsIgnoreCase(HEADER)) {
 		  blm.header = parseHeader(parser, blm.header);
 		} else if (parser.getName().equalsIgnoreCase(FRAME)) {
-		  blm.frames
-			  .add(parseFrame(parser, blm.header.width, blm.header.height));
+		  blm.frames.add(parseFrame(parser, blm.header.width, blm.header.height));
 		}
 		break;
 	  case XmlPullParser.END_TAG:
@@ -113,8 +108,8 @@ public class BMLParser {
 	}
   }
 
-  private BLMHeader parseHeader(final XmlPullParser parser, BLMHeader header)
-	  throws XmlPullParserException, IOException {
+  private BLMHeader parseHeader(final XmlPullParser parser, BLMHeader header) throws XmlPullParserException,
+	  IOException {
 
 	int eventType = parser.next();
 	String name = null;
@@ -158,15 +153,14 @@ public class BMLParser {
 	}
   }
 
-  private Frame parseFrame(final XmlPullParser parser, final int width,
-	  final int height) throws XmlPullParserException, IOException {
+  private Frame parseFrame(final XmlPullParser parser, final int width, final int height)
+	  throws XmlPullParserException, IOException {
 
 	final Frame frame = new Frame();
 
 	frame.matrix = new byte[height][width];
 	int row = 0;
-	frame.duration = Integer.parseInt(parser.getAttributeValue(null,
-		FRAME_ATTR_DURATION));
+	frame.duration = Integer.parseInt(parser.getAttributeValue(null, FRAME_ATTR_DURATION));
 	int eventType = parser.next();
 	String name = null;
 	while (true) {

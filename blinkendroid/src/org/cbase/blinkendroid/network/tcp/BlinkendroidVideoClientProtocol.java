@@ -46,8 +46,7 @@ public class BlinkendroidVideoClientProtocol {
 	  Socket socket = new Socket();
 	  socket.connect(socketAddress);
 	  // socket.setSoTimeout(1000);
-	  BufferedOutputStream out = new BufferedOutputStream(
-		  socket.getOutputStream());
+	  BufferedOutputStream out = new BufferedOutputStream(socket.getOutputStream());
 	  BufferedInputStream in = new BufferedInputStream(socket.getInputStream());
 	  writeInt(out, 2353);
 	  out.flush();
@@ -100,8 +99,7 @@ public class BlinkendroidVideoClientProtocol {
 	return ByteBuffer.wrap(buffer).getFloat();
   }
 
-  protected static void writeInt(BufferedOutputStream out, int i)
-	  throws IOException {
+  protected static void writeInt(BufferedOutputStream out, int i) throws IOException {
 	byte[] buffer = new byte[4];
 	ByteBuffer.wrap(buffer).putInt(i);
 	// try {
@@ -111,8 +109,7 @@ public class BlinkendroidVideoClientProtocol {
 	// }
   }
 
-  protected static void writeFloat(BufferedOutputStream out, float f)
-	  throws IOException {
+  protected static void writeFloat(BufferedOutputStream out, float f) throws IOException {
 	byte[] buffer = new byte[16];
 	ByteBuffer.wrap(buffer).putFloat(f);
 	// try {
@@ -122,8 +119,7 @@ public class BlinkendroidVideoClientProtocol {
 	// }
   }
 
-  protected static void writeLong(BufferedOutputStream out, long l)
-	  throws IOException {
+  protected static void writeLong(BufferedOutputStream out, long l) throws IOException {
 	byte[] buffer = new byte[8];
 	ByteBuffer.wrap(buffer).putLong(l);
 	// try {

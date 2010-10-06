@@ -40,12 +40,9 @@ public class BBMZParser {
 	uncompress(new ByteArrayInputStream(os.toByteArray()), baos);
 	os = null;
 	try {
-	  ObjectInputStream objIn = new ObjectInputStream(new ByteArrayInputStream(
-		  baos.toByteArray()));
+	  ObjectInputStream objIn = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()));
 	  Object o = objIn.readObject();
-	  Log.d(Constants.LOG_TAG,
-		  "decompression and parsing time :"
-			  + (System.currentTimeMillis() - time));
+	  Log.d(Constants.LOG_TAG, "decompression and parsing time :" + (System.currentTimeMillis() - time));
 	  baos = null;
 	  if (o instanceof BLM) {
 		return (BLM) o;

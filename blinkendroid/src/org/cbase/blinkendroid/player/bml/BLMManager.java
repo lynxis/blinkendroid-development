@@ -38,9 +38,7 @@ public class BLMManager {
 	new Thread() {
 	  @Override
 	  public void run() {
-		File blinkendroidDir = new File(Environment
-			.getExternalStorageDirectory().getPath()
-			+ File.separator
+		File blinkendroidDir = new File(Environment.getExternalStorageDirectory().getPath() + File.separator
 			+ "blinkendroid");
 		if (!blinkendroidDir.exists()) {
 		  Log.d(Constants.LOG_TAG, "/blinkendroid does not exist");
@@ -54,8 +52,7 @@ public class BLMManager {
 			  continue;
 			BLMHeader header = getBLMHeader(files[i]);
 			if (null != header) {
-			  header.filename = files[i].getAbsolutePath().substring(0,
-				  files[i].getAbsolutePath().length() - 5)
+			  header.filename = files[i].getAbsolutePath().substring(0, files[i].getAbsolutePath().length() - 5)
 				  + ".bbmz";
 			  blmHeader.add(header);
 			}
@@ -75,11 +72,9 @@ public class BLMManager {
 	  } else if (null == header.filename && null == header.title) {
 		// TODO null check
 	  } else {
-		String title = header.title + "(" + header.width + "*" + header.height
-			+ ")";
+		String title = header.title + "(" + header.width + "*" + header.height + ")";
 		if (null == header.title) {
-		  title = header.filename.substring(20) + "(" + header.width + "*"
-			  + header.height + ")";
+		  title = header.filename.substring(20) + "(" + header.width + "*" + header.height + ")";
 		}
 		Log.d(Constants.LOG_TAG, "added " + title);
 		adapter.add(title);

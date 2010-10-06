@@ -36,8 +36,7 @@ import android.util.Log;
 public class ReceiverThread extends Thread {
 
   volatile private boolean running = true;
-  private List<IPeerHandler> handlers = Collections
-	  .synchronizedList(new ArrayList<IPeerHandler>());
+  private List<IPeerHandler> handlers = Collections.synchronizedList(new ArrayList<IPeerHandler>());
   private DatagramSocket socket;
   private int port;
   private String command;
@@ -86,10 +85,8 @@ public class ReceiverThread extends Thread {
 		if (!running) // fast exit
 		  break;
 
-		final String receivedString = new String(packet.getData(), 0,
-			packet.getLength(), "UTF-8");
-		Log.d(Constants.LOG_TAG, "received via broadcast: '" + receivedString
-			+ "'");
+		final String receivedString = new String(packet.getData(), 0, packet.getLength(), "UTF-8");
+		Log.d(Constants.LOG_TAG, "received via broadcast: '" + receivedString + "'");
 		final String[] receivedParts = receivedString.split(" ");
 
 		final int protocolVersion = Integer.parseInt(receivedParts[0]);
@@ -105,8 +102,8 @@ public class ReceiverThread extends Thread {
 
 		notifyHandlers(protocolVersion, name, address.getHostAddress());
 
-		Log.d(Constants.LOG_TAG, receivedString + " " + packet.getAddress()
-			+ " Thread: " + Thread.currentThread().getId());
+		Log.d(Constants.LOG_TAG, receivedString + " " + packet.getAddress() + " Thread: "
+			+ Thread.currentThread().getId());
 		// } else {
 		// notifyHandlers(protocolVersion);
 		// }

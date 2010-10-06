@@ -31,61 +31,56 @@ import android.util.Log;
 
 public class BlinkendroidClient extends Thread {
 
-    private final InetSocketAddress socketAddress;
-    private final BlinkendroidListener listener;
-    private DatagramSocket socket;
-    private UDPClientProtocolManager protocol;
-    private ClientConnectionState m_connstate;
-    private BlinkendroidClientProtocol blinkenProto;
+  private final InetSocketAddress socketAddress;
+  private final BlinkendroidListener listener;
+  private DatagramSocket socket;
+  private UDPClientProtocolManager protocol;
+  private ClientConnectionState m_connstate;
+  private BlinkendroidClientProtocol blinkenProto;
 
-    public BlinkendroidClient(final InetSocketAddress socketAddress,
-	    final BlinkendroidListener listener) {
+  public BlinkendroidClient(final InetSocketAddress socketAddress, final BlinkendroidListener listener) {
 	this.socketAddress = socketAddress;
 	this.listener = listener;
-    }
+  }
 
-    @Override
-    public void start() {
-	Log.d(Constants.LOG_TAG, "trying to connect to server: "
-		+ socketAddress);
+  @Override
+  public void start() {
+	Log.d(Constants.LOG_TAG, "trying to connect to server: " + socketAddress);
 	try {
-	    socket = new DatagramSocket(Constants.BROADCAST_CLIENT_PORT);
-	    System.out.printf("UDP SOCKET CREATED");
-	    socket.setReuseAddress(true);
-	    long t = System.currentTimeMillis();
-	    protocol = new UDPClientProtocolManager(socket, socketAddress);
+	  socket = new DatagramSocket(Constants.BROADCAST_CLIENT_PORT);
+	  System.out.printf("UDP SOCKET CREATED");
+	  socket.setReuseAddress(true);
+	  long t = System.currentTimeMillis();
+	  protocol = new UDPClientProtocolManager(socket, socketAddress);
 
-	    m_connstate = new ClientConnectionState(new ClientSocket(protocol,
-		    socketAddress), listener);
-	    protocol.registerHandler(Constants.PROTOCOL_CONNECTION, m_connstate);
-	    m_connstate.openConnection();
+	  m_connstate = new ClientConnectionState(new ClientSocket(protocol, socketAddress), listener);
+	  protocol.registerHandler(Constants.PROTOCOL_CONNECTION, m_connstate);
+	  m_connstate.openConnection();
 
-	    blinkenProto = new BlinkendroidClientProtocol(listener);
-	    protocol.registerHandler(Constants.PROTOCOL_PLAYER, blinkenProto);
-	    Log.i(Constants.LOG_TAG, "connected "
-		    + (System.currentTimeMillis() - t));
+	  blinkenProto = new BlinkendroidClientProtocol(listener);
+	  protocol.registerHandler(Constants.PROTOCOL_PLAYER, blinkenProto);
+	  Log.i(Constants.LOG_TAG, "connected " + (System.currentTimeMillis() - t));
 
 	} catch (final IOException x) {
-	    Log.e(Constants.LOG_TAG, "connection failed");
-	    x.printStackTrace();
-	    listener.connectionFailed(x.getClass().getName() + ": "
-		    + x.getMessage());
+	  Log.e(Constants.LOG_TAG, "connection failed");
+	  x.printStackTrace();
+	  listener.connectionFailed(x.getClass().getName() + ": " + x.getMessage());
 	}
-    }
+  }
 
-    public void shutdown() {
+  public void shutdown() {
 	if (null != m_connstate)
-	    m_connstate.shutdown();
+	  m_connstate.shutdown();
 	if (null != protocol)
-	    protocol.shutdown();
+	  protocol.shutdown();
 	if (null != socket) {
-	    if (!socket.isClosed())
+	  if (!socket.isClosed())
 		socket.close();
 	}
 	Log.d(Constants.LOG_TAG, "client shutdown completed");
-    }
+  }
 
-    public void locateMe() {
+  public void locateMe() {
 	// TODO Auto-generated method stub
-    }
+  }
 }

@@ -24,13 +24,13 @@ import org.cbase.blinkendroid.player.bml.BLM;
  */
 public interface BlinkendroidListener extends ConnectionListener {
 
-    void connectionFailed(String message);
+  void connectionFailed(String message);
 
-    void serverTime(long serverTime);
+  void serverTime(long serverTime);
 
-    void play(int x, int y, long startTime, BLM blm);
+  void play(int x, int y, long startTime, BLM blm);
 
-    void clip(float startX, float startY, float endX, float endY);
+  void clip(float startX, float startY, float endX, float endY);
 
-    void arrow(long duration, float angle, int color);
+  void arrow(long duration, float angle, int color);
 }

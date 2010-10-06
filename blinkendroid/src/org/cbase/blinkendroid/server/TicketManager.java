@@ -23,7 +23,6 @@ public class TicketManager implements IPeerHandler, ConnectionListener {
 	this.ownerName = ownerName;
   }
 
-  @Override
   public void foundPeer(String name, String ip, int protocolVersion) {
 	System.out.printf("foundpeer " + name + ip);
 	if (tickets.contains(name + ip)) {
@@ -34,16 +33,12 @@ public class TicketManager implements IPeerHandler, ConnectionListener {
 	if (clients < maxClients) {
 	  // send ticket to ip
 	  try {
-		InetSocketAddress socketAddr = new InetSocketAddress(ip,
-			Constants.BROADCAST_ANNOUCEMENT_CLIENT_TICKET_PORT);
-		String message = Constants.BROADCAST_PROTOCOL_VERSION + " "
-			+ Constants.SERVER_TICKET_COMMAND + " " + ownerName;
+		InetSocketAddress socketAddr = new InetSocketAddress(ip, Constants.BROADCAST_ANNOUCEMENT_CLIENT_TICKET_PORT);
+		String message = Constants.BROADCAST_PROTOCOL_VERSION + " " + Constants.SERVER_TICKET_COMMAND + " " + ownerName;
 		final byte[] messageBytes = message.getBytes("UTF-8");
-		final DatagramPacket packet = new DatagramPacket(messageBytes,
-			messageBytes.length, socketAddr);
+		final DatagramPacket packet = new DatagramPacket(messageBytes, messageBytes.length, socketAddr);
 		System.out.printf("UDP SOCKET CREATED");
-		DatagramSocket socket = new DatagramSocket(
-			Constants.BROADCAST_ANNOUCEMENT_SERVER_TICKET_PORT);
+		DatagramSocket socket = new DatagramSocket(Constants.BROADCAST_ANNOUCEMENT_SERVER_TICKET_PORT);
 		socket.setReuseAddress(true);
 		socket.send(packet);
 		Log.d(Constants.LOG_TAG, "send Ticket");
@@ -62,12 +57,10 @@ public class TicketManager implements IPeerHandler, ConnectionListener {
 	tickets.clear();
   }
 
-  @Override
   public void connectionClosed(ClientSocket clientSocket) {
 	clients--;
   }
 
-  @Override
   public void connectionOpened(ClientSocket clientSocket) {
 	// TODO clients merken und abhaken
 

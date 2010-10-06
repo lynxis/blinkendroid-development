@@ -45,8 +45,7 @@ public class BlinkendroidVideoServerProtocol {
   protected String movieFile;
   protected ReceiverThread receiver;
 
-  public BlinkendroidVideoServerProtocol(final Socket socket, String movieFile)
-	  throws IOException {
+  public BlinkendroidVideoServerProtocol(final Socket socket, String movieFile) throws IOException {
 	this.out = new BufferedOutputStream(socket.getOutputStream());
 	this.in = new BufferedInputStream(socket.getInputStream());
 	this.socket = socket;
@@ -66,8 +65,7 @@ public class BlinkendroidVideoServerProtocol {
 
 		  try {
 			writeLong(out, movie.length());
-			Log.d(Constants.LOG_TAG,
-				"try to read file with bytes " + movie.length());
+			Log.d(Constants.LOG_TAG, "try to read file with bytes " + movie.length());
 			InputStream is = new FileInputStream(movie);
 			byte[] buffer = new byte[1024];
 			int allLen = 0;
@@ -132,8 +130,7 @@ public class BlinkendroidVideoServerProtocol {
 	// }
   }
 
-  protected void writeFloat(BufferedOutputStream out, float f)
-	  throws IOException {
+  protected void writeFloat(BufferedOutputStream out, float f) throws IOException {
 	byte[] buffer = new byte[16];
 	ByteBuffer.wrap(buffer).putFloat(f);
 	// try {

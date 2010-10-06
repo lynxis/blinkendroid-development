@@ -52,8 +52,7 @@ import android.widget.Toast;
 /**
  * @author Andreas Schildbach
  */
-public class PlayerActivity extends Activity implements BlinkendroidListener,
-	Runnable {
+public class PlayerActivity extends Activity implements BlinkendroidListener, Runnable {
 
   public static final String INTENT_EXTRA_IP = "ip";
   public static final String INTENT_EXTRA_PORT = "port";
@@ -81,12 +80,10 @@ public class PlayerActivity extends Activity implements BlinkendroidListener,
 	ownerView = (TextView) findViewById(R.id.player_owner);
 	playerView.setOnTouchListener(new OnTouchListener() {
 
-	  @Override
 	  public boolean onTouch(View v, MotionEvent event) {
 		ownerView.setVisibility(View.VISIBLE);
 		handler.postDelayed(new Runnable() {
 
-		  @Override
 		  public void run() {
 			ownerView.setVisibility(View.INVISIBLE);
 		  }
@@ -111,12 +108,10 @@ public class PlayerActivity extends Activity implements BlinkendroidListener,
    * @return owner name or phone number
    */
   private String getPhoneIdentifier() {
-	String ownerName = PreferenceManager.getDefaultSharedPreferences(this)
-		.getString("owner", null);
+	String ownerName = PreferenceManager.getDefaultSharedPreferences(this).getString("owner", null);
 
 	if (ownerName == null || ownerName.trim().length() == 0) {
-	  TelephonyManager tm = (TelephonyManager) this
-		  .getSystemService(Context.TELEPHONY_SERVICE);
+	  TelephonyManager tm = (TelephonyManager) this.getSystemService(Context.TELEPHONY_SERVICE);
 	  ownerName = tm.getLine1Number();
 	}
 
@@ -131,8 +126,7 @@ public class PlayerActivity extends Activity implements BlinkendroidListener,
 	if (addr == null) {
 	  addr = "127.0.0.1";
 	}
-	int port = getIntent().getIntExtra(INTENT_EXTRA_PORT,
-		Constants.BROADCAST_SERVER_PORT);
+	int port = getIntent().getIntExtra(INTENT_EXTRA_PORT, Constants.BROADCAST_SERVER_PORT);
 	InetSocketAddress socketAddr = new InetSocketAddress(addr, port);
 	blinkendroidClient = new BlinkendroidClient(socketAddr, this);
 	/*
@@ -171,31 +165,25 @@ public class PlayerActivity extends Activity implements BlinkendroidListener,
 	return true;
   }
 
-  @Override
   public void serverTime(final long serverTime) {
 	Log.d(Constants.LOG_TAG, "*** time " + serverTime);
 	final long timeDelta = System.nanoTime() / 1000000 - serverTime;
 	runOnUiThread(new Runnable() {
 
-	  @Override
 	  public void run() {
 		playerView.setTimeDelta(timeDelta);
 	  }
 	});
   }
 
-  @Override
-  public void play(final int x, final int y, final long startTime,
-	  final BLM movie) {
+  public void play(final int x, final int y, final long startTime, final BLM movie) {
 	Log.d(Constants.LOG_TAG, "*** play " + startTime);
 	runOnUiThread(new Runnable() {
 
-	  @Override
 	  public void run() {
 		blm = movie;
 		if (blm == null)
-		  blm = new BBMZParser().parseBBMZ(
-			  getResources().openRawResource(R.raw.blinkendroid1), 14345);
+		  blm = new BBMZParser().parseBBMZ(getResources().openRawResource(R.raw.blinkendroid1), 14345);
 		playerView.setBLM(blm);
 		playerView.setStartTime(startTime);
 		playerView.startPlaying();
@@ -203,26 +191,20 @@ public class PlayerActivity extends Activity implements BlinkendroidListener,
 	});
   }
 
-  @Override
-  public void clip(final float startX, final float startY, final float endX,
-	  final float endY) {
-	Log.d(Constants.LOG_TAG, "*** clip " + startX + "," + startY + "," + endX
-		+ "," + endY);
+  public void clip(final float startX, final float startY, final float endX, final float endY) {
+	Log.d(Constants.LOG_TAG, "*** clip " + startX + "," + startY + "," + endX + "," + endY);
 	runOnUiThread(new Runnable() {
 
-	  @Override
 	  public void run() {
 		playerView.setClipping(startX, startY, endX, endY);
 	  }
 	});
   }
 
-  @Override
   public void arrow(final long duration, final float angle, final int color) {
 	Log.d(Constants.LOG_TAG, "*** arrow " + angle + " " + duration);
 	runOnUiThread(new Runnable() {
 
-	  @Override
 	  public void run() {
 		final int id = arrowView.addArrow(angle, color);
 		boolean startPost = arrowDurations.isEmpty();
@@ -233,61 +215,46 @@ public class PlayerActivity extends Activity implements BlinkendroidListener,
 	});
   }
 
-  @Override
   public void connectionOpened(final ClientSocket clientSocket) {
-	Log.d(Constants.LOG_TAG, "*** connectionOpened "
-		+ clientSocket.getDestinationAddress().toString());
+	Log.d(Constants.LOG_TAG, "*** connectionOpened " + clientSocket.getDestinationAddress().toString());
 	runOnUiThread(new Runnable() {
 
-	  @Override
 	  public void run() {
-		Toast.makeText(PlayerActivity.this, "connected", Toast.LENGTH_SHORT)
-			.show();
+		Toast.makeText(PlayerActivity.this, "connected", Toast.LENGTH_SHORT).show();
 	  }
 	});
   }
 
-  @Override
   public void connectionClosed(final ClientSocket clientSocket) {
-	Log.d(Constants.LOG_TAG, "*** connectionClosed "
-		+ clientSocket.getDestinationAddress().toString());
+	Log.d(Constants.LOG_TAG, "*** connectionClosed " + clientSocket.getDestinationAddress().toString());
 	runOnUiThread(new Runnable() {
 
-	  @Override
 	  public void run() {
-		Toast.makeText(PlayerActivity.this,
-			getString(R.string.connection_closed), Toast.LENGTH_LONG).show();
+		Toast.makeText(PlayerActivity.this, getString(R.string.connection_closed), Toast.LENGTH_LONG).show();
 		playerView.stopPlaying();
 		ownerView.setVisibility(View.VISIBLE);
 	  }
 	});
   }
 
-  @Override
   public void connectionFailed(final String message) {
 	runOnUiThread(new Runnable() {
 
-	  @Override
 	  public void run() {
-		Log.w(Constants.LOG_TAG, getString(R.string.connection_failed) + ": "
-			+ message);
+		Log.w(Constants.LOG_TAG, getString(R.string.connection_failed) + ": " + message);
 		playerView.stopPlaying();
 		ownerView.setVisibility(View.VISIBLE);
-		new AlertDialog.Builder(PlayerActivity.this)
-			.setIcon(android.R.drawable.ic_dialog_alert)
-			.setTitle("Cannot connect to server").setMessage(message)
-			.setOnCancelListener(new OnCancelListener() {
+		new AlertDialog.Builder(PlayerActivity.this).setIcon(android.R.drawable.ic_dialog_alert).setTitle(
+			"Cannot connect to server").setMessage(message).setOnCancelListener(new OnCancelListener() {
 
-			  @Override
-			  public void onCancel(DialogInterface dialog) {
-				finish();
-			  }
-			}).create().show();
+		  public void onCancel(DialogInterface dialog) {
+			finish();
+		  }
+		}).create().show();
 	  }
 	});
   }
 
-  @Override
   public void run() {
 
 	arrowScale += 0.5f;
@@ -296,8 +263,7 @@ public class PlayerActivity extends Activity implements BlinkendroidListener,
 	final float scale = 0.5f + (float) Math.sin(arrowScale) / 20;
 	arrowView.setScale(scale);
 
-	for (final Iterator<Map.Entry<Integer, Long>> i = arrowDurations.entrySet()
-		.iterator(); i.hasNext();) {
+	for (final Iterator<Map.Entry<Integer, Long>> i = arrowDurations.entrySet().iterator(); i.hasNext();) {
 	  final Map.Entry<Integer, Long> entry = i.next();
 
 	  if (System.currentTimeMillis() > entry.getValue()) {

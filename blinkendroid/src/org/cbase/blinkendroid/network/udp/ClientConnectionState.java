@@ -9,12 +9,10 @@ import org.cbase.blinkendroid.network.ConnectionListener;
 
 import android.util.Log;
 
-public class ClientConnectionState extends ConnectionState implements
-	CommandHandler {
+public class ClientConnectionState extends ConnectionState implements CommandHandler {
   private ClientConnectionHeartbeat mHeartbeater;
 
-  public ClientConnectionState(ClientSocket clientSocket,
-	  ConnectionListener listener) {
+  public ClientConnectionState(ClientSocket clientSocket, ConnectionListener listener) {
 	super(clientSocket, listener);
 	mHeartbeater = new ClientConnectionHeartbeat();
   }
@@ -40,12 +38,10 @@ public class ClientConnectionState extends ConnectionState implements
 
   // only for debugging client
   @Override
-  public void handle(SocketAddress socketAddr, ByteBuffer bybuff)
-	  throws IOException {
+  public void handle(SocketAddress socketAddr, ByteBuffer bybuff) throws IOException {
 	int pos = bybuff.position();
 
-	System.out.printf("CliState received %s",
-		Connstate.values()[bybuff.getInt()].toString());
+	System.out.printf("CliState received %s", Connstate.values()[bybuff.getInt()].toString());
 	bybuff.position(pos);
 
 	super.handle(socketAddr, bybuff);

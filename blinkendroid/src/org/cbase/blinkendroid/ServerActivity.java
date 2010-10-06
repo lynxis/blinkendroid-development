@@ -27,16 +27,16 @@ import android.widget.AdapterView.OnItemSelectedListener;
 
 public class ServerActivity extends Activity implements ConnectionListener, BLMManagerListener {
 
-    private ReceiverThread recieverThread;
-    private TicketManager ticketManager;
-    private BlinkendroidServer blinkendroidServer;
-    private BLMManager blmManager;
-    private ArrayAdapter<String> movieAdapter;
-    private ArrayAdapter<String> clientAdapter;
-    private ArrayAdapter<Integer> ticketSizeAdapter;
+  private ReceiverThread recieverThread;
+  private TicketManager ticketManager;
+  private BlinkendroidServer blinkendroidServer;
+  private BLMManager blmManager;
+  private ArrayAdapter<String> movieAdapter;
+  private ArrayAdapter<String> clientAdapter;
+  private ArrayAdapter<Integer> ticketSizeAdapter;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
+  @Override
+  protected void onCreate(Bundle savedInstanceState) {
 	super.onCreate(savedInstanceState);
 
 	setContentView(R.layout.server_content);
@@ -62,7 +62,7 @@ public class ServerActivity extends Activity implements ConnectionListener, BLMM
 	// Ticketmanager
 	String ownerName = PreferenceManager.getDefaultSharedPreferences(this).getString("owner", null);
 	if (ownerName == null)
-	    ownerName = System.currentTimeMillis() + "";
+	  ownerName = System.currentTimeMillis() + "";
 	ticketManager = new TicketManager(ownerName);
 
 	clientAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1);
@@ -70,51 +70,48 @@ public class ServerActivity extends Activity implements ConnectionListener, BLMM
 
 	movieSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
 
-	    @Override
-		public void onItemSelected(AdapterView<?> arg0, View arg1, int listElement, long arg3) {
+	  public void onItemSelected(AdapterView<?> arg0, View arg1, int listElement, long arg3) {
 		// already running?
 		if (null != blinkendroidServer) {
-		    blinkendroidServer.switchMovie(blmManager.getBLMHeader(listElement));
+		  blinkendroidServer.switchMovie(blmManager.getBLMHeader(listElement));
 		}
-	    }
+	  }
 
-	    @Override
-		public void onNothingSelected(AdapterView<?> arg0) {
-	    }
+	  public void onNothingSelected(AdapterView<?> arg0) {
+	  }
 	});
 
 	startStopButton.setOnClickListener(new OnClickListener() {
 
-	    @Override
-		public void onClick(View v) {
+	  public void onClick(View v) {
 		if (null == blinkendroidServer) {
-		    // start recieverthread
-		    recieverThread = new ReceiverThread(Constants.BROADCAST_ANNOUCEMENT_SERVER_PORT,
-			    Constants.CLIENT_BROADCAST_COMMAND);
-		    recieverThread.addHandler(ticketManager);
-		    recieverThread.start();
+		  // start recieverthread
+		  recieverThread = new ReceiverThread(Constants.BROADCAST_ANNOUCEMENT_SERVER_PORT,
+			  Constants.CLIENT_BROADCAST_COMMAND);
+		  recieverThread.addHandler(ticketManager);
+		  recieverThread.start();
 
-		    blinkendroidServer = new BlinkendroidServer(Constants.BROADCAST_SERVER_PORT);
-		    blinkendroidServer.addConnectionListener(ServerActivity.this);
-		    blinkendroidServer.addConnectionListener(ticketManager);
+		  blinkendroidServer = new BlinkendroidServer(Constants.BROADCAST_SERVER_PORT);
+		  blinkendroidServer.addConnectionListener(ServerActivity.this);
+		  blinkendroidServer.addConnectionListener(ticketManager);
 
-		    blinkendroidServer.start();
-		    // TODO schtief warum hier kein thread in server ui?
-		    startStopButton.setText(getString(R.string.stop));
-		    clientButton.setEnabled(true);
+		  blinkendroidServer.start();
+		  // TODO schtief warum hier kein thread in server ui?
+		  startStopButton.setText(getString(R.string.stop));
+		  clientButton.setEnabled(true);
 		} else {
-		    recieverThread.shutdown();
-		    recieverThread = null;
+		  recieverThread.shutdown();
+		  recieverThread = null;
 
-		    blinkendroidServer.shutdown();
-		    blinkendroidServer = null;
+		  blinkendroidServer.shutdown();
+		  blinkendroidServer = null;
 
-		    ticketManager.reset();
+		  ticketManager.reset();
 
-		    startStopButton.setText(getString(R.string.start));
-		    clientButton.setEnabled(false);
+		  startStopButton.setText(getString(R.string.start));
+		  clientButton.setEnabled(false);
 		}
-	    }
+	  }
 	});
 
 	ticketSizeAdapter = new ArrayAdapter<Integer>(this, android.R.layout.simple_spinner_item);
@@ -122,88 +119,79 @@ public class ServerActivity extends Activity implements ConnectionListener, BLMM
 
 	// TODO change to int i = 20; i <= 200; i += 20 for productive version
 	for (int i = 1; i <= 200; i++) {
-	    ticketSizeAdapter.add(i);
+	  ticketSizeAdapter.add(i);
 	}
 	ticketSizeSpinner.setAdapter(ticketSizeAdapter);
 
 	ticketSizeSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
 
-	    @Override
-		public void onItemSelected(AdapterView<?> arg0, View arg1, int maxClients, long arg3) {
+	  public void onItemSelected(AdapterView<?> arg0, View arg1, int maxClients, long arg3) {
 		if (ticketManager != null) {
-		    ticketManager.setMaxClients(maxClients);
+		  ticketManager.setMaxClients(maxClients);
 		}
-	    }
+	  }
 
-	    @Override
-		public void onNothingSelected(AdapterView<?> arg0) {
-	    }
+	  public void onNothingSelected(AdapterView<?> arg0) {
+	  }
 	});
 
 	ticketSizeSpinner.setSelection(ticketManager.getMaxClients() - 1);
 	// ticketSizeAdapter.getPosition(ticketManager.getMaxClients());
 	clientButton.setOnClickListener(new OnClickListener() {
 
-	    @Override
-		public void onClick(View v) {
+	  public void onClick(View v) {
 
 		final Intent intent = new Intent(ServerActivity.this, PlayerActivity.class);
 		intent.putExtra(PlayerActivity.INTENT_EXTRA_IP, NetworkUtils.getLocalIpAddress());
 		intent.putExtra(PlayerActivity.INTENT_EXTRA_PORT, Constants.BROADCAST_SERVER_PORT);
 		startActivity(intent);
-	    }
+	  }
 	});
-    }
+  }
 
-    @Override
-    protected void onDestroy() {
+  @Override
+  protected void onDestroy() {
 
 	if (recieverThread != null) {
-	    recieverThread.shutdown();
-	    recieverThread = null;
+	  recieverThread.shutdown();
+	  recieverThread = null;
 	}
 
 	if (blinkendroidServer != null) {
-	    blinkendroidServer.shutdown();
-	    blinkendroidServer = null;
+	  blinkendroidServer.shutdown();
+	  blinkendroidServer = null;
 	}
 
 	super.onDestroy();
-    }
+  }
 
-    @Override
-	public void connectionOpened(final ClientSocket clientSocket) {
+  public void connectionOpened(final ClientSocket clientSocket) {
 	Log.d(Constants.LOG_TAG, "ServerActivity connectionOpened " + clientSocket.getDestinationAddress().toString());
 	runOnUiThread(new Runnable() {
 
-	    @Override
-		public void run() {
+	  public void run() {
 		clientAdapter.add(clientSocket.getDestinationAddress().toString());
-	    }
+	  }
 	});
-    }
+  }
 
-    @Override
-	public void connectionClosed(final ClientSocket clientSocket) {
+  public void connectionClosed(final ClientSocket clientSocket) {
 	Log.d(Constants.LOG_TAG, "ServerActivity connectionClosed " + clientSocket.getDestinationAddress().toString());
 	runOnUiThread(new Runnable() {
 
-	    @Override
-		public void run() {
+	  public void run() {
 		clientAdapter.remove(clientSocket.getDestinationAddress().toString());
-	    }
+	  }
 	});
-    }
+  }
 
-    @Override
-	public void moviesReady() {
+  public void moviesReady() {
 	runOnUiThread(new Runnable() {
 
-	    @Override
-		public void run() {
+	  public void run() {
 		blmManager.fillArrayAdapter(movieAdapter);
 		Toast.makeText(ServerActivity.this, "Movies ready", Toast.LENGTH_SHORT).show();
-	    }
+	  }
 	});
-    }
+  }
 }
