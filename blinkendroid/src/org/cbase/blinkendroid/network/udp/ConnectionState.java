@@ -161,10 +161,8 @@ public class ConnectionState implements CommandHandler {
 	try {
 	  send(out);
 	} catch (IOException e) {
-	  // TODO Auto-generated catch block
-	  e.printStackTrace();
+	  Log.e(Constants.LOG_TAG, "sendSyn caused an Exception", e);
 	}
-	// TODO Auto-generated method stub
   }
 
   protected void sendSynAck() {
