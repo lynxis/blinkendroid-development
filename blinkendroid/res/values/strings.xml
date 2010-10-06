@@ -14,7 +14,7 @@
 <string name="look_for_servers">Looking for servers...</string>
 <string name="select_server_to_connect">Select Server to connect to</string>
 <string name="name_hint">Hint: Setting an owner name in the preferences helps identifying your phone in the matrix.</string>
-<string name="new_release_text">New Release available. Some servers won't be discovered.</string>
+<string name="new_release_text">New Release available. Some servers won\'t be discovered.</string>
 <string name="warning">Warning</string>
 <string name="check_for_update">Check for update</string>
 <string name="ignore">Ignore</string>
