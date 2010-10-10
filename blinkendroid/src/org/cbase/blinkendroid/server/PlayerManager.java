@@ -354,7 +354,7 @@ public class PlayerManager implements ConnectionListener {
 
   public void checkTimeouts() {
 	for (PlayerClient player : mClients) {
-	  player.checkTimeout(20);
+	  player.checkTimeout(10);
 	}
   }
 

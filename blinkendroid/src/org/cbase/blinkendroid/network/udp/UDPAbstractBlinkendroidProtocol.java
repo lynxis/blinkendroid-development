@@ -72,9 +72,16 @@ public class UDPAbstractBlinkendroidProtocol implements UDPDirectConnection {
 	InetSocketAddress socketAddress = (InetSocketAddress) packet.getSocketAddress();
 	ByteBuffer in = ByteBuffer.wrap(packet.getData());
 	int proto = in.getInt();
+	Log.d(Constants.LOG_TAG, "BlinkendroidClient received Protocol: " + proto);
+	if (proto == Constants.PROTOCOL_HEARTBEAT) {
+	  for (CommandHandler h : handlers.values()) {
+		h.handle(socketAddress, in);
+	  }
+	  return;
+	}
 
 	CommandHandler handler = handlers.get(proto);
-	// System.out.println("recieve proto "+proto+" handler "+handler.getClass().toString());
+	 System.out.println("recieve proto "+proto+" handler "+handler.getClass().toString());
 	if (null != handler)
 	  handler.handle(socketAddress, in);
   }
@@ -99,12 +106,13 @@ public class UDPAbstractBlinkendroidProtocol implements UDPDirectConnection {
 		while (running) {
 		  receiveData = new byte[1024];
 		  receivePacket = new DatagramPacket(receiveData, receiveData.length);
+		  Log.d(Constants.LOG_TAG, this.getName() + " received " + receivePacket.toString());
 		  try {
 			m_Socket.receive(receivePacket);
 			receive(receivePacket);
 		  } catch (InterruptedIOException e) {
-			// timeout happened - just a normal case
-			Log.i(Constants.LOG_TAG, "ReceiverThread timeout");
+			// timeout happened - just a normal case, swallowing
+//			Log.i(Constants.LOG_TAG, "ReceiverThread timeout");
 		  }
 		}
 	  } catch (SocketException e) {

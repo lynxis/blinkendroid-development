@@ -42,4 +42,5 @@ public final class Constants {
 
   public static final Integer PROTOCOL_CONNECTION = 1;
   public static final Integer PROTOCOL_PLAYER = 42;
+  public static final Integer PROTOCOL_HEARTBEAT = 23;
 }

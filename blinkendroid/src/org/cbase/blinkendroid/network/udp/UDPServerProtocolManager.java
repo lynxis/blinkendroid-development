@@ -28,6 +28,7 @@ import java.nio.ByteBuffer;
 
 import org.cbase.blinkendroid.Constants;
 import org.cbase.blinkendroid.network.ConnectionListener;
+import org.cbase.blinkendroid.network.udp.ConnectionState.Command;
 import org.cbase.blinkendroid.server.PlayerManager;
 
 import android.util.Log;
@@ -69,11 +70,12 @@ public class UDPServerProtocolManager extends UDPAbstractBlinkendroidProtocol im
 
 	ByteBuffer in = ByteBuffer.wrap(packet.getData());
 	int proto = in.getInt();
-	// System.out.println("server recieve "+proto);
+	System.out.println("server recieve "+proto);
 
 	CommandHandler handler = handlers.get(proto);
 	if (null != handler) {
 	  handler.handle(from, in);
+	  System.out.println("recieve proto "+proto+" handler "+handler.getClass().toString());
 	} else {
 	  if (m_PlayerManager != null) {
 		m_PlayerManager.handle(this, from, proto, in);
@@ -119,18 +121,12 @@ public class UDPServerProtocolManager extends UDPAbstractBlinkendroidProtocol im
 		if (!running) // fast exit
 		  break;
 
-		long t = System.currentTimeMillis();
 		ByteBuffer out = ByteBuffer.allocate(128);
-		out.putInt(Constants.PROTOCOL_CONNECTION);
-		out.putInt(ConnectionState.Command.HEARTBEAT.ordinal());
-		out.putInt(0); // Connection ID
-		out.putLong(t);
-		sendBroadcast(out);
-		out.position(0);
-		out.putInt(Constants.PROTOCOL_PLAYER);
-		out.putInt(BlinkendroidProtocol.COMMAND_PLAYER_TIME);
+		out.putInt(Constants.PROTOCOL_HEARTBEAT);
+		out.putInt(Command.HEARTBEAT.ordinal());
 		out.putLong(System.currentTimeMillis());
 		sendBroadcast(out);
+		  Log.d(Constants.LOG_TAG, "GlobalTimerThread Broadcast sent: " + out);
 	  }
 	  Log.d(Constants.LOG_TAG, "GlobalTimerThread stopped");
 	}

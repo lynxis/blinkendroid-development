@@ -29,9 +29,9 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.DialogInterface.OnClickListener;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -44,13 +44,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.TextView.OnEditorActionListener;
+import android.widget.Toast;
 
 /**
  * @author Andreas Schildbach
@@ -147,9 +147,9 @@ public class LoginActivity extends Activity implements Runnable {
 		runOnUiThread(new Runnable() {
 
 		  public void run() {
-			new AlertDialog.Builder(LoginActivity.this).setIcon(android.R.drawable.ic_dialog_alert).setTitle(
-				getString(R.string.warning)).setMessage(getString(R.string.new_release_text)).setPositiveButton(
-				getString(R.string.check_for_update), new OnClickListener() {
+			new AlertDialog.Builder(LoginActivity.this).setIcon(android.R.drawable.ic_dialog_alert)
+				.setTitle(getString(R.string.warning)).setMessage(getString(R.string.new_release_text))
+				.setPositiveButton(getString(R.string.check_for_update), new OnClickListener() {
 
 				  public void onClick(DialogInterface dialog, int which) {
 					startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(Constants.DOWNLOAD_URL)));
@@ -158,10 +158,10 @@ public class LoginActivity extends Activity implements Runnable {
 				  }
 				}).setNegativeButton(getString(R.string.ignore), new OnClickListener() {
 
-			  public void onClick(DialogInterface dialog, int which) {
-				dialog.dismiss();
-			  }
-			}).create().show();
+				  public void onClick(DialogInterface dialog, int which) {
+					dialog.dismiss();
+				  }
+				}).create().show();
 		  }
 		});
 

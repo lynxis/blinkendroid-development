@@ -41,7 +41,7 @@ public class ClientConnectionState extends ConnectionState implements CommandHan
   public void handle(SocketAddress socketAddr, ByteBuffer bybuff) throws IOException {
 	int pos = bybuff.position();
 
-	System.out.printf("CliState received %s", Connstate.values()[bybuff.getInt()].toString());
+//	System.out.printf("CliState received %s", Connstate.values()[bybuff.getInt()].toString());
 	bybuff.position(pos);
 
 	super.handle(socketAddr, bybuff);

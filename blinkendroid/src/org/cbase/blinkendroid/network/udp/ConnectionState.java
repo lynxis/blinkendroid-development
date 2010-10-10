@@ -20,7 +20,7 @@ import android.util.Log;
 public class ConnectionState implements CommandHandler {
 
   public static enum Command {
-	SYN, ACK, SYNACK, RESET, HEARTBEAT
+	SYN, ACK, SYNACK, RESET, HEARTBEAT, REQUEST_DIRECT_HEARTBEAT
   }
 
   public static enum Connstate {
@@ -33,6 +33,50 @@ public class ConnectionState implements CommandHandler {
   private ConnectionListener m_Listener;
   private long m_LastSeen;
   private ClientSocket mClientSocket;
+  private DirectTimerThread directTimerThread;
+
+  /**
+   * This thread sends the global time to connected devices.
+   */
+  class DirectTimerThread extends Thread {
+
+	volatile private boolean running = true;
+
+	@Override
+	public void run() {
+	  this.setName("SRV Send DirectTimer");
+	  Log.d(Constants.LOG_TAG, "DirectTimerThread started");
+	  while (running) {
+		try {
+		  Thread.sleep(1000);
+		} catch (InterruptedException e) {
+		  // swallow
+		}
+		if (!running) // fast exit
+		  break;
+
+		long t = System.currentTimeMillis();
+		Log.d(Constants.LOG_TAG, "DirectTimerThread running for " + m_connId);
+		// TODO why are there two broadcasts?
+		ByteBuffer out = ByteBuffer.allocate(128);
+		out.putInt(Constants.PROTOCOL_CONNECTION);
+		out.putInt(ConnectionState.Command.HEARTBEAT.ordinal());
+		out.putInt(0); // Connection ID
+		out.putLong(t);
+		try {
+		  ConnectionState.this.send(out);
+		} catch (IOException e) {
+		  Log.e(Constants.LOG_TAG, "", e);
+		}
+		// out.position(0);
+		// out.putInt(Constants.PROTOCOL_PLAYER);
+		// out.putInt(BlinkendroidProtocol.COMMAND_PLAYER_TIME);
+		// out.putLong(System.currentTimeMillis());
+		// sendBroadcast(out);
+	  }
+	  Log.d(Constants.LOG_TAG, "DirectTimerThread stopped");
+	}
+  }
 
   /**
    * 
@@ -57,7 +101,7 @@ public class ConnectionState implements CommandHandler {
   public void handle(SocketAddress socketAddr, ByteBuffer bybuff) throws IOException {
 	final int iCommand = bybuff.getInt();
 	final int connId = bybuff.getInt();
-	// System.out.println("handle "+iCommand+" "+connId);
+	 System.out.println("handle "+iCommand+" "+connId);
 	/*
 	 * if ( Command.values().length > iCommand || 0 < iCommand ) { // ignore
 	 * unknown commands return; }
@@ -90,6 +134,8 @@ public class ConnectionState implements CommandHandler {
 	case RESET:
 	  receivedReset();
 	  break;
+	case REQUEST_DIRECT_HEARTBEAT:
+	  receivedDirectHeartbeatRequest();
 	}
   }
 
@@ -145,10 +191,17 @@ public class ConnectionState implements CommandHandler {
 	stateChange(Connstate.NONE);
   }
 
+  protected void receivedDirectHeartbeatRequest() {
+	Log.d(Constants.LOG_TAG, "receivedDirectHeartbeatRequest");
+	if (directTimerThread == null) {
+	  directTimerThread = new DirectTimerThread();
+	  directTimerThread.start();
+	}
+  }
+
   protected void receivedHeartbeat() {
 	m_LastSeen = System.currentTimeMillis();
-	// System.out.printf("Received Heartbeat %d - I'm %s\n", m_LastSeen,
-	// this.getClass().getName());
+	System.out.printf("Received Heartbeat %d - I'm %s\n", m_LastSeen, this.getClass().getName());
   }
 
   protected void sendSyn() {
@@ -201,6 +254,18 @@ public class ConnectionState implements CommandHandler {
 	}
 
 	stateChange(Connstate.NONE);
+  }
+
+  protected void requestDirectHeartbeat() {
+	Log.d(Constants.LOG_TAG, "requestDirectHeartbeat");
+	ByteBuffer out = ByteBuffer.allocate(1024);
+	out.putInt(Command.REQUEST_DIRECT_HEARTBEAT.ordinal());
+	out.putInt(m_connId);
+	try {
+	  send(out);
+	} catch (IOException e) {
+	  Log.e(Constants.LOG_TAG, "requestDirectHeartbeat failed", e);
+	}
   }
 
   protected void sendHeartbeat() {

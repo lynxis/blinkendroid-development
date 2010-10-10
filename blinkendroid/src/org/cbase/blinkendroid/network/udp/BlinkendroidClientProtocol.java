@@ -8,6 +8,7 @@ import java.nio.ByteBuffer;
 import org.cbase.blinkendroid.Constants;
 import org.cbase.blinkendroid.network.BlinkendroidListener;
 import org.cbase.blinkendroid.network.tcp.BlinkendroidVideoClientProtocol;
+import org.cbase.blinkendroid.network.udp.ConnectionState.Command;
 import org.cbase.blinkendroid.player.bml.BLM;
 
 import android.util.Log;
@@ -24,7 +25,7 @@ public class BlinkendroidClientProtocol extends BlinkendroidProtocol implements 
 
 	Log.d(Constants.LOG_TAG, "received: " + command);
 	if (mListener != null) {
-	  if (command == COMMAND_PLAYER_TIME) {
+	  if (command == COMMAND_HEARTBEAT) {
 		mListener.serverTime(in.getLong());
 	  } else if (command == COMMAND_CLIP) {
 		final float startX = in.getFloat();
