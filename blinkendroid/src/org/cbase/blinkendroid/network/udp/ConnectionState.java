@@ -34,7 +34,7 @@ public class ConnectionState implements CommandHandler {
   private long m_LastSeen;
   private ClientSocket mClientSocket;
   private DirectTimerThread directTimerThread;
-
+  private int directTimerThreadRequestCounter	=	3;
   /**
    * This thread sends the global time to connected devices.
    */
@@ -248,8 +248,8 @@ public class ConnectionState implements CommandHandler {
 	stateChange(Connstate.NONE);
   }
 
-  protected void requestDirectHeartbeat() {
-	Log.d(Constants.LOG_TAG, "requestDirectHeartbeat");
+  protected void sendDirectHeartbeatRequest() {
+	Log.d(Constants.LOG_TAG, "sendDirectHeartbeatRequest");
 	ByteBuffer out = ByteBuffer.allocate(1024);
 	out.putInt(Command.REQUEST_DIRECT_HEARTBEAT.ordinal());
 	out.putInt(m_connId);
@@ -286,7 +286,15 @@ public class ConnectionState implements CommandHandler {
 	if (m_LastSeen + timeout * 1000 < time) {
 	  System.out.printf("Timeout %s\n", this.getClass().getName());
 	  //request 3 times directHeartBeat
-	  sendReset();
+	  if(directTimerThreadRequestCounter>0)
+	  {
+		sendDirectHeartbeatRequest();
+		directTimerThreadRequestCounter--;
+		//reset last_seen
+		m_LastSeen	=	System.currentTimeMillis();
+	  }
+	  else
+		sendReset();
 	}
   }
 
