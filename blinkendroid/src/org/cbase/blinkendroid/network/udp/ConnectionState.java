@@ -55,24 +55,16 @@ public class ConnectionState implements CommandHandler {
 		if (!running) // fast exit
 		  break;
 
-		long t = System.currentTimeMillis();
 		Log.d(Constants.LOG_TAG, "DirectTimerThread running for " + m_connId);
-		// TODO why are there two broadcasts?
 		ByteBuffer out = ByteBuffer.allocate(128);
 		out.putInt(Constants.PROTOCOL_CONNECTION);
 		out.putInt(ConnectionState.Command.HEARTBEAT.ordinal());
-		out.putInt(0); // Connection ID
-		out.putLong(t);
+		out.putLong(System.currentTimeMillis());
 		try {
 		  ConnectionState.this.send(out);
 		} catch (IOException e) {
 		  Log.e(Constants.LOG_TAG, "", e);
 		}
-		// out.position(0);
-		// out.putInt(Constants.PROTOCOL_PLAYER);
-		// out.putInt(BlinkendroidProtocol.COMMAND_PLAYER_TIME);
-		// out.putLong(System.currentTimeMillis());
-		// sendBroadcast(out);
 	  }
 	  Log.d(Constants.LOG_TAG, "DirectTimerThread stopped");
 	}
@@ -293,8 +285,8 @@ public class ConnectionState implements CommandHandler {
 	long time = System.currentTimeMillis();
 	if (m_LastSeen + timeout * 1000 < time) {
 	  System.out.printf("Timeout %s\n", this.getClass().getName());
+	  //request 3 times directHeartBeat
 	  sendReset();
-	  // 10 seconds
 	}
   }
 
