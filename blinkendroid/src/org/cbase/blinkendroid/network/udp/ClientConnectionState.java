@@ -68,7 +68,7 @@ public class ClientConnectionState extends ConnectionState implements CommandHan
 		if (!running) // fast exit
 		    break;
 		sendHeartbeat();
-		checkTimeout(20);
+		checkTimeout(5);
 	    }
 	    Log.d(Constants.LOG_TAG, "ClientConnectionState stopped");
 	}

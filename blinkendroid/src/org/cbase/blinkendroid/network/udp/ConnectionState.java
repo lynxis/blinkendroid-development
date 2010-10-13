@@ -62,7 +62,8 @@ public class ConnectionState implements CommandHandler {
 		out.putInt(ConnectionState.Command.HEARTBEAT.ordinal());
 		out.putLong(System.currentTimeMillis());
 		try {
-		    ConnectionState.this.send(out);
+		    // ConnectionState.this.send(out); this adds protocol 1
+		    mClientSocket.send(out);
 		} catch (IOException e) {
 		    Log.e(Constants.LOG_TAG, "", e);
 		}
