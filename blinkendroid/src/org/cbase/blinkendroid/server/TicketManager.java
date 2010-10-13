@@ -58,6 +58,7 @@ public class TicketManager implements IPeerHandler, ConnectionListener {
   }
 
   public void connectionClosed(ClientSocket clientSocket) {
+	System.out.println("TicketManager connectionClosed");
 	clients--;
   }
 
