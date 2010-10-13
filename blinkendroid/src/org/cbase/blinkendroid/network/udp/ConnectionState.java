@@ -68,6 +68,12 @@ public class ConnectionState implements CommandHandler {
 	  }
 	  Log.d(Constants.LOG_TAG, "DirectTimerThread stopped");
 	}
+
+	public void shutdown() {
+	  running = false;
+	  interrupt();
+	  Log.d(Constants.LOG_TAG, "DirectTimerThread initiating shutdown");
+	}
   }
 
   /**
@@ -142,6 +148,16 @@ public class ConnectionState implements CommandHandler {
 	}
 
 	if (newState == Connstate.NONE) {
+	  //if there is a directtimerthread running for this client kill him
+	  if(null!=directTimerThread)
+	  {
+		directTimerThread.shutdown();
+		try {
+		  directTimerThread.join(1000);
+		} catch (InterruptedException e) {
+		  // swallow bitch
+		}
+	  }
 	  m_Listener.connectionClosed(mClientSocket);
 	}
 

@@ -83,6 +83,7 @@ public class BlinkendroidServer {
 	}
   }
 
+  //TODO where is the join?
   public void shutdown() {
 	videoSocket.shutdown();
 	playerManager.shutdown();
