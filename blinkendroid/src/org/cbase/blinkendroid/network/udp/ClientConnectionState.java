@@ -75,6 +75,7 @@ public class ClientConnectionState extends ConnectionState implements CommandHan
 	public void shutdown() {
 	  running = false;
 	  interrupt();
+	  //TODO where is the join???
 	  Log.d(Constants.LOG_TAG, "ClientConnectionState initiating shutdown");
 	}
   }
