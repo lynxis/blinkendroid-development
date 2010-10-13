@@ -58,7 +58,7 @@ public class ConnectionState implements CommandHandler {
 
 		Log.d(Constants.LOG_TAG, "DirectTimerThread running for " + m_connId);
 		ByteBuffer out = ByteBuffer.allocate(128);
-		out.putInt(Constants.PROTOCOL_CONNECTION);
+		out.putInt(Constants.PROTOCOL_HEARTBEAT);
 		out.putInt(ConnectionState.Command.HEARTBEAT.ordinal());
 		out.putLong(System.currentTimeMillis());
 		try {
