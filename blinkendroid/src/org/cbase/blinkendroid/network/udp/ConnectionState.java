@@ -19,41 +19,42 @@ import android.util.Log;
 
 public class ConnectionState implements CommandHandler {
 
-  public static enum Command {
+    public static enum Command {
 	SYN, ACK, SYNACK, RESET, HEARTBEAT, REQUEST_DIRECT_HEARTBEAT
-  }
+    }
 
-  public static enum Connstate {
+    public static enum Connstate {
 	NONE, SYNWAIT, SYNACKWAIT, ACKWAIT, ESTABLISHED
-  }
+    }
 
-  public Connstate m_state;
-  private int m_connId;
-  private InetSocketAddress m_SocketAddr;
-  private ConnectionListener m_Listener;
-  private long m_LastSeen;
-  private ClientSocket mClientSocket;
-  private DirectTimerThread directTimerThread;
-  private int directTimerThreadRequestCounter	=	3;
-  /**
-   * This thread sends the global time to connected devices.
-   */
-  class DirectTimerThread extends Thread {
+    public Connstate m_state;
+    private int m_connId;
+    private InetSocketAddress m_SocketAddr;
+    private ConnectionListener m_Listener;
+    private long m_LastSeen;
+    private ClientSocket mClientSocket;
+    private DirectTimerThread directTimerThread;
+    private int directTimerThreadRequestCounter = 3;
+
+    /**
+     * This thread sends the global time to connected devices.
+     */
+    class DirectTimerThread extends Thread {
 
 	volatile private boolean running = true;
 
 	@Override
 	public void run() {
-	  this.setName("SRV Send DirectTimer");
-	  Log.d(Constants.LOG_TAG, "DirectTimerThread started");
-	  while (running) {
+	    this.setName("SRV Send DirectTimer");
+	    Log.d(Constants.LOG_TAG, "DirectTimerThread started");
+	    while (running) {
 		try {
-		  Thread.sleep(1000);
+		    Thread.sleep(1000);
 		} catch (InterruptedException e) {
-		  // swallow
+		    // swallow
 		}
 		if (!running) // fast exit
-		  break;
+		    break;
 
 		Log.d(Constants.LOG_TAG, "DirectTimerThread running for " + m_connId);
 		ByteBuffer out = ByteBuffer.allocate(128);
@@ -61,45 +62,45 @@ public class ConnectionState implements CommandHandler {
 		out.putInt(ConnectionState.Command.HEARTBEAT.ordinal());
 		out.putLong(System.currentTimeMillis());
 		try {
-		  ConnectionState.this.send(out);
+		    ConnectionState.this.send(out);
 		} catch (IOException e) {
-		  Log.e(Constants.LOG_TAG, "", e);
+		    Log.e(Constants.LOG_TAG, "", e);
 		}
-	  }
-	  Log.d(Constants.LOG_TAG, "DirectTimerThread stopped");
+	    }
+	    Log.d(Constants.LOG_TAG, "DirectTimerThread stopped");
 	}
 
 	public void shutdown() {
-	  running = false;
-	  interrupt();
-	  Log.d(Constants.LOG_TAG, "DirectTimerThread initiating shutdown");
+	    running = false;
+	    interrupt();
+	    Log.d(Constants.LOG_TAG, "DirectTimerThread initiating shutdown");
 	}
-  }
+    }
 
-  /**
-   * 
-   * @param connection
-   *          interface Connection which used to send packets
-   * @param socketAddr
-   *          contains destination ip + port
-   * @param listener
-   *          will be informed about connection state changes
-   */
-  public ConnectionState(ClientSocket clientSocket, ConnectionListener listener) {
+    /**
+     * 
+     * @param connection
+     *            interface Connection which used to send packets
+     * @param socketAddr
+     *            contains destination ip + port
+     * @param listener
+     *            will be informed about connection state changes
+     */
+    public ConnectionState(ClientSocket clientSocket, ConnectionListener listener) {
 	m_state = Connstate.NONE;
 	m_connId = 0;
 	mClientSocket = clientSocket;
 	m_Listener = listener;
-  }
+    }
 
-  public void shutdown() {
+    public void shutdown() {
 	sendReset();
-  }
+    }
 
-  public void handle(SocketAddress socketAddr, ByteBuffer bybuff) throws IOException {
+    public void handle(SocketAddress socketAddr, ByteBuffer bybuff) throws IOException {
 	final int iCommand = bybuff.getInt();
 	final int connId = bybuff.getInt();
-	 System.out.println("handle "+iCommand+" "+connId);
+	System.out.println("handle " + iCommand + " " + connId);
 	/*
 	 * if ( Command.values().length > iCommand || 0 < iCommand ) { // ignore
 	 * unknown commands return; }
@@ -108,216 +109,213 @@ public class ConnectionState implements CommandHandler {
 
 	// syn is a special case, because we dont have a connection
 	if (command == Command.SYN) {
-	  receivedSyn(connId);
-	  return;
+	    receivedSyn(connId);
+	    return;
 	}
 
 	// heartbeat is also a special case, because it does not need a connId
 	if (command == Command.HEARTBEAT) {
-	  receivedHeartbeat();
-	  return;
+	    receivedHeartbeat();
+	    return;
 	}
 
 	if (connId != this.m_connId) {
-	  return; // TODO send reset - not our connection
+	    return; // TODO send reset - not our connection
 	}
 
 	switch (command) {
 	case ACK:
-	  receivedAck();
-	  break;
+	    receivedAck();
+	    break;
 	case SYNACK:
-	  receivedSynAck();
-	  break;
+	    receivedSynAck();
+	    break;
 	case RESET:
-	  receivedReset();
-	  break;
+	    receivedReset();
+	    break;
 	case REQUEST_DIRECT_HEARTBEAT:
-	  receivedDirectHeartbeatRequest();
+	    receivedDirectHeartbeatRequest();
 	}
-  }
+    }
 
-  public void openConnection() {
+    public void openConnection() {
 	sendSyn();
-  }
+    }
 
-  protected void stateChange(Connstate newState) {
+    protected void stateChange(Connstate newState) {
 	Log.d(Constants.LOG_TAG, "ConnectionStateChanged " + newState);
 	if (newState == m_state) {
-	  return;
+	    return;
 	}
 
 	if (newState == Connstate.NONE) {
-	  //if there is a directtimerthread running for this client kill him
-	  if(null!=directTimerThread)
-	  {
+	    // if there is a directtimerthread running for this client kill him
+	    if (null != directTimerThread) {
 		directTimerThread.shutdown();
 		try {
-		  directTimerThread.join(1000);
+		    directTimerThread.join(1000);
 		} catch (InterruptedException e) {
-		  // swallow bitch
+		    // swallow bitch
 		}
-	  }
-	  m_Listener.connectionClosed(mClientSocket);
+	    }
+	    m_Listener.connectionClosed(mClientSocket);
 	}
 
 	if (newState == Connstate.ESTABLISHED) {
-	  m_LastSeen = System.currentTimeMillis();
-	  m_Listener.connectionOpened(mClientSocket);
+	    m_LastSeen = System.currentTimeMillis();
+	    m_Listener.connectionOpened(mClientSocket);
 	}
 
 	m_state = newState;
 
-  }
+    }
 
-  protected void receivedSynAck() throws IOException {
+    protected void receivedSynAck() throws IOException {
 	Log.d(Constants.LOG_TAG, "receivedSynAck");
 	if (m_state == Connstate.SYNACKWAIT) {
-	  stateChange(Connstate.ESTABLISHED);
-	  sendAck();
+	    stateChange(Connstate.ESTABLISHED);
+	    sendAck();
 	}
-  }
+    }
 
-  protected void receivedSyn(int connId) {
+    protected void receivedSyn(int connId) {
 	if (m_state == Connstate.NONE) {
-	  m_connId = connId;
-	  Log.d(Constants.LOG_TAG, "receivedSyn");
-	  sendSynAck();
-	  stateChange(Connstate.ACKWAIT);
+	    m_connId = connId;
+	    Log.d(Constants.LOG_TAG, "receivedSyn");
+	    sendSynAck();
+	    stateChange(Connstate.ACKWAIT);
 	}
-  }
+    }
 
-  protected void receivedAck() {
+    protected void receivedAck() {
 	if (m_state == Connstate.ACKWAIT) {
-	  Log.d(Constants.LOG_TAG, "receivedAck");
-	  stateChange(Connstate.ESTABLISHED);
+	    Log.d(Constants.LOG_TAG, "receivedAck");
+	    stateChange(Connstate.ESTABLISHED);
 	}
-  }
+    }
 
-  protected void receivedReset() {
+    protected void receivedReset() {
 	Log.d(Constants.LOG_TAG, "receivedReset");
 	stateChange(Connstate.NONE);
-  }
+    }
 
-  protected void receivedDirectHeartbeatRequest() {
-	Log.d(Constants.LOG_TAG, "receivedDirectHeartbeatRequest");
+    protected void receivedDirectHeartbeatRequest() {
+	Log.d(Constants.LOG_TAG, "receivedDirectHeartbeatRequest " + m_connId);
 	if (directTimerThread == null) {
-	  directTimerThread = new DirectTimerThread();
-	  directTimerThread.start();
+	    directTimerThread = new DirectTimerThread();
+	    directTimerThread.start();
 	}
-  }
+    }
 
-  protected void receivedHeartbeat() {
+    protected void receivedHeartbeat() {
 	m_LastSeen = System.currentTimeMillis();
 	System.out.printf("Received Heartbeat %d - I'm %s\n", m_LastSeen, this.getClass().getName());
-  }
+    }
 
-  protected void sendSyn() {
+    protected void sendSyn() {
 	Log.d(Constants.LOG_TAG, "sendSyn");
 	ByteBuffer out = ByteBuffer.allocate(1024);
 	out.putInt(Command.SYN.ordinal());
-	out.putInt(7);
-	m_connId = 7;
+	m_connId = (int) System.currentTimeMillis();
+	out.putInt(m_connId);// TODO set uuid
 	stateChange(Connstate.SYNACKWAIT);
 	try {
-	  send(out);
+	    send(out);
 	} catch (IOException e) {
-	  Log.e(Constants.LOG_TAG, "sendSyn caused an Exception", e);
+	    Log.e(Constants.LOG_TAG, "sendSyn caused an Exception", e);
 	}
-  }
+    }
 
-  protected void sendSynAck() {
+    protected void sendSynAck() {
 	Log.d(Constants.LOG_TAG, "sendSynAck " + m_connId);
 	ByteBuffer out = ByteBuffer.allocate(1024);
 	out.putInt(Command.SYNACK.ordinal());
 	out.putInt(m_connId);
 	try {
-	  send(out);
+	    send(out);
 	} catch (IOException e) {
-	  Log.e(Constants.LOG_TAG, "sendSynAck failed", e);
+	    Log.e(Constants.LOG_TAG, "sendSynAck failed", e);
 	}
-  }
+    }
 
-  protected void sendAck() {
+    protected void sendAck() {
 	Log.d(Constants.LOG_TAG, "sendAck");
 	ByteBuffer out = ByteBuffer.allocate(1024);
 	out.putInt(Command.ACK.ordinal());
 	out.putInt(m_connId);
 	try {
-	  send(out);
+	    send(out);
 	} catch (IOException e) {
-	  Log.e(Constants.LOG_TAG, "sendAck failed", e);
+	    Log.e(Constants.LOG_TAG, "sendAck failed", e);
 	}
-  }
+    }
 
-  protected void sendReset() {
+    protected void sendReset() {
 	Log.d(Constants.LOG_TAG, "sendReset");
 	ByteBuffer out = ByteBuffer.allocate(1024);
 	out.putInt(Command.RESET.ordinal());
 	out.putInt(m_connId);
 	try {
-	  send(out);
+	    send(out);
 	} catch (IOException e) {
-	  Log.e(Constants.LOG_TAG, "sendReset failed", e);
+	    Log.e(Constants.LOG_TAG, "sendReset failed", e);
 	}
 
 	stateChange(Connstate.NONE);
-  }
+    }
 
-  protected void sendDirectHeartbeatRequest() {
+    protected void sendDirectHeartbeatRequest() {
 	Log.d(Constants.LOG_TAG, "sendDirectHeartbeatRequest");
 	ByteBuffer out = ByteBuffer.allocate(1024);
 	out.putInt(Command.REQUEST_DIRECT_HEARTBEAT.ordinal());
 	out.putInt(m_connId);
 	try {
-	  send(out);
+	    send(out);
 	} catch (IOException e) {
-	  Log.e(Constants.LOG_TAG, "requestDirectHeartbeat failed", e);
+	    Log.e(Constants.LOG_TAG, "requestDirectHeartbeat failed", e);
 	}
-  }
+    }
 
-  protected void sendHeartbeat() {
+    protected void sendHeartbeat() {
 	Log.d(Constants.LOG_TAG, "sendHeartbeat");
 	ByteBuffer out = ByteBuffer.allocate(1024);
 	out.putInt(Command.HEARTBEAT.ordinal());
 	out.putInt(m_connId);
 	try {
-	  send(out);
+	    send(out);
 	} catch (IOException e) {
-	  Log.e(Constants.LOG_TAG, "sendHeartbeat failed", e);
+	    Log.e(Constants.LOG_TAG, "sendHeartbeat failed", e);
 	}
-  }
+    }
 
-  /**
-   * 
-   * @param timeout
-   *          in seconds
-   */
-  public void checkTimeout(int timeout) {
+    /**
+     * 
+     * @param timeout
+     *            in seconds
+     */
+    public void checkTimeout(int timeout) {
 	Log.d(Constants.LOG_TAG, "checkTimeout");
 	if (m_state != Connstate.ESTABLISHED) {
-	  return;
+	    return;
 	}
 	long time = System.currentTimeMillis();
 	if (m_LastSeen + timeout * 1000 < time) {
-	  System.out.printf("Timeout %s\n", this.getClass().getName());
-	  //request 3 times directHeartBeat
-	  if(directTimerThreadRequestCounter>0)
-	  {
+	    System.out.printf("Timeout %s\n", this.getClass().getName());
+	    // request 3 times directHeartBeat
+	    if (directTimerThreadRequestCounter > 0) {
 		sendDirectHeartbeatRequest();
 		directTimerThreadRequestCounter--;
-		//reset last_seen
-		m_LastSeen	=	System.currentTimeMillis();
-	  }
-	  else
+		// reset last_seen
+		m_LastSeen = System.currentTimeMillis();
+	    } else
 		sendReset();
 	}
-  }
+    }
 
-  protected void send(ByteBuffer command) throws IOException {
+    protected void send(ByteBuffer command) throws IOException {
 	ByteBuffer out = ByteBuffer.allocate(command.position() + Integer.SIZE);
 	out.putInt(Constants.PROTOCOL_CONNECTION); /* protocol header */
 	out.put(command.array(), 0, command.position());
 	mClientSocket.send(out);
-  }
+    }
 }
