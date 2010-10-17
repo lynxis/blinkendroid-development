@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InterruptedIOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.SocketException;
 import java.nio.ByteBuffer;
@@ -68,8 +69,12 @@ public class UDPAbstractBlinkendroidProtocol implements UDPDirectConnection {
     }
 
     protected void receive(DatagramPacket packet) throws IOException {
-
-	InetSocketAddress socketAddress = (InetSocketAddress) packet.getSocketAddress();
+	// InetSocketAddress socketAddress = (InetSocketAddress)
+	// packet.getSocketAddress();
+	InetAddress inetAddress = packet.getAddress();
+	int port = packet.getPort();
+	// System.out.println("address " + inetAddress + ":" + port);
+	InetSocketAddress socketAddress = new InetSocketAddress(inetAddress.getHostAddress(), port);
 	ByteBuffer in = ByteBuffer.wrap(packet.getData());
 	int proto = in.getInt();
 	int pos = in.position();
@@ -86,9 +91,11 @@ public class UDPAbstractBlinkendroidProtocol implements UDPDirectConnection {
 	}
 
 	CommandHandler handler = handlers.get(proto);
-	System.out.println("recieve proto " + proto + " handler " + handler.getClass().toString());
-	if (null != handler)
+
+	if (null != handler) {
+	    System.out.println("recieve proto " + proto + " handler " + handler.getClass().toString());
 	    handler.handle(socketAddress, in);
+	}
     }
 
     // Inner classes:
