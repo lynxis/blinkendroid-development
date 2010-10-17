@@ -16,7 +16,6 @@ import java.util.List;
 
 import org.cbase.blinkendroid.BlinkendroidApp;
 import org.cbase.blinkendroid.network.ConnectionListener;
-import org.cbase.blinkendroid.network.broadcast.ReceiverThread;
 
 import android.util.Log;
 
@@ -120,7 +119,8 @@ public class UDPAbstractBlinkendroidProtocol implements UDPDirectConnection {
 		while (running) {
 		    receiveData = new byte[1024];
 		    receivePacket = new DatagramPacket(receiveData, receiveData.length);
-		    Log.d(LOG_TAG, this.getName() + " received " + receivePacket.toString());
+		    // Log.d(LOG_TAG, this.getName() + " received " +
+		    // receivePacket.toString());
 		    try {
 			m_Socket.receive(receivePacket);
 			receive(receivePacket);

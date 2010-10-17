@@ -130,7 +130,7 @@ public class UDPServerProtocolManager extends UDPAbstractBlinkendroidProtocol im
 		out.putInt(Command.HEARTBEAT.ordinal());
 		out.putLong(System.currentTimeMillis());
 		sendBroadcast(out);
-		Log.d(LOG_TAG, "GlobalTimerThread Broadcast sent: " + out);
+		// Log.d(LOG_TAG, "GlobalTimerThread Broadcast sent: " + out);
 	    }
 	    Log.d(LOG_TAG, "GlobalTimerThread stopped");
 	}

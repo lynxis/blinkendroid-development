@@ -130,7 +130,8 @@ public class ReceiverThread extends Thread {
 	Log.d(LOG_TAG, "ReceiverThread: initiating shutdown");
 	running = false;
 	handlers.clear();
-	socket.close(); // interrupt
+	if (null != socket)
+	    socket.close(); // interrupt
 	interrupt();
 	try {
 	    join();
