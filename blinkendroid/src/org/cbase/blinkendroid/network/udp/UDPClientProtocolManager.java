@@ -6,7 +6,7 @@ import java.net.DatagramSocket;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 
-import org.cbase.blinkendroid.Constants;
+import org.cbase.blinkendroid.BlinkendroidApp;
 
 import android.util.Log;
 
@@ -22,7 +22,7 @@ public class UDPClientProtocolManager extends UDPAbstractBlinkendroidProtocol im
   @Override
   public void receive(DatagramPacket packet) throws IOException {
 	/* drop datapackets from other servers */
-	Log.d(Constants.LOG_TAG, "Received packet " + packet.toString());
+	Log.d(BlinkendroidApp.LOG_TAG, "Received packet " + packet.toString());
 	if (packet.getAddress().equals(m_SocketAddr.getAddress())) {
 	  super.receive(packet);
 	}

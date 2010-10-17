@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.cbase.blinkendroid.Constants;
+import org.cbase.blinkendroid.BlinkendroidApp;
 import org.cbase.blinkendroid.network.ConnectionListener;
 
 import android.util.Log;
@@ -52,9 +52,9 @@ public class UDPAbstractBlinkendroidProtocol implements UDPDirectConnection {
 	    if (!server)// TODO ugly hack, server needs to long
 		in.close();
 	    m_Socket.close();
-	    Log.d(Constants.LOG_TAG, getMyName() + " BlinkendroidProtocol: Socket closed.");
+	    Log.d(BlinkendroidApp.LOG_TAG, getMyName() + " BlinkendroidProtocol: Socket closed.");
 	} catch (IOException e) {
-	    Log.e(Constants.LOG_TAG, getMyName() + " BlinkendroidProtocol: closed failed ");
+	    Log.e(BlinkendroidApp.LOG_TAG, getMyName() + " BlinkendroidProtocol: closed failed ");
 	}
     }
 
@@ -63,7 +63,7 @@ public class UDPAbstractBlinkendroidProtocol implements UDPDirectConnection {
 	    receiverThread.shutdown();
 	}
 	handlers.clear();
-	Log.d(Constants.LOG_TAG, getMyName() + " Protocol shutdown.");
+	Log.d(BlinkendroidApp.LOG_TAG, getMyName() + " Protocol shutdown.");
 	// close();
     }
 
@@ -73,8 +73,8 @@ public class UDPAbstractBlinkendroidProtocol implements UDPDirectConnection {
 	ByteBuffer in = ByteBuffer.wrap(packet.getData());
 	int proto = in.getInt();
 	int pos = in.position();
-	Log.d(Constants.LOG_TAG, "BlinkendroidClient received Protocol: " + proto);
-	if (proto == Constants.PROTOCOL_HEARTBEAT) {
+	Log.d(BlinkendroidApp.LOG_TAG, "BlinkendroidClient received Protocol: " + proto);
+	if (proto == BlinkendroidApp.PROTOCOL_HEARTBEAT) {
 	    for (CommandHandler h : handlers.values()) {
 		// Log.d(Constants.LOG_TAG,
 		// "BlinkendroidClient get protocl heartrbeat for handler"
@@ -103,7 +103,7 @@ public class UDPAbstractBlinkendroidProtocol implements UDPDirectConnection {
 	public void run() {
 	    this.setName("--- ReceiverThread");
 	    running = true;
-	    Log.d(Constants.LOG_TAG, "InputThread started");
+	    Log.d(BlinkendroidApp.LOG_TAG, "InputThread started");
 	    byte[] receiveData;
 	    DatagramPacket receivePacket;
 	    try {
@@ -111,7 +111,7 @@ public class UDPAbstractBlinkendroidProtocol implements UDPDirectConnection {
 		while (running) {
 		    receiveData = new byte[1024];
 		    receivePacket = new DatagramPacket(receiveData, receiveData.length);
-		    Log.d(Constants.LOG_TAG, this.getName() + " received " + receivePacket.toString());
+		    Log.d(BlinkendroidApp.LOG_TAG, this.getName() + " received " + receivePacket.toString());
 		    try {
 			m_Socket.receive(receivePacket);
 			receive(receivePacket);
@@ -121,24 +121,24 @@ public class UDPAbstractBlinkendroidProtocol implements UDPDirectConnection {
 		    }
 		}
 	    } catch (SocketException e) {
-		Log.e(Constants.LOG_TAG, "InputThread Socket closed", e);
+		Log.e(BlinkendroidApp.LOG_TAG, "InputThread Socket closed", e);
 	    } catch (IOException e) {
-		Log.e(Constants.LOG_TAG, "InputThread IOException", e);
+		Log.e(BlinkendroidApp.LOG_TAG, "InputThread IOException", e);
 		e.printStackTrace();
 	    }
 	}
 
 	public void shutdown() {
-	    Log.d(Constants.LOG_TAG, getMyName() + " ReceiverThread shutdown start");
+	    Log.d(BlinkendroidApp.LOG_TAG, getMyName() + " ReceiverThread shutdown start");
 	    running = false;
 	    interrupt();
-	    Log.d(Constants.LOG_TAG, getMyName() + " ReceiverThread shutdown interrupted");
+	    Log.d(BlinkendroidApp.LOG_TAG, getMyName() + " ReceiverThread shutdown interrupted");
 	    try {
 		join();
 	    } catch (InterruptedException e) {
-		Log.e(Constants.LOG_TAG, getMyName() + " ReceiverThread join failed", e);
+		Log.e(BlinkendroidApp.LOG_TAG, getMyName() + " ReceiverThread join failed", e);
 	    }
-	    Log.d(Constants.LOG_TAG, getMyName() + " ReceiverThread shutdown joined & end");
+	    Log.d(BlinkendroidApp.LOG_TAG, getMyName() + " ReceiverThread shutdown joined & end");
 	}
     }
 

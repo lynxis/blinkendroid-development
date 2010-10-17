@@ -3,7 +3,7 @@ package org.cbase.blinkendroid.server;
 import java.net.SocketAddress;
 import java.util.HashMap;
 
-import org.cbase.blinkendroid.Constants;
+import org.cbase.blinkendroid.BlinkendroidApp;
 import org.cbase.blinkendroid.network.udp.BlinkendroidServerProtocol;
 import org.cbase.blinkendroid.network.udp.ClientSocket;
 import org.cbase.blinkendroid.network.udp.CommandHandler;
@@ -31,10 +31,10 @@ public class PlayerClient extends ConnectionState {
 
   public PlayerClient(PlayerManager playerManager, ClientSocket clientSocket) {
 	super(clientSocket, playerManager);
-	Log.d(Constants.LOG_TAG, "new PlayerClient");
+	Log.d(BlinkendroidApp.LOG_TAG, "new PlayerClient");
 	this.playerManager = playerManager;
 	this.m_clientSocket = clientSocket;
-	this.registerHandler(Constants.PROTOCOL_CONNECTION, this);
+	this.registerHandler(BlinkendroidApp.PROTOCOL_CONNECTION, this);
 	mBlinkenProtocol = new BlinkendroidServerProtocol(clientSocket);
   }
 

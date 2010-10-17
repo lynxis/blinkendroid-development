@@ -87,7 +87,7 @@ public class PlayerActivity extends Activity implements BlinkendroidListener, Ru
 		  public void run() {
 			ownerView.setVisibility(View.INVISIBLE);
 		  }
-		}, Constants.SHOW_OWNER_DURATION);
+		}, BlinkendroidApp.SHOW_OWNER_DURATION);
 		return false;
 	  }
 	});
@@ -97,7 +97,7 @@ public class PlayerActivity extends Activity implements BlinkendroidListener, Ru
 
 	// forcing the screen brightness to max out while playing
 	if (isAllowedToChangeBrightness()) {
-	  Log.d(Constants.LOG_TAG, "Maxing out the brightness");
+	  Log.d(BlinkendroidApp.LOG_TAG, "Maxing out the brightness");
 	  WindowManager.LayoutParams lp = getWindow().getAttributes();
 	  lp.screenBrightness = 1.0f;
 	  getWindow().setAttributes(lp);
@@ -133,7 +133,7 @@ public class PlayerActivity extends Activity implements BlinkendroidListener, Ru
 	if (addr == null) {
 	  addr = "127.0.0.1";
 	}
-	int port = getIntent().getIntExtra(INTENT_EXTRA_PORT, Constants.BROADCAST_SERVER_PORT);
+	int port = getIntent().getIntExtra(INTENT_EXTRA_PORT, BlinkendroidApp.BROADCAST_SERVER_PORT);
 	InetSocketAddress socketAddr = new InetSocketAddress(addr, port);
 	blinkendroidClient = new BlinkendroidClient(socketAddr, this);
 	/*
@@ -173,7 +173,7 @@ public class PlayerActivity extends Activity implements BlinkendroidListener, Ru
   }
 
   public void serverTime(final long serverTime) {
-	Log.d(Constants.LOG_TAG, "*** time " + serverTime);
+	Log.d(BlinkendroidApp.LOG_TAG, "*** time " + serverTime);
 	final long timeDelta = System.nanoTime() / 1000000 - serverTime;
 	runOnUiThread(new Runnable() {
 
@@ -184,7 +184,7 @@ public class PlayerActivity extends Activity implements BlinkendroidListener, Ru
   }
 
   public void play(final int x, final int y, final long startTime, final BLM movie) {
-	Log.d(Constants.LOG_TAG, "*** play " + startTime);
+	Log.d(BlinkendroidApp.LOG_TAG, "*** play " + startTime);
 	runOnUiThread(new Runnable() {
 
 	  public void run() {
@@ -199,7 +199,7 @@ public class PlayerActivity extends Activity implements BlinkendroidListener, Ru
   }
 
   public void clip(final float startX, final float startY, final float endX, final float endY) {
-	Log.d(Constants.LOG_TAG, "*** clip " + startX + "," + startY + "," + endX + "," + endY);
+	Log.d(BlinkendroidApp.LOG_TAG, "*** clip " + startX + "," + startY + "," + endX + "," + endY);
 	runOnUiThread(new Runnable() {
 
 	  public void run() {
@@ -209,7 +209,7 @@ public class PlayerActivity extends Activity implements BlinkendroidListener, Ru
   }
 
   public void arrow(final long duration, final float angle, final int color) {
-	Log.d(Constants.LOG_TAG, "*** arrow " + angle + " " + duration);
+	Log.d(BlinkendroidApp.LOG_TAG, "*** arrow " + angle + " " + duration);
 	runOnUiThread(new Runnable() {
 
 	  public void run() {
@@ -223,7 +223,7 @@ public class PlayerActivity extends Activity implements BlinkendroidListener, Ru
   }
 
   public void connectionOpened(final ClientSocket clientSocket) {
-	Log.d(Constants.LOG_TAG, "*** connectionOpened " + clientSocket.getDestinationAddress().toString());
+	Log.d(BlinkendroidApp.LOG_TAG, "*** connectionOpened " + clientSocket.getDestinationAddress().toString());
 	runOnUiThread(new Runnable() {
 
 	  public void run() {
@@ -233,7 +233,7 @@ public class PlayerActivity extends Activity implements BlinkendroidListener, Ru
   }
 
   public void connectionClosed(final ClientSocket clientSocket) {
-	Log.d(Constants.LOG_TAG, "*** connectionClosed " + clientSocket.getDestinationAddress().toString());
+	Log.d(BlinkendroidApp.LOG_TAG, "*** connectionClosed " + clientSocket.getDestinationAddress().toString());
 	runOnUiThread(new Runnable() {
 
 	  public void run() {
@@ -248,7 +248,7 @@ public class PlayerActivity extends Activity implements BlinkendroidListener, Ru
 	runOnUiThread(new Runnable() {
 
 	  public void run() {
-		Log.w(Constants.LOG_TAG, getString(R.string.connection_failed) + ": " + message);
+		Log.w(BlinkendroidApp.LOG_TAG, getString(R.string.connection_failed) + ": " + message);
 		playerView.stopPlaying();
 		ownerView.setVisibility(View.VISIBLE);
 		new AlertDialog.Builder(PlayerActivity.this).setIcon(android.R.drawable.ic_dialog_alert)

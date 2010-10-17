@@ -17,10 +17,14 @@
 
 package org.cbase.blinkendroid;
 
+import android.app.Application;
+
 /**
- * @author Andreas Schildbach
+ * Our Application class
+ * @author Benjamin Weiss
+ * (c) 2010
  */
-public final class Constants {
+public class BlinkendroidApp extends Application{
 
     public static final String LOG_TAG = "blinkendroid";
     public static final int BROADCAST_ANNOUCEMENT_SERVER_PORT = 6998;
@@ -43,4 +47,6 @@ public final class Constants {
     public static final Integer PROTOCOL_CONNECTION = 1;
     public static final Integer PROTOCOL_PLAYER = 42;
     public static final Integer PROTOCOL_HEARTBEAT = 23;
+    
+    
 }

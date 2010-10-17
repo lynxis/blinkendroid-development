@@ -23,7 +23,7 @@ import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.cbase.blinkendroid.Constants;
+import org.cbase.blinkendroid.BlinkendroidApp;
 import org.cbase.blinkendroid.network.ConnectionListener;
 import org.cbase.blinkendroid.network.tcp.TCPVideoServer;
 import org.cbase.blinkendroid.network.udp.UDPServerProtocolManager;
@@ -77,9 +77,9 @@ public class BlinkendroidServer {
 
 	    // how is the protocol connected to the logic ?
 	} catch (SocketException e) {
-	    Log.e(Constants.LOG_TAG, "SocketException in BlinkendroidServer", e);
+	    Log.e(BlinkendroidApp.LOG_TAG, "SocketException in BlinkendroidServer", e);
 	} catch (IOException e) {
-	    Log.e(Constants.LOG_TAG, "IOException in BlinkendroidServer", e);
+	    Log.e(BlinkendroidApp.LOG_TAG, "IOException in BlinkendroidServer", e);
 	}
     }
 

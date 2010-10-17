@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.cbase.blinkendroid.Constants;
+import org.cbase.blinkendroid.BlinkendroidApp;
 import org.cbase.blinkendroid.network.ConnectionListener;
 import org.cbase.blinkendroid.network.tcp.TCPVideoServer;
 import org.cbase.blinkendroid.network.udp.ClientSocket;
@@ -84,7 +84,7 @@ public class PlayerManager implements ConnectionListener {
 
   public synchronized PlayerClient addClientToMatrix(PlayerClient playerClient) {
 	if (!running) {
-	  Log.e(Constants.LOG_TAG, "PlayerManager not running ignore addClient ");
+	  Log.e(BlinkendroidApp.LOG_TAG, "PlayerManager not running ignore addClient ");
 	  return null;
 	}
 	if (startTime == 0)
@@ -119,7 +119,7 @@ public class PlayerManager implements ConnectionListener {
 		maxX++;
 	  }
 	}
-	Log.i(Constants.LOG_TAG, "added Client at pos " + playerClient.x + ":" + playerClient.y);
+	Log.i(BlinkendroidApp.LOG_TAG, "added Client at pos " + playerClient.x + ":" + playerClient.y);
 	mMatrixClients[playerClient.y][playerClient.x] = playerClient;
 
 	playerClient.getBlinkenProtocol().play(startTime, null); // send a play
@@ -188,17 +188,17 @@ public class PlayerManager implements ConnectionListener {
 
   public synchronized void shutdown() {
 	running = false;
-	Log.i(Constants.LOG_TAG, "PlayerManager.shutdown() start");
+	Log.i(BlinkendroidApp.LOG_TAG, "PlayerManager.shutdown() start");
 	for (int i = 0; i < maxY; i++) {
 	  for (int j = 0; j < maxX; j++) {
 		if (null != mMatrixClients[i][j]) {
-		  Log.i(Constants.LOG_TAG, "shutdown PlayerClient " + j + ":" + i);
+		  Log.i(BlinkendroidApp.LOG_TAG, "shutdown PlayerClient " + j + ":" + i);
 		  mMatrixClients[i][j].shutdown();
 		}
 	  }
 	}
 	timeouter.shutdown();
-	Log.i(Constants.LOG_TAG, "PlayerManager.shutdown() end!!!");
+	Log.i(BlinkendroidApp.LOG_TAG, "PlayerManager.shutdown() end!!!");
 
   }
 
@@ -213,11 +213,11 @@ public class PlayerManager implements ConnectionListener {
 
   public synchronized void removeClientFromMatrix(PlayerClient playerClient) {
 	if (!running) {
-	  Log.e(Constants.LOG_TAG, "PlayerManager not running ignore removeClient");
+	  Log.e(BlinkendroidApp.LOG_TAG, "PlayerManager not running ignore removeClient");
 	  return;
 	}
 
-	Log.i(Constants.LOG_TAG, "removeClient " + playerClient.x + ":" + playerClient.y);
+	Log.i(BlinkendroidApp.LOG_TAG, "removeClient " + playerClient.x + ":" + playerClient.y);
 	mMatrixClients[playerClient.y][playerClient.x] = null;
 
 	boolean newMaxX = true;
@@ -229,7 +229,7 @@ public class PlayerManager implements ConnectionListener {
 	}
 	if (newMaxX && maxX > 1) {
 	  maxX--;
-	  Log.i(Constants.LOG_TAG, "newMaxX " + maxX);
+	  Log.i(BlinkendroidApp.LOG_TAG, "newMaxX " + maxX);
 	}
 
 	boolean newMaxY = true;
@@ -241,18 +241,18 @@ public class PlayerManager implements ConnectionListener {
 	}
 	if (newMaxY && maxY > 1) {
 	  maxY--;
-	  Log.i(Constants.LOG_TAG, "newMaxY " + maxY);
+	  Log.i(BlinkendroidApp.LOG_TAG, "newMaxY " + maxY);
 	}
 	clip(true);
   }
 
   public synchronized void removeClient(PlayerClient playerClient) {
 	if (!running) {
-	  Log.e(Constants.LOG_TAG, "PlayerManager not running ignore removeClient");
+	  Log.e(BlinkendroidApp.LOG_TAG, "PlayerManager not running ignore removeClient");
 	  return;
 	}
 
-	Log.i(Constants.LOG_TAG, "removeClient " + playerClient.x + ":" + playerClient.y);
+	Log.i(BlinkendroidApp.LOG_TAG, "removeClient " + playerClient.x + ":" + playerClient.y);
 	mMatrixClients[playerClient.y][playerClient.x] = null;
 
 	boolean newMaxX = true;
@@ -264,7 +264,7 @@ public class PlayerManager implements ConnectionListener {
 	}
 	if (newMaxX && maxX > 1) {
 	  maxX--;
-	  Log.i(Constants.LOG_TAG, "newMaxX " + maxX);
+	  Log.i(BlinkendroidApp.LOG_TAG, "newMaxX " + maxX);
 	}
 
 	boolean newMaxY = true;
@@ -276,7 +276,7 @@ public class PlayerManager implements ConnectionListener {
 	}
 	if (newMaxY && maxY > 1) {
 	  maxY--;
-	  Log.i(Constants.LOG_TAG, "newMaxY " + maxY);
+	  Log.i(BlinkendroidApp.LOG_TAG, "newMaxY " + maxY);
 	}
 	clip(true);
   }
@@ -287,11 +287,11 @@ public class PlayerManager implements ConnectionListener {
 	} else {
 	  filename = blmHeader.filename;
 	  videoServer.setVideo(filename);
-	  Log.i(Constants.LOG_TAG, "switch to movie " + blmHeader.title);
+	  Log.i(BlinkendroidApp.LOG_TAG, "switch to movie " + blmHeader.title);
 	  for (int i = 0; i < maxY; i++) {
 		for (int j = 0; j < maxX; j++) {
 		  if (null != mMatrixClients[i][j]) {
-			Log.i(Constants.LOG_TAG, "play PlayerClient " + j + ":" + i + " " + filename);
+			Log.i(BlinkendroidApp.LOG_TAG, "play PlayerClient " + j + ":" + i + " " + filename);
 			mMatrixClients[i][j].getBlinkenProtocol().play(startTime, filename);
 		  }
 		}
@@ -375,9 +375,9 @@ public class PlayerManager implements ConnectionListener {
 	  }
 	} else { // no client found
 	  // System.out.println("handle without client");
-	  if (proto == Constants.PROTOCOL_CONNECTION) {
+	  if (proto == BlinkendroidApp.PROTOCOL_CONNECTION) {
 		int data = protoData.getInt();
-		Log.d(Constants.LOG_TAG, "Playermanager data " + data);
+		Log.d(BlinkendroidApp.LOG_TAG, "Playermanager data " + data);
 		if (ConnectionState.Command.SYN.ordinal() == data) {
 		  // new connection
 		  try {
@@ -389,9 +389,9 @@ public class PlayerManager implements ConnectionListener {
 			// protocol
 			// handler
 		  } catch (SocketException e) {
-			Log.e(Constants.LOG_TAG, "SocketException in PlayerManager", e);
+			Log.e(BlinkendroidApp.LOG_TAG, "SocketException in PlayerManager", e);
 		  } catch (IOException e) {
-			Log.e(Constants.LOG_TAG, "IOException in PlayerManager", e);
+			Log.e(BlinkendroidApp.LOG_TAG, "IOException in PlayerManager", e);
 		  }
 		}
 	  }
@@ -408,7 +408,7 @@ public class PlayerManager implements ConnectionListener {
 	@Override
 	public void run() {
 	  this.setName("SRV PlayerManager Timeouter");
-	  Log.i(Constants.LOG_TAG, "TimeouterThread started");
+	  Log.i(BlinkendroidApp.LOG_TAG, "TimeouterThread started");
 	  while (running) {
 		try {
 		  Thread.sleep(3000);
@@ -419,13 +419,13 @@ public class PlayerManager implements ConnectionListener {
 		  break;
 		checkTimeouts();
 	  }
-	  Log.d(Constants.LOG_TAG, "TimeouterThread stopped");
+	  Log.d(BlinkendroidApp.LOG_TAG, "TimeouterThread stopped");
 	}
 
 	public void shutdown() {
 	  running = false;
 	  interrupt();
-	  Log.d(Constants.LOG_TAG, "TimeouterThread initiating shutdown");
+	  Log.d(BlinkendroidApp.LOG_TAG, "TimeouterThread initiating shutdown");
 	}
   }
 }

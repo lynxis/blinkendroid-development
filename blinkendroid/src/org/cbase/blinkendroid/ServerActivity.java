@@ -86,12 +86,12 @@ public class ServerActivity extends Activity implements ConnectionListener, BLMM
 	  public void onClick(View v) {
 		if (null == blinkendroidServer) {
 		  // start recieverthread
-		  recieverThread = new ReceiverThread(Constants.BROADCAST_ANNOUCEMENT_SERVER_PORT,
-			  Constants.CLIENT_BROADCAST_COMMAND);
+		  recieverThread = new ReceiverThread(BlinkendroidApp.BROADCAST_ANNOUCEMENT_SERVER_PORT,
+			  BlinkendroidApp.CLIENT_BROADCAST_COMMAND);
 		  recieverThread.addHandler(ticketManager);
 		  recieverThread.start();
 
-		  blinkendroidServer = new BlinkendroidServer(Constants.BROADCAST_SERVER_PORT);
+		  blinkendroidServer = new BlinkendroidServer(BlinkendroidApp.BROADCAST_SERVER_PORT);
 		  blinkendroidServer.addConnectionListener(ServerActivity.this);
 		  blinkendroidServer.addConnectionListener(ticketManager);
 
@@ -143,7 +143,7 @@ public class ServerActivity extends Activity implements ConnectionListener, BLMM
 
 		final Intent intent = new Intent(ServerActivity.this, PlayerActivity.class);
 		intent.putExtra(PlayerActivity.INTENT_EXTRA_IP, NetworkUtils.getLocalIpAddress());
-		intent.putExtra(PlayerActivity.INTENT_EXTRA_PORT, Constants.BROADCAST_SERVER_PORT);
+		intent.putExtra(PlayerActivity.INTENT_EXTRA_PORT, BlinkendroidApp.BROADCAST_SERVER_PORT);
 		startActivity(intent);
 	  }
 	});
@@ -166,7 +166,7 @@ public class ServerActivity extends Activity implements ConnectionListener, BLMM
   }
 
   public void connectionOpened(final ClientSocket clientSocket) {
-	Log.d(Constants.LOG_TAG, "ServerActivity connectionOpened " + clientSocket.getDestinationAddress().toString());
+	Log.d(BlinkendroidApp.LOG_TAG, "ServerActivity connectionOpened " + clientSocket.getDestinationAddress().toString());
 	runOnUiThread(new Runnable() {
 
 	  public void run() {
@@ -176,7 +176,7 @@ public class ServerActivity extends Activity implements ConnectionListener, BLMM
   }
 
   public void connectionClosed(final ClientSocket clientSocket) {
-	Log.d(Constants.LOG_TAG, "ServerActivity connectionClosed " + clientSocket.getDestinationAddress().toString());
+	Log.d(BlinkendroidApp.LOG_TAG, "ServerActivity connectionClosed " + clientSocket.getDestinationAddress().toString());
 	runOnUiThread(new Runnable() {
 
 	  public void run() {

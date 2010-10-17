@@ -26,7 +26,7 @@ import java.net.SocketAddress;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 
-import org.cbase.blinkendroid.Constants;
+import org.cbase.blinkendroid.BlinkendroidApp;
 import org.cbase.blinkendroid.network.ConnectionListener;
 import org.cbase.blinkendroid.network.udp.ConnectionState.Command;
 import org.cbase.blinkendroid.server.PlayerManager;
@@ -91,11 +91,11 @@ public class UDPServerProtocolManager extends UDPAbstractBlinkendroidProtocol im
 	    // removing constant creation of InetSocketAddresses
 	    send(
 		    new InetSocketAddress(InetAddress.getAllByName("255.255.255.255")[0],
-			    Constants.BROADCAST_CLIENT_PORT), out);
+			    BlinkendroidApp.BROADCAST_CLIENT_PORT), out);
 	} catch (UnknownHostException e) {
-	    Log.e(Constants.LOG_TAG, "Don't know where to send the broadcast", e);
+	    Log.e(BlinkendroidApp.LOG_TAG, "Don't know where to send the broadcast", e);
 	} catch (IOException e) {
-	    Log.e(Constants.LOG_TAG, "IOException", e);
+	    Log.e(BlinkendroidApp.LOG_TAG, "IOException", e);
 	}
     }
 
@@ -115,7 +115,7 @@ public class UDPServerProtocolManager extends UDPAbstractBlinkendroidProtocol im
 	@Override
 	public void run() {
 	    this.setName("SRV Send GlobalTimer");
-	    Log.d(Constants.LOG_TAG, "GlobalTimerThread started");
+	    Log.d(BlinkendroidApp.LOG_TAG, "GlobalTimerThread started");
 	    while (running) {
 		try {
 		    Thread.sleep(1000);
@@ -126,19 +126,19 @@ public class UDPServerProtocolManager extends UDPAbstractBlinkendroidProtocol im
 		    break;
 
 		ByteBuffer out = ByteBuffer.allocate(128);
-		out.putInt(Constants.PROTOCOL_HEARTBEAT);
+		out.putInt(BlinkendroidApp.PROTOCOL_HEARTBEAT);
 		out.putInt(Command.HEARTBEAT.ordinal());
 		out.putLong(System.currentTimeMillis());
 		sendBroadcast(out);
-		Log.d(Constants.LOG_TAG, "GlobalTimerThread Broadcast sent: " + out);
+		Log.d(BlinkendroidApp.LOG_TAG, "GlobalTimerThread Broadcast sent: " + out);
 	    }
-	    Log.d(Constants.LOG_TAG, "GlobalTimerThread stopped");
+	    Log.d(BlinkendroidApp.LOG_TAG, "GlobalTimerThread stopped");
 	}
 
 	public void shutdown() {
 	    running = false;
 	    interrupt();
-	    Log.d(Constants.LOG_TAG, "GlobalTimerThread initiating shutdown");
+	    Log.d(BlinkendroidApp.LOG_TAG, "GlobalTimerThread initiating shutdown");
 	}
     }
 

@@ -30,9 +30,9 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
-import android.content.SharedPreferences;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -90,7 +90,7 @@ public class LoginActivity extends Activity implements Runnable {
 		final ListEntry entry = serverList.get(position);
 		final Intent intent = new Intent(LoginActivity.this, PlayerActivity.class);
 		intent.putExtra(PlayerActivity.INTENT_EXTRA_IP, entry.ip);
-		intent.putExtra(PlayerActivity.INTENT_EXTRA_PORT, Constants.BROADCAST_SERVER_PORT);
+		intent.putExtra(PlayerActivity.INTENT_EXTRA_PORT, BlinkendroidApp.BROADCAST_SERVER_PORT);
 		startActivity(intent);
 	  }
 	});
@@ -121,12 +121,12 @@ public class LoginActivity extends Activity implements Runnable {
 	senderThread.start();
 
 	// recieve Tickets
-	receiverThread = new ReceiverThread(Constants.BROADCAST_ANNOUCEMENT_CLIENT_TICKET_PORT,
-		Constants.SERVER_TICKET_COMMAND);
+	receiverThread = new ReceiverThread(BlinkendroidApp.BROADCAST_ANNOUCEMENT_CLIENT_TICKET_PORT,
+		BlinkendroidApp.SERVER_TICKET_COMMAND);
 	receiverThread.addHandler(new IPeerHandler() {
 
 	  public void foundPeer(final String serverName, final String serverIp, final int protocolVersion) {
-		Log.i(Constants.LOG_TAG, "recieved Ticket");
+		Log.i(BlinkendroidApp.LOG_TAG, "recieved Ticket");
 		runOnUiThread(new Runnable() {
 
 		  public void run() {
@@ -153,7 +153,7 @@ public class LoginActivity extends Activity implements Runnable {
 				.setPositiveButton(getString(R.string.check_for_update), new OnClickListener() {
 
 				  public void onClick(DialogInterface dialog, int which) {
-					startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(Constants.DOWNLOAD_URL)));
+					startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(BlinkendroidApp.DOWNLOAD_URL)));
 					finish();
 
 				  }
@@ -233,7 +233,7 @@ public class LoginActivity extends Activity implements Runnable {
 		  dialog.dismiss();
 		  final Intent intent = new Intent(LoginActivity.this, PlayerActivity.class);
 		  intent.putExtra(PlayerActivity.INTENT_EXTRA_IP, ip.getText().toString());
-		  intent.putExtra(PlayerActivity.INTENT_EXTRA_PORT, Constants.BROADCAST_SERVER_PORT);
+		  intent.putExtra(PlayerActivity.INTENT_EXTRA_PORT, BlinkendroidApp.BROADCAST_SERVER_PORT);
 		  startActivity(intent);
 		  return true;
 		}
@@ -247,7 +247,7 @@ public class LoginActivity extends Activity implements Runnable {
 	}
 
 	case R.id.login_options_instructions: {
-	  startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(Constants.ABOUT_URL)));
+	  startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(BlinkendroidApp.ABOUT_URL)));
 	  return true;
 	}
 

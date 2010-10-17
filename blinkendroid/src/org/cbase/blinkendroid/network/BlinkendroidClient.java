@@ -21,7 +21,7 @@ import java.io.IOException;
 import java.net.DatagramSocket;
 import java.net.InetSocketAddress;
 
-import org.cbase.blinkendroid.Constants;
+import org.cbase.blinkendroid.BlinkendroidApp;
 import org.cbase.blinkendroid.network.udp.BlinkendroidClientProtocol;
 import org.cbase.blinkendroid.network.udp.ClientConnectionState;
 import org.cbase.blinkendroid.network.udp.ClientSocket;
@@ -45,24 +45,24 @@ public class BlinkendroidClient extends Thread {
 
   @Override
   public void start() {
-	Log.d(Constants.LOG_TAG, "trying to connect to server: " + socketAddress);
+	Log.d(BlinkendroidApp.LOG_TAG, "trying to connect to server: " + socketAddress);
 	try {
-	  socket = new DatagramSocket(Constants.BROADCAST_CLIENT_PORT);
+	  socket = new DatagramSocket(BlinkendroidApp.BROADCAST_CLIENT_PORT);
 	  System.out.printf("UDP SOCKET CREATED");
 	  socket.setReuseAddress(true);
 	  long t = System.currentTimeMillis();
 	  protocol = new UDPClientProtocolManager(socket, socketAddress);
 
 	  m_connstate = new ClientConnectionState(new ClientSocket(protocol, socketAddress), listener);
-	  protocol.registerHandler(Constants.PROTOCOL_CONNECTION, m_connstate);
+	  protocol.registerHandler(BlinkendroidApp.PROTOCOL_CONNECTION, m_connstate);
 	  m_connstate.openConnection();
 
 	  blinkenProto = new BlinkendroidClientProtocol(listener);
-	  protocol.registerHandler(Constants.PROTOCOL_PLAYER, blinkenProto);
-	  Log.i(Constants.LOG_TAG, "connected " + (System.currentTimeMillis() - t));
+	  protocol.registerHandler(BlinkendroidApp.PROTOCOL_PLAYER, blinkenProto);
+	  Log.i(BlinkendroidApp.LOG_TAG, "connected " + (System.currentTimeMillis() - t));
 
 	} catch (final IOException x) {
-	  Log.e(Constants.LOG_TAG, "connection failed");
+	  Log.e(BlinkendroidApp.LOG_TAG, "connection failed");
 	  x.printStackTrace();
 	  listener.connectionFailed(x.getClass().getName() + ": " + x.getMessage());
 	}
@@ -77,7 +77,7 @@ public class BlinkendroidClient extends Thread {
 	  if (!socket.isClosed())
 		socket.close();
 	}
-	Log.d(Constants.LOG_TAG, "client shutdown completed");
+	Log.d(BlinkendroidApp.LOG_TAG, "client shutdown completed");
   }
 
   public void locateMe() {

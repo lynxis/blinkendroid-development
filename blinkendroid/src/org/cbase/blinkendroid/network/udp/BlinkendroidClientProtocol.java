@@ -5,10 +5,9 @@ import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.nio.ByteBuffer;
 
-import org.cbase.blinkendroid.Constants;
+import org.cbase.blinkendroid.BlinkendroidApp;
 import org.cbase.blinkendroid.network.BlinkendroidListener;
 import org.cbase.blinkendroid.network.tcp.BlinkendroidVideoClientProtocol;
-import org.cbase.blinkendroid.network.udp.ConnectionState.Command;
 import org.cbase.blinkendroid.player.bml.BLM;
 
 import android.util.Log;
@@ -23,7 +22,7 @@ public class BlinkendroidClientProtocol extends BlinkendroidProtocol implements 
   public void handle(SocketAddress from, ByteBuffer in) throws IOException {
 	int command = in.getInt();
 
-	Log.d(Constants.LOG_TAG, "received: " + command);
+	Log.d(BlinkendroidApp.LOG_TAG, "received: " + command);
 	if (mListener != null) {
 	  if (command == COMMAND_HEARTBEAT) {
 		mListener.serverTime(in.getLong());

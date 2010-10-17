@@ -22,7 +22,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 
-import org.cbase.blinkendroid.Constants;
+import org.cbase.blinkendroid.BlinkendroidApp;
 
 import android.util.Log;
 
@@ -45,31 +45,31 @@ public class SenderThread extends Thread {
   public SenderThread(String name) {
 	// workaround: remove spaces, as those currently break the protocol
 	name = name.replaceAll("\\s", "");
-	message = Constants.BROADCAST_PROTOCOL_VERSION + " " + Constants.CLIENT_BROADCAST_COMMAND + " " + name;
+	message = BlinkendroidApp.BROADCAST_PROTOCOL_VERSION + " " + BlinkendroidApp.CLIENT_BROADCAST_COMMAND + " " + name;
   }
 
   @Override
   public void run() {
 	try {
 	  this.setName("SRV Send Annouce");
-	  socket = new DatagramSocket(Constants.BROADCAST_ANNOUCEMENT_CLIENT_PORT);
+	  socket = new DatagramSocket(BlinkendroidApp.BROADCAST_ANNOUCEMENT_CLIENT_PORT);
 	  socket.setReuseAddress(true);
 	  socket.setBroadcast(true);
-	  Log.d(Constants.LOG_TAG, "Sender thread started.");
+	  Log.d(BlinkendroidApp.LOG_TAG, "Sender thread started.");
 	  // TODO have to figure out whether
 	  // getAllByName("255.255.255.255")[0]; or
 	  // getByName("255.255.255.255"); is more useful.
 	  group = InetAddress.getAllByName("255.255.255.255")[0];
-	  Log.i(Constants.LOG_TAG, "Server ip: " + group.toString());
+	  Log.i(BlinkendroidApp.LOG_TAG, "Server ip: " + group.toString());
 
 	  while (running) {
 		final byte[] messageBytes = message.getBytes("UTF-8");
 		final DatagramPacket initPacket = new DatagramPacket(messageBytes, messageBytes.length, group,
-			Constants.BROADCAST_ANNOUCEMENT_SERVER_PORT);
-		Log.d(Constants.LOG_TAG, "Broadcasting Packet");
+			BlinkendroidApp.BROADCAST_ANNOUCEMENT_SERVER_PORT);
+		Log.d(BlinkendroidApp.LOG_TAG, "Broadcasting Packet");
 		socket.send(initPacket);
 
-		Log.d(Constants.LOG_TAG, "Broadcasting: '" + message + "'");
+		Log.d(BlinkendroidApp.LOG_TAG, "Broadcasting: '" + message + "'");
 		try {
 		  Thread.sleep(5000);
 		} catch (final InterruptedException x) {
@@ -80,12 +80,12 @@ public class SenderThread extends Thread {
 	  socket.close();
 
 	} catch (final IOException x) {
-	  Log.e(Constants.LOG_TAG, "problem sending", x);
+	  Log.e(BlinkendroidApp.LOG_TAG, "problem sending", x);
 	}
   }
 
   public void shutdown() {
-	Log.d(Constants.LOG_TAG, "SenderThread: initiating shutdown");
+	Log.d(BlinkendroidApp.LOG_TAG, "SenderThread: initiating shutdown");
 	running = false;
 
 	if (socket != null) {

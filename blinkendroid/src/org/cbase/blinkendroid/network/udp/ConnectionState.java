@@ -5,7 +5,7 @@ import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.nio.ByteBuffer;
 
-import org.cbase.blinkendroid.Constants;
+import org.cbase.blinkendroid.BlinkendroidApp;
 import org.cbase.blinkendroid.network.ConnectionListener;
 
 import android.util.Log;
@@ -46,7 +46,7 @@ public class ConnectionState implements CommandHandler {
 	@Override
 	public void run() {
 	    this.setName("SRV Send DirectTimer");
-	    Log.d(Constants.LOG_TAG, "DirectTimerThread started");
+	    Log.d(BlinkendroidApp.LOG_TAG, "DirectTimerThread started");
 	    while (running) {
 		try {
 		    Thread.sleep(1000);
@@ -56,25 +56,25 @@ public class ConnectionState implements CommandHandler {
 		if (!running) // fast exit
 		    break;
 
-		Log.d(Constants.LOG_TAG, "DirectTimerThread running for " + m_connId);
+		Log.d(BlinkendroidApp.LOG_TAG, "DirectTimerThread running for " + m_connId);
 		ByteBuffer out = ByteBuffer.allocate(128);
-		out.putInt(Constants.PROTOCOL_HEARTBEAT);
+		out.putInt(BlinkendroidApp.PROTOCOL_HEARTBEAT);
 		out.putInt(ConnectionState.Command.HEARTBEAT.ordinal());
 		out.putLong(System.currentTimeMillis());
 		try {
 		    // ConnectionState.this.send(out); this adds protocol 1
 		    mClientSocket.send(out);
 		} catch (IOException e) {
-		    Log.e(Constants.LOG_TAG, "", e);
+		    Log.e(BlinkendroidApp.LOG_TAG, "", e);
 		}
 	    }
-	    Log.d(Constants.LOG_TAG, "DirectTimerThread stopped");
+	    Log.d(BlinkendroidApp.LOG_TAG, "DirectTimerThread stopped");
 	}
 
 	public void shutdown() {
 	    running = false;
 	    interrupt();
-	    Log.d(Constants.LOG_TAG, "DirectTimerThread initiating shutdown");
+	    Log.d(BlinkendroidApp.LOG_TAG, "DirectTimerThread initiating shutdown");
 	}
     }
 
@@ -144,7 +144,7 @@ public class ConnectionState implements CommandHandler {
     }
 
     protected void stateChange(Connstate newState) {
-	Log.d(Constants.LOG_TAG, "ConnectionStateChanged " + newState);
+	Log.d(BlinkendroidApp.LOG_TAG, "ConnectionStateChanged " + newState);
 	if (newState == m_state) {
 	    return;
 	}
@@ -172,7 +172,7 @@ public class ConnectionState implements CommandHandler {
     }
 
     protected void receivedSynAck() throws IOException {
-	Log.d(Constants.LOG_TAG, "receivedSynAck");
+	Log.d(BlinkendroidApp.LOG_TAG, "receivedSynAck");
 	if (m_state == Connstate.SYNACKWAIT) {
 	    stateChange(Connstate.ESTABLISHED);
 	    sendAck();
@@ -182,7 +182,7 @@ public class ConnectionState implements CommandHandler {
     protected void receivedSyn(int connId) {
 	if (m_state == Connstate.NONE) {
 	    m_connId = connId;
-	    Log.d(Constants.LOG_TAG, "receivedSyn");
+	    Log.d(BlinkendroidApp.LOG_TAG, "receivedSyn");
 	    sendSynAck();
 	    stateChange(Connstate.ACKWAIT);
 	}
@@ -190,18 +190,18 @@ public class ConnectionState implements CommandHandler {
 
     protected void receivedAck() {
 	if (m_state == Connstate.ACKWAIT) {
-	    Log.d(Constants.LOG_TAG, "receivedAck");
+	    Log.d(BlinkendroidApp.LOG_TAG, "receivedAck");
 	    stateChange(Connstate.ESTABLISHED);
 	}
     }
 
     protected void receivedReset() {
-	Log.d(Constants.LOG_TAG, "receivedReset");
+	Log.d(BlinkendroidApp.LOG_TAG, "receivedReset");
 	stateChange(Connstate.NONE);
     }
 
     protected void receivedDirectHeartbeatRequest() {
-	Log.d(Constants.LOG_TAG, "receivedDirectHeartbeatRequest " + m_connId);
+	Log.d(BlinkendroidApp.LOG_TAG, "receivedDirectHeartbeatRequest " + m_connId);
 	if (directTimerThread == null) {
 	    directTimerThread = new DirectTimerThread();
 	    directTimerThread.start();
@@ -214,7 +214,7 @@ public class ConnectionState implements CommandHandler {
     }
 
     protected void sendSyn() {
-	Log.d(Constants.LOG_TAG, "sendSyn");
+	Log.d(BlinkendroidApp.LOG_TAG, "sendSyn");
 	ByteBuffer out = ByteBuffer.allocate(1024);
 	out.putInt(Command.SYN.ordinal());
 	m_connId = (int) System.currentTimeMillis();
@@ -223,69 +223,69 @@ public class ConnectionState implements CommandHandler {
 	try {
 	    send(out);
 	} catch (IOException e) {
-	    Log.e(Constants.LOG_TAG, "sendSyn caused an Exception", e);
+	    Log.e(BlinkendroidApp.LOG_TAG, "sendSyn caused an Exception", e);
 	}
     }
 
     protected void sendSynAck() {
-	Log.d(Constants.LOG_TAG, "sendSynAck " + m_connId);
+	Log.d(BlinkendroidApp.LOG_TAG, "sendSynAck " + m_connId);
 	ByteBuffer out = ByteBuffer.allocate(1024);
 	out.putInt(Command.SYNACK.ordinal());
 	out.putInt(m_connId);
 	try {
 	    send(out);
 	} catch (IOException e) {
-	    Log.e(Constants.LOG_TAG, "sendSynAck failed", e);
+	    Log.e(BlinkendroidApp.LOG_TAG, "sendSynAck failed", e);
 	}
     }
 
     protected void sendAck() {
-	Log.d(Constants.LOG_TAG, "sendAck");
+	Log.d(BlinkendroidApp.LOG_TAG, "sendAck");
 	ByteBuffer out = ByteBuffer.allocate(1024);
 	out.putInt(Command.ACK.ordinal());
 	out.putInt(m_connId);
 	try {
 	    send(out);
 	} catch (IOException e) {
-	    Log.e(Constants.LOG_TAG, "sendAck failed", e);
+	    Log.e(BlinkendroidApp.LOG_TAG, "sendAck failed", e);
 	}
     }
 
     protected void sendReset() {
-	Log.d(Constants.LOG_TAG, "sendReset");
+	Log.d(BlinkendroidApp.LOG_TAG, "sendReset");
 	ByteBuffer out = ByteBuffer.allocate(1024);
 	out.putInt(Command.RESET.ordinal());
 	out.putInt(m_connId);
 	try {
 	    send(out);
 	} catch (IOException e) {
-	    Log.e(Constants.LOG_TAG, "sendReset failed", e);
+	    Log.e(BlinkendroidApp.LOG_TAG, "sendReset failed", e);
 	}
 
 	stateChange(Connstate.NONE);
     }
 
     protected void sendDirectHeartbeatRequest() {
-	Log.d(Constants.LOG_TAG, "sendDirectHeartbeatRequest");
+	Log.d(BlinkendroidApp.LOG_TAG, "sendDirectHeartbeatRequest");
 	ByteBuffer out = ByteBuffer.allocate(1024);
 	out.putInt(Command.REQUEST_DIRECT_HEARTBEAT.ordinal());
 	out.putInt(m_connId);
 	try {
 	    send(out);
 	} catch (IOException e) {
-	    Log.e(Constants.LOG_TAG, "requestDirectHeartbeat failed", e);
+	    Log.e(BlinkendroidApp.LOG_TAG, "requestDirectHeartbeat failed", e);
 	}
     }
 
     protected void sendHeartbeat() {
-	Log.d(Constants.LOG_TAG, "sendHeartbeat");
+	Log.d(BlinkendroidApp.LOG_TAG, "sendHeartbeat");
 	ByteBuffer out = ByteBuffer.allocate(1024);
 	out.putInt(Command.HEARTBEAT.ordinal());
 	out.putInt(m_connId);
 	try {
 	    send(out);
 	} catch (IOException e) {
-	    Log.e(Constants.LOG_TAG, "sendHeartbeat failed", e);
+	    Log.e(BlinkendroidApp.LOG_TAG, "sendHeartbeat failed", e);
 	}
     }
 
@@ -295,7 +295,7 @@ public class ConnectionState implements CommandHandler {
      *            in seconds
      */
     public void checkTimeout(int timeout) {
-	Log.d(Constants.LOG_TAG, "checkTimeout");
+	Log.d(BlinkendroidApp.LOG_TAG, "checkTimeout");
 	if (m_state != Connstate.ESTABLISHED) {
 	    return;
 	}
@@ -315,7 +315,7 @@ public class ConnectionState implements CommandHandler {
 
     protected void send(ByteBuffer command) throws IOException {
 	ByteBuffer out = ByteBuffer.allocate(command.position() + Integer.SIZE);
-	out.putInt(Constants.PROTOCOL_CONNECTION); /* protocol header */
+	out.putInt(BlinkendroidApp.PROTOCOL_CONNECTION); /* protocol header */
 	out.put(command.array(), 0, command.position());
 	mClientSocket.send(out);
     }

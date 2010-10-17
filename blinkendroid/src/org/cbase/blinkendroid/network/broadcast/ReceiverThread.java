@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.cbase.blinkendroid.Constants;
+import org.cbase.blinkendroid.BlinkendroidApp;
 
 import android.util.Log;
 
@@ -74,19 +74,19 @@ public class ReceiverThread extends Thread {
 	  socket = new DatagramSocket(port);
 	  socket.setReuseAddress(true);
 	  socket.setBroadcast(true);
-	  Log.d(Constants.LOG_TAG, "Receiver thread started.");
+	  Log.d(BlinkendroidApp.LOG_TAG, "Receiver thread started.");
 	  while (running) {
 
 		final byte[] buf = new byte[512];
 		final DatagramPacket packet = new DatagramPacket(buf, buf.length);
-		Log.d(Constants.LOG_TAG, "Receiving.");
+		Log.d(BlinkendroidApp.LOG_TAG, "Receiving.");
 		receive(packet);
-		Log.d(Constants.LOG_TAG, "Received.");
+		Log.d(BlinkendroidApp.LOG_TAG, "Received.");
 		if (!running) // fast exit
 		  break;
 
 		final String receivedString = new String(packet.getData(), 0, packet.getLength(), "UTF-8");
-		Log.d(Constants.LOG_TAG, "received via broadcast: '" + receivedString + "'");
+		Log.d(BlinkendroidApp.LOG_TAG, "received via broadcast: '" + receivedString + "'");
 		final String[] receivedParts = receivedString.split(" ");
 
 		final int protocolVersion = Integer.parseInt(receivedParts[0]);
@@ -102,16 +102,16 @@ public class ReceiverThread extends Thread {
 
 		notifyHandlers(protocolVersion, name, address.getHostAddress());
 
-		Log.d(Constants.LOG_TAG, receivedString + " " + packet.getAddress() + " Thread: "
+		Log.d(BlinkendroidApp.LOG_TAG, receivedString + " " + packet.getAddress() + " Thread: "
 			+ Thread.currentThread().getId());
 		// } else {
 		// notifyHandlers(protocolVersion);
 		// }
 	  }
 	  socket.close();
-	  Log.d(Constants.LOG_TAG, "ReceiverThread: shutdown complete");
+	  Log.d(BlinkendroidApp.LOG_TAG, "ReceiverThread: shutdown complete");
 	} catch (final IOException x) {
-	  Log.e(Constants.LOG_TAG, "problem receiving", x);
+	  Log.e(BlinkendroidApp.LOG_TAG, "problem receiving", x);
 	}
   }
 
@@ -126,7 +126,7 @@ public class ReceiverThread extends Thread {
   }
 
   public void shutdown() {
-	Log.d(Constants.LOG_TAG, "ReceiverThread: initiating shutdown");
+	Log.d(BlinkendroidApp.LOG_TAG, "ReceiverThread: initiating shutdown");
 	running = false;
 	handlers.clear();
 	socket.close(); // interrupt

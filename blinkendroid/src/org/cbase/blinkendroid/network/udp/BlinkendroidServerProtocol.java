@@ -3,7 +3,7 @@ package org.cbase.blinkendroid.network.udp;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
-import org.cbase.blinkendroid.Constants;
+import org.cbase.blinkendroid.BlinkendroidApp;
 
 import android.util.Log;
 
@@ -25,11 +25,11 @@ public class BlinkendroidServerProtocol extends BlinkendroidProtocol {
 	  out.putInt(COMMAND_PLAY);
 	  out.putLong(startTime); // TODO we need only one start
 
-	  Log.d(Constants.LOG_TAG, "Play default video ");
+	  Log.d(BlinkendroidApp.LOG_TAG, "Play default video ");
 	  send(out);
 	} catch (IOException e) {
 	  e.printStackTrace();
-	  Log.e(Constants.LOG_TAG, "play failed", e);
+	  Log.e(BlinkendroidApp.LOG_TAG, "play failed", e);
 	}
   }
 
@@ -42,7 +42,7 @@ public class BlinkendroidServerProtocol extends BlinkendroidProtocol {
 
 	  send(out);
 	} catch (IOException e) {
-	  Log.e(Constants.LOG_TAG, "arrow failed ", e);
+	  Log.e(BlinkendroidApp.LOG_TAG, "arrow failed ", e);
 	}
   }
 
@@ -56,15 +56,15 @@ public class BlinkendroidServerProtocol extends BlinkendroidProtocol {
 	  out.putFloat(endX);
 	  out.putFloat(endY);
 	  send(out);
-	  Log.d(Constants.LOG_TAG, "clip flushed ");
+	  Log.d(BlinkendroidApp.LOG_TAG, "clip flushed ");
 	} catch (IOException e) {
-	  Log.e(Constants.LOG_TAG, "clip failed ", e);
+	  Log.e(BlinkendroidApp.LOG_TAG, "clip failed ", e);
 	}
   }
 
   protected void send(ByteBuffer command) throws IOException {
 	ByteBuffer out = ByteBuffer.allocate(command.position() + Integer.SIZE);
-	out.putInt(Constants.PROTOCOL_PLAYER); /* protocol header */
+	out.putInt(BlinkendroidApp.PROTOCOL_PLAYER); /* protocol header */
 	out.put(command.array(), 0, command.position());
 	mClientSocket.send(out);
   }

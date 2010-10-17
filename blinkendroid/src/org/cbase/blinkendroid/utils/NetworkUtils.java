@@ -22,7 +22,7 @@ import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.util.Enumeration;
 
-import org.cbase.blinkendroid.Constants;
+import org.cbase.blinkendroid.BlinkendroidApp;
 
 import android.util.Log;
 
@@ -48,7 +48,7 @@ public class NetworkUtils {
 		}
 	  }
 	} catch (SocketException ex) {
-	  Log.e(Constants.LOG_TAG, ex.toString());
+	  Log.e(BlinkendroidApp.LOG_TAG, ex.toString());
 	}
 	return null;
   }

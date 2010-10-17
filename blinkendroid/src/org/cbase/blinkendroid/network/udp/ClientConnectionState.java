@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.net.SocketAddress;
 import java.nio.ByteBuffer;
 
-import org.cbase.blinkendroid.Constants;
+import org.cbase.blinkendroid.BlinkendroidApp;
 import org.cbase.blinkendroid.network.ConnectionListener;
 
 import android.util.Log;
@@ -58,7 +58,7 @@ public class ClientConnectionState extends ConnectionState implements CommandHan
 	@Override
 	public void run() {
 	    this.setName("CLI Heartbeat");
-	    Log.d(Constants.LOG_TAG, "ClientConnectionState started");
+	    Log.d(BlinkendroidApp.LOG_TAG, "ClientConnectionState started");
 	    while (running) {
 		try {
 		    Thread.sleep(1000);
@@ -70,14 +70,14 @@ public class ClientConnectionState extends ConnectionState implements CommandHan
 		sendHeartbeat();
 		checkTimeout(5);
 	    }
-	    Log.d(Constants.LOG_TAG, "ClientConnectionState stopped");
+	    Log.d(BlinkendroidApp.LOG_TAG, "ClientConnectionState stopped");
 	}
 
 	public void shutdown() {
 	    running = false;
 	    interrupt();
 	    // TODO where is the join???
-	    Log.d(Constants.LOG_TAG, "ClientConnectionState initiating shutdown");
+	    Log.d(BlinkendroidApp.LOG_TAG, "ClientConnectionState initiating shutdown");
 	}
     }
 }
