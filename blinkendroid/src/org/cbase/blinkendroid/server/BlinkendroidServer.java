@@ -73,7 +73,7 @@ public class BlinkendroidServer {
 		m_ServerProto.addConnectionListener(connectionListener);
 	    }
 
-	    // m_ServerProto.startTimerThread();
+	    m_ServerProto.startTimerThread();
 
 	    // how is the protocol connected to the logic ?
 	} catch (SocketException e) {
