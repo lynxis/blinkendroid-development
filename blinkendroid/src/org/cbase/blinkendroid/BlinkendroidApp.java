@@ -37,7 +37,7 @@ public class BlinkendroidApp extends Application {
   public static final int BROADCAST_ANNOUCEMENT_SERVER_TICKET_PORT = 7001;
   public static final int BROADCAST_CLIENT_PORT = 6789;
   public static final int BROADCAST_SERVER_PORT = 6790;
-  public static final int BROADCAST_IDLE_THRESHOLD = 5000;
+  public static final int BROADCAST_IDLE_THRESHOLD = 10000;
   public static final String MULTICAST_GROUP = "230.0.0.1";
   public static final String CLIENT_BROADCAST_COMMAND = "BLINKENDROID_CLIENT";
   public static final String SERVER_TICKET_COMMAND = "BLINKENDROID_TICKET";

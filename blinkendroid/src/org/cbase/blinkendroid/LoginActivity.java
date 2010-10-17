@@ -19,6 +19,7 @@
 package org.cbase.blinkendroid;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.cbase.blinkendroid.network.broadcast.IPeerHandler;
@@ -116,6 +117,10 @@ public class LoginActivity extends Activity implements Runnable {
   protected void onResume() {
 
 	super.onResume();
+	
+	// remove old server entries
+	serverList.clear();
+	
 	// send Broadcast
 	String ownerName = PreferenceManager.getDefaultSharedPreferences(this).getString(PREFS_KEY_OWNER, null);
 	if (ownerName == null)
@@ -178,17 +183,16 @@ public class LoginActivity extends Activity implements Runnable {
 
   public void run() {
 
-	// TODO geht nich mehr , da ticket nur einmal kommt
-	// remove timed-out servers
-	// for (final Iterator<ListEntry> i = serverList.iterator();
-	// i.hasNext();) {
-	// final ListEntry entry = i.next();
-	// if (entry.lastFound + Constants.BROADCAST_IDLE_THRESHOLD <
-	// System.currentTimeMillis()) {
-	// i.remove();
-	// serverListAdapter.notifyDataSetChanged();
-	// }
-	// }
+	 //remove timed-out servers
+	for (final Iterator<ListEntry> i = serverList.iterator();
+        	 i.hasNext();) {
+        	 final ListEntry entry = i.next();
+        	 if (entry.lastFound + BlinkendroidApp.BROADCAST_IDLE_THRESHOLD <
+                	 System.currentTimeMillis()) {
+                	 i.remove();
+                	 serverListAdapter.notifyDataSetChanged();
+        	 }
+	 }
 
 	handler.postDelayed(this, 1000);
   }
