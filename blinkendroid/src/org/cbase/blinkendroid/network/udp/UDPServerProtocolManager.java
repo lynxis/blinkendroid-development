@@ -36,38 +36,38 @@ import android.util.Log;
 public class UDPServerProtocolManager extends UDPAbstractBlinkendroidProtocol implements CommandHandler,
 	ConnectionListener {
 
-  private final String LOG_TAG = "UDPServerProtocolManager".intern();
-  protected GlobalTimerThread globalTimerThread;
-  private PlayerManager m_PlayerManager;
+    private final String LOG_TAG = "UDPServerProtocolManager".intern();
+    protected GlobalTimerThread globalTimerThread;
+    private PlayerManager m_PlayerManager;
 
-  public void setPlayerManager(PlayerManager mPlayerManager) {
+    public void setPlayerManager(PlayerManager mPlayerManager) {
 	m_PlayerManager = mPlayerManager;
-  }
+    }
 
-  public UDPServerProtocolManager(final DatagramSocket socket) throws IOException {
+    public UDPServerProtocolManager(final DatagramSocket socket) throws IOException {
 	super(socket);
-  }
+    }
 
-  public void startTimerThread() {
+    public void startTimerThread() {
 	if (globalTimerThread != null) {
-	  globalTimerThread.shutdown();
-	  // TODO where is the join?
+	    globalTimerThread.shutdown();
+	    // TODO where is the join?
 	}
 	globalTimerThread = new GlobalTimerThread();
 	globalTimerThread.start();
-  }
+    }
 
-  @Override
-  public void shutdown() {
+    @Override
+    public void shutdown() {
 	// TODO where is the join?
 	if (null != globalTimerThread)
-	  globalTimerThread.shutdown();
+	    globalTimerThread.shutdown();
 	super.shutdown();
-  }
+    }
 
-  @Override
-  protected void receive(DatagramPacket packet) throws IOException {
-	InetSocketAddress from = new InetSocketAddress(packet.getAddress(), packet.getPort());
+    @Override
+    protected void receive(DatagramPacket packet) throws IOException {
+	InetSocketAddress from = new InetSocketAddress(packet.getAddress().getHostAddress(), packet.getPort());
 
 	/* every Client has his own connectionHandler ! */
 
@@ -77,54 +77,53 @@ public class UDPServerProtocolManager extends UDPAbstractBlinkendroidProtocol im
 
 	CommandHandler handler = handlers.get(proto);
 	if (null != handler) {
-	  handler.handle(from, in);
-	  System.out.println("recieve proto " + proto + " handler " + handler.getClass().toString());
+	    handler.handle(from, in);
+	    System.out.println("recieve proto " + proto + " handler " + handler.getClass().toString());
 	} else {
-	  if (m_PlayerManager != null) {
+	    if (m_PlayerManager != null) {
 		m_PlayerManager.handle(this, from, proto, in);
-	  }
+	    }
 	}
-  }
+    }
 
-  public void sendBroadcast(ByteBuffer out) {
+    public void sendBroadcast(ByteBuffer out) {
 	try {
-	  // TODO: view SenderThread in broadcast and increase performance by
-	  // removing constant creation of InetSocketAddresses
-	  send(
-		  new InetSocketAddress(InetAddress.getAllByName("255.255.255.255")[0], BlinkendroidApp.BROADCAST_CLIENT_PORT),
-		  out);
+	    // TODO: view SenderThread in broadcast and increase performance by
+	    // removing constant creation of InetSocketAddresses
+	    send(new InetSocketAddress(InetAddress.getAllByName("255.255.255.255")[0],
+		    BlinkendroidApp.BROADCAST_CLIENT_PORT), out);
 	} catch (UnknownHostException e) {
-	  Log.e(LOG_TAG, "Don't know where to send the broadcast", e);
+	    Log.e(LOG_TAG, "Don't know where to send the broadcast", e);
 	} catch (IOException e) {
-	  Log.e(LOG_TAG, "IOException", e);
+	    Log.e(LOG_TAG, "IOException", e);
 	}
-  }
+    }
 
-  public void handle(SocketAddress socketAddr, ByteBuffer bybuff) throws IOException {
+    public void handle(SocketAddress socketAddr, ByteBuffer bybuff) throws IOException {
 	// Why doesn't this method do anything?
 	throw new IOException("This method does nothing else but throwing this Exception.");
 	// System.out.println("handle nothing");
-  }
+    }
 
-  /**
-   * This thread sends the global time to connected devices.
-   */
-  class GlobalTimerThread extends Thread {
+    /**
+     * This thread sends the global time to connected devices.
+     */
+    class GlobalTimerThread extends Thread {
 
 	volatile private boolean running = true;
 
 	@Override
 	public void run() {
-	  this.setName("SRV Send GlobalTimer");
-	  Log.d(LOG_TAG, "GlobalTimerThread started");
-	  while (running) {
+	    this.setName("SRV Send GlobalTimer");
+	    Log.d(LOG_TAG, "GlobalTimerThread started");
+	    while (running) {
 		try {
-		  Thread.sleep(1000);
+		    Thread.sleep(1000);
 		} catch (InterruptedException e) {
-		  // swallow
+		    // swallow
 		}
 		if (!running) // fast exit
-		  break;
+		    break;
 
 		ByteBuffer out = ByteBuffer.allocate(128);
 		out.putInt(BlinkendroidApp.PROTOCOL_HEARTBEAT);
@@ -132,26 +131,26 @@ public class UDPServerProtocolManager extends UDPAbstractBlinkendroidProtocol im
 		out.putLong(System.currentTimeMillis());
 		sendBroadcast(out);
 		Log.d(LOG_TAG, "GlobalTimerThread Broadcast sent: " + out);
-	  }
-	  Log.d(LOG_TAG, "GlobalTimerThread stopped");
+	    }
+	    Log.d(LOG_TAG, "GlobalTimerThread stopped");
 	}
 
 	public void shutdown() {
-	  running = false;
-	  interrupt();
-	  Log.d(LOG_TAG, "GlobalTimerThread initiating shutdown");
+	    running = false;
+	    interrupt();
+	    Log.d(LOG_TAG, "GlobalTimerThread initiating shutdown");
 	}
-  }
+    }
 
-  public void connectionClosed(ClientSocket clientSocket) {
+    public void connectionClosed(ClientSocket clientSocket) {
 	for (ConnectionListener connListener : connectionListener) {
-	  connListener.connectionClosed(clientSocket);
+	    connListener.connectionClosed(clientSocket);
 	}
-  }
+    }
 
-  public void connectionOpened(ClientSocket clientSocket) {
+    public void connectionOpened(ClientSocket clientSocket) {
 	for (ConnectionListener connListener : connectionListener) {
-	  connListener.connectionOpened(clientSocket);
+	    connListener.connectionOpened(clientSocket);
 	}
-  }
+    }
 }

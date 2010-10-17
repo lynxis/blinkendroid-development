@@ -34,58 +34,59 @@ import android.util.Log;
 public class ReceiverThread extends Thread {
 
     private final String LOG_TAG = "ReceiverThread".intern();
-  volatile private boolean running = true;
-  private List<IPeerHandler> handlers = Collections.synchronizedList(new ArrayList<IPeerHandler>());
-  private DatagramSocket socket;
-  private int port;
-  private String command;
+    volatile private boolean running = true;
+    private List<IPeerHandler> handlers = Collections.synchronizedList(new ArrayList<IPeerHandler>());
+    private DatagramSocket socket;
+    private int port;
+    private String command;
 
-  public ReceiverThread(int port, String command) {
+    public ReceiverThread(int port, String command) {
 	super();
 	this.port = port;
 	this.command = command;
-  }
+    }
 
-  /**
-   * Adds a handler to the {@link ReceiverThread}.
-   */
-  public void addHandler(IPeerHandler handler) {
+    /**
+     * Adds a handler to the {@link ReceiverThread}.
+     */
+    public void addHandler(IPeerHandler handler) {
 	handlers.add(handler);
-  }
+    }
 
-  public void removeHandler(IPeerHandler handler) {
+    public void removeHandler(IPeerHandler handler) {
 	handlers.remove(handler);
-  }
+    }
 
-  /**
-   * Notifies the registered handlers
-   */
-  private void notifyHandlers(final int protocolVersion, String name, String ip) {
+    /**
+     * Notifies the registered handlers
+     */
+    private void notifyHandlers(final int protocolVersion, String name, String ip) {
 	for (IPeerHandler h : handlers) {
-	  h.foundPeer(name, ip, protocolVersion);
+	    h.foundPeer(name, ip, protocolVersion);
 	}
-  }
+    }
 
-  @Override
-  public void run() {
+    @Override
+    public void run() {
 	this.setName("CLI Annoucement Receiver");
 	try {
-	  socket = new DatagramSocket(port);
-	  socket.setReuseAddress(true);
-	  socket.setBroadcast(true);
-	  Log.d(LOG_TAG, "Receiver thread started.");
-	  while (running) {
+	    socket = new DatagramSocket(port);
+	    socket.setReuseAddress(true);
+	    socket.setBroadcast(true);
+	    Log.d(LOG_TAG, "Receiver thread started.");
+	    while (running) {
 
 		final byte[] buf = new byte[512];
 		final DatagramPacket packet = new DatagramPacket(buf, buf.length);
-		Log.d(LOG_TAG, "Receiving.");
+		// Log.d(LOG_TAG, "Receiving.");
 		receive(packet);
-		Log.d(LOG_TAG, "Received.");
+		// Log.d(LOG_TAG, "Received.");
 		if (!running) // fast exit
-		  break;
+		    break;
 
 		final String receivedString = new String(packet.getData(), 0, packet.getLength(), "UTF-8");
-		Log.d(LOG_TAG, "received via broadcast: '" + receivedString + "'");
+		// Log.d(LOG_TAG, "received via broadcast: '" + receivedString +
+		// "'");
 		final String[] receivedParts = receivedString.split(" ");
 
 		final int protocolVersion = Integer.parseInt(receivedParts[0]);
@@ -93,7 +94,7 @@ public class ReceiverThread extends Thread {
 		// {
 
 		if (!receivedParts[1].equals(command)) {
-		  continue;
+		    continue;
 		}
 
 		final InetAddress address = packet.getAddress();
@@ -101,39 +102,40 @@ public class ReceiverThread extends Thread {
 
 		notifyHandlers(protocolVersion, name, address.getHostAddress());
 
-		Log.d(LOG_TAG, receivedString + " " + packet.getAddress() + " Thread: "
-			+ Thread.currentThread().getId());
+		// Log.d(LOG_TAG, receivedString + " " + packet.getAddress() +
+		// " Thread: "
+		// + Thread.currentThread().getId());
 		// } else {
 		// notifyHandlers(protocolVersion);
 		// }
-	  }
-	  socket.close();
-	  Log.d(LOG_TAG, "ReceiverThread: shutdown complete");
+	    }
+	    socket.close();
+	    Log.d(LOG_TAG, "ReceiverThread: shutdown complete");
 	} catch (final IOException x) {
-	  Log.e(LOG_TAG, "problem receiving", x);
+	    Log.e(LOG_TAG, "problem receiving", x);
 	}
-  }
+    }
 
-  private void receive(final DatagramPacket packet) throws IOException {
+    private void receive(final DatagramPacket packet) throws IOException {
 	try {
-	  socket.receive(packet);
+	    socket.receive(packet);
 	} catch (final SocketException x) {
-	  // swallow, this is expected when being interrupted by
-	  // socket.close()
-	  x.printStackTrace();
+	    // swallow, this is expected when being interrupted by
+	    // socket.close()
+	    x.printStackTrace();
 	}
-  }
+    }
 
-  public void shutdown() {
+    public void shutdown() {
 	Log.d(LOG_TAG, "ReceiverThread: initiating shutdown");
 	running = false;
 	handlers.clear();
 	socket.close(); // interrupt
 	interrupt();
 	try {
-	  join();
+	    join();
 	} catch (final InterruptedException x) {
-	  throw new RuntimeException(x);
+	    throw new RuntimeException(x);
 	}
-  }
+    }
 }
