@@ -4,12 +4,11 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-import org.cbase.blinkendroid.BlinkendroidApp;
-
 import android.util.Log;
 
 public class TCPVideoServer extends Thread {
 
+  private final String LOG_TAG = "TCPVideoServer".intern();
   volatile private boolean running = true;
   ServerSocket serverSocket;
   private String videoName;
@@ -31,10 +30,10 @@ public class TCPVideoServer extends Thread {
 	  acceptLoop();
 
 	  serverSocket.close();
-	  Log.d(BlinkendroidApp.LOG_TAG, "VideoThread ended!!!!!!! ");
+	  Log.d(LOG_TAG, "VideoThread ended!!!!!!! ");
 
 	} catch (IOException e) {
-	  Log.e(BlinkendroidApp.LOG_TAG, "VideoThread fuckup", e);
+	  Log.e(LOG_TAG, "VideoThread fuckup", e);
 	}
   }
 
@@ -50,7 +49,7 @@ public class TCPVideoServer extends Thread {
 
 	  }
 	} catch (IOException e) {
-	  Log.e(BlinkendroidApp.LOG_TAG, "AcceptLoop issue", e);
+	  Log.e(LOG_TAG, "AcceptLoop issue", e);
 	}
 	/*
 	 * try { byte[] buffer = new byte[4]; while (running && in.read(buffer) !=
@@ -73,16 +72,16 @@ public class TCPVideoServer extends Thread {
   }
 
   public void shutdown() {
-	Log.d(BlinkendroidApp.LOG_TAG, " VideoServer shutdown start");
+	Log.d(LOG_TAG, " VideoServer shutdown start");
 	running = false;
 	interrupt();
-	Log.d(BlinkendroidApp.LOG_TAG, " VideoServer shutdown interrupted");
+	Log.d(LOG_TAG, " VideoServer shutdown interrupted");
 	// try {
 	// join();
 	// } catch (InterruptedException e) {
 	// System.out.println(getMyName() + " ReceiverThread join failed");
 	// e.printStackTrace();
 	// }
-	Log.d(BlinkendroidApp.LOG_TAG, " ReceiverThread shutdown end");
+	Log.d(LOG_TAG, " ReceiverThread shutdown end");
   }
 }

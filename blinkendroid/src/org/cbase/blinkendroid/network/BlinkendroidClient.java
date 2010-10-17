@@ -31,6 +31,7 @@ import android.util.Log;
 
 public class BlinkendroidClient extends Thread {
 
+  private final String LOG_TAG = "BlinkendroidClient".intern();
   private final InetSocketAddress socketAddress;
   private final BlinkendroidListener listener;
   private DatagramSocket socket;
@@ -45,7 +46,7 @@ public class BlinkendroidClient extends Thread {
 
   @Override
   public void start() {
-	Log.d(BlinkendroidApp.LOG_TAG, "trying to connect to server: " + socketAddress);
+	Log.d(LOG_TAG, "trying to connect to server: " + socketAddress);
 	try {
 	  socket = new DatagramSocket(BlinkendroidApp.BROADCAST_CLIENT_PORT);
 	  System.out.printf("UDP SOCKET CREATED");
@@ -59,10 +60,10 @@ public class BlinkendroidClient extends Thread {
 
 	  blinkenProto = new BlinkendroidClientProtocol(listener);
 	  protocol.registerHandler(BlinkendroidApp.PROTOCOL_PLAYER, blinkenProto);
-	  Log.i(BlinkendroidApp.LOG_TAG, "connected " + (System.currentTimeMillis() - t));
+	  Log.i(LOG_TAG, "connected " + (System.currentTimeMillis() - t));
 
 	} catch (final IOException x) {
-	  Log.e(BlinkendroidApp.LOG_TAG, "connection failed");
+	  Log.e(LOG_TAG, "connection failed");
 	  x.printStackTrace();
 	  listener.connectionFailed(x.getClass().getName() + ": " + x.getMessage());
 	}
@@ -77,7 +78,7 @@ public class BlinkendroidClient extends Thread {
 	  if (!socket.isClosed())
 		socket.close();
 	}
-	Log.d(BlinkendroidApp.LOG_TAG, "client shutdown completed");
+	Log.d(LOG_TAG, "client shutdown completed");
   }
 
   public void locateMe() {

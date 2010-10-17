@@ -31,7 +31,8 @@ import android.util.Log;
  */
 public class SenderThread extends Thread {
 
-  final private String message;
+    private final String LOG_TAG = "SenderThread".intern();
+  private final String message;
   private InetAddress group;
   volatile private boolean running = true;
   private DatagramSocket socket;
@@ -55,21 +56,21 @@ public class SenderThread extends Thread {
 	  socket = new DatagramSocket(BlinkendroidApp.BROADCAST_ANNOUCEMENT_CLIENT_PORT);
 	  socket.setReuseAddress(true);
 	  socket.setBroadcast(true);
-	  Log.d(BlinkendroidApp.LOG_TAG, "Sender thread started.");
+	  Log.d(LOG_TAG, "Sender thread started.");
 	  // TODO have to figure out whether
 	  // getAllByName("255.255.255.255")[0]; or
 	  // getByName("255.255.255.255"); is more useful.
 	  group = InetAddress.getAllByName("255.255.255.255")[0];
-	  Log.i(BlinkendroidApp.LOG_TAG, "Server ip: " + group.toString());
+	  Log.i(LOG_TAG, "Server ip: " + group.toString());
 
 	  while (running) {
 		final byte[] messageBytes = message.getBytes("UTF-8");
 		final DatagramPacket initPacket = new DatagramPacket(messageBytes, messageBytes.length, group,
 			BlinkendroidApp.BROADCAST_ANNOUCEMENT_SERVER_PORT);
-		Log.d(BlinkendroidApp.LOG_TAG, "Broadcasting Packet");
+		Log.d(LOG_TAG, "Broadcasting Packet");
 		socket.send(initPacket);
 
-		Log.d(BlinkendroidApp.LOG_TAG, "Broadcasting: '" + message + "'");
+		Log.d(LOG_TAG, "Broadcasting: '" + message + "'");
 		try {
 		  Thread.sleep(5000);
 		} catch (final InterruptedException x) {
@@ -80,12 +81,12 @@ public class SenderThread extends Thread {
 	  socket.close();
 
 	} catch (final IOException x) {
-	  Log.e(BlinkendroidApp.LOG_TAG, "problem sending", x);
+	  Log.e(LOG_TAG, "problem sending", x);
 	}
   }
 
   public void shutdown() {
-	Log.d(BlinkendroidApp.LOG_TAG, "SenderThread: initiating shutdown");
+	Log.d(LOG_TAG, "SenderThread: initiating shutdown");
 	running = false;
 
 	if (socket != null) {

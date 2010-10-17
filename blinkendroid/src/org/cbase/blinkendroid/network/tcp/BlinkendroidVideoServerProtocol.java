@@ -27,12 +27,12 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.nio.ByteBuffer;
 
-import org.cbase.blinkendroid.BlinkendroidApp;
-
 import android.util.Log;
 
 public class BlinkendroidVideoServerProtocol {
 
+  private final String LOG_TAG = "BlinkendroidVideoServerProtocol".intern();
+  
   public static final Integer PROTOCOL_PLAYER = 42;
   public static final Integer COMMAND_PLAYER_TIME = 23;
   public static final Integer COMMAND_CLIP = 17;
@@ -58,14 +58,14 @@ public class BlinkendroidVideoServerProtocol {
 	try {
 	  if (null == movieFile) {
 		writeLong(out, 0);
-		Log.d(BlinkendroidApp.LOG_TAG, "Play default video ");
+		Log.d(LOG_TAG, "Play default video ");
 	  } else {
 		File movie = new File(movieFile);
 		if (null != movie && movie.exists()) {
 
 		  try {
 			writeLong(out, movie.length());
-			Log.d(BlinkendroidApp.LOG_TAG, "try to read file with bytes " + movie.length());
+			Log.d(LOG_TAG, "try to read file with bytes " + movie.length());
 			InputStream is = new FileInputStream(movie);
 			byte[] buffer = new byte[1024];
 			int allLen = 0;
@@ -75,13 +75,13 @@ public class BlinkendroidVideoServerProtocol {
 			  allLen += len;
 			}
 			is.close();
-			Log.d(BlinkendroidApp.LOG_TAG, "send movie bytes " + movie.length());
+			Log.d(LOG_TAG, "send movie bytes " + movie.length());
 			writeLong(out, movie.length());
 		  } catch (IOException ioe) {
-			Log.e(BlinkendroidApp.LOG_TAG, "sending movie failed", ioe);
+			Log.e(LOG_TAG, "sending movie failed", ioe);
 		  }
 		} else {
-		  Log.e(BlinkendroidApp.LOG_TAG, "movie not found" + movieFile);
+		  Log.e(LOG_TAG, "movie not found" + movieFile);
 		}
 	  }
 
@@ -177,12 +177,12 @@ public class BlinkendroidVideoServerProtocol {
 		  }
 		}
 	  } catch (SocketException e) {
-		Log.e(BlinkendroidApp.LOG_TAG, "Socket closed", e);
+		Log.e(LOG_TAG, "Socket closed", e);
 	  } catch (IOException e) {
-		Log.e(BlinkendroidApp.LOG_TAG, "InputThread fucked", e);
+		Log.e(LOG_TAG, "InputThread fucked", e);
 		e.printStackTrace();
 	  }
-	  Log.d(BlinkendroidApp.LOG_TAG, "InputThread ended!!!!!!!");
+	  Log.d(LOG_TAG, "InputThread ended!!!!!!!");
 
 	}
 
@@ -201,17 +201,17 @@ public class BlinkendroidVideoServerProtocol {
 	 */
 
 	public void shutdown() {
-	  Log.d(BlinkendroidApp.LOG_TAG, " ReceiverThread shutdown start");
+	  Log.d(LOG_TAG, " ReceiverThread shutdown start");
 	  running = false;
 	  interrupt();
-	  Log.d(BlinkendroidApp.LOG_TAG, " ReceiverThread shutdown interrupted");
+	  Log.d(LOG_TAG, " ReceiverThread shutdown interrupted");
 	  try {
 		join();
 	  } catch (InterruptedException e) {
-		Log.e(BlinkendroidApp.LOG_TAG, "ReceiverThread join failed", e);
+		Log.e(LOG_TAG, "ReceiverThread join failed", e);
 		e.printStackTrace();
 	  }
-	  Log.i(BlinkendroidApp.LOG_TAG, "ReceiverThread shutdown joined & end");
+	  Log.i(LOG_TAG, "ReceiverThread shutdown joined & end");
 	}
   }
 }

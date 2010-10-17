@@ -25,7 +25,6 @@ import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.nio.ByteBuffer;
 
-import org.cbase.blinkendroid.BlinkendroidApp;
 import org.cbase.blinkendroid.player.bml.BBMZParser;
 import org.cbase.blinkendroid.player.bml.BLM;
 
@@ -33,6 +32,7 @@ import android.util.Log;
 
 public class BlinkendroidVideoClientProtocol {
 
+  private static final String LOG_TAG = "BlinkendroidVideoClientProtocol".intern();
   public static final Integer PROTOCOL_PLAYER = 42;
   public static final Integer COMMAND_PLAYER_TIME = 23;
   public static final Integer COMMAND_CLIP = 17;
@@ -53,7 +53,7 @@ public class BlinkendroidVideoClientProtocol {
 	  long length = readLong(in); // TODO checking racecondition with
 	  // setSoTimeout
 	  if (length == 0) {
-		Log.i(BlinkendroidApp.LOG_TAG, "Play default video ");
+		Log.i(LOG_TAG, "Play default video ");
 	  } else {
 		BBMZParser parser = new BBMZParser();
 		blm = parser.parseBBMZ(in, length);
@@ -63,7 +63,6 @@ public class BlinkendroidVideoClientProtocol {
 	  socket.close();
 	} catch (SocketTimeoutException e) {
 	  // setSoTimeout outer
-	  int ooops = 0;
 	} catch (IOException e) {
 	}
 	return blm;

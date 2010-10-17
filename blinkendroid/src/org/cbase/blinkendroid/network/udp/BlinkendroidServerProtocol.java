@@ -10,7 +10,7 @@ import android.util.Log;
 public class BlinkendroidServerProtocol extends BlinkendroidProtocol {
 
   private ClientSocket mClientSocket;
-
+  private final String LOG_TAG = "BlinkendroidServerProtocol".intern();
   public BlinkendroidServerProtocol(ClientSocket clientSocket) {
 	mClientSocket = clientSocket;
   }
@@ -25,11 +25,11 @@ public class BlinkendroidServerProtocol extends BlinkendroidProtocol {
 	  out.putInt(COMMAND_PLAY);
 	  out.putLong(startTime); // TODO we need only one start
 
-	  Log.d(BlinkendroidApp.LOG_TAG, "Play default video ");
+	  Log.d(LOG_TAG, "Play default video ");
 	  send(out);
 	} catch (IOException e) {
 	  e.printStackTrace();
-	  Log.e(BlinkendroidApp.LOG_TAG, "play failed", e);
+	  Log.e(LOG_TAG, "play failed", e);
 	}
   }
 
@@ -42,7 +42,7 @@ public class BlinkendroidServerProtocol extends BlinkendroidProtocol {
 
 	  send(out);
 	} catch (IOException e) {
-	  Log.e(BlinkendroidApp.LOG_TAG, "arrow failed ", e);
+	  Log.e(LOG_TAG, "arrow failed ", e);
 	}
   }
 
@@ -56,9 +56,9 @@ public class BlinkendroidServerProtocol extends BlinkendroidProtocol {
 	  out.putFloat(endX);
 	  out.putFloat(endY);
 	  send(out);
-	  Log.d(BlinkendroidApp.LOG_TAG, "clip flushed ");
+	  Log.d(LOG_TAG, "clip flushed ");
 	} catch (IOException e) {
-	  Log.e(BlinkendroidApp.LOG_TAG, "clip failed ", e);
+	  Log.e(LOG_TAG, "clip failed ", e);
 	}
   }
 

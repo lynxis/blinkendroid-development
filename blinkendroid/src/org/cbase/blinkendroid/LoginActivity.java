@@ -58,6 +58,7 @@ import android.widget.Toast;
  */
 public class LoginActivity extends Activity implements Runnable {
 
+    private final String LOG_TAG = "LoginActivity".intern();
   private final List<ListEntry> serverList = new ArrayList<ListEntry>();
   private ServerListAdapter serverListAdapter;
   private ListView serverListView;
@@ -128,7 +129,7 @@ public class LoginActivity extends Activity implements Runnable {
 	receiverThread.addHandler(new IPeerHandler() {
 
 	  public void foundPeer(final String serverName, final String serverIp, final int protocolVersion) {
-		Log.i(BlinkendroidApp.LOG_TAG, "recieved Ticket");
+		Log.i(LOG_TAG, "recieved Ticket");
 		runOnUiThread(new Runnable() {
 
 		  public void run() {

@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
 
-import org.cbase.blinkendroid.BlinkendroidApp;
 import org.cbase.blinkendroid.player.bml.BLM.Frame;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -43,6 +42,7 @@ public class BMLParser {
   private static final String FRAME = "frame";
   private static final String FRAME_ATTR_DURATION = "duration";
   private static final String ROW = "row";
+  private static final String LOG_TAG = "BMLParser".intern();
 
   private XmlPullParser parser;
 
@@ -72,7 +72,7 @@ public class BMLParser {
 		}
 		eventType = parser.next();
 	  }
-	  Log.d(BlinkendroidApp.LOG_TAG, "parsed BML with rows" + blm.frames.size());
+	  Log.d(LOG_TAG, "parsed BML with rows" + blm.frames.size());
 	  return blm;
 	} catch (Exception x) {
 	  throw new RuntimeException(x);

@@ -54,9 +54,9 @@ import android.widget.Toast;
  */
 public class PlayerActivity extends Activity implements BlinkendroidListener, Runnable {
 
+    private final String LOG_TAG = "PlayerActivity".intern();
   public static final String INTENT_EXTRA_IP = "ip";
   public static final String INTENT_EXTRA_PORT = "port";
-
   private PlayerView playerView;
   private ArrowView arrowView;
   private TextView ownerView;
@@ -102,7 +102,7 @@ public class PlayerActivity extends Activity implements BlinkendroidListener, Ru
 
 	// forcing the screen brightness to max out while playing
 	if (isAllowedToChangeBrightness()) {
-	  Log.d(BlinkendroidApp.LOG_TAG, "Maxing out the brightness");
+	  Log.d(LOG_TAG, "Maxing out the brightness");
 	  WindowManager.LayoutParams lp = getWindow().getAttributes();
 	  lp.screenBrightness = 1.0f;
 	  getWindow().setAttributes(lp);
@@ -180,7 +180,7 @@ public class PlayerActivity extends Activity implements BlinkendroidListener, Ru
   }
 
   public void serverTime(final long serverTime) {
-	Log.d(BlinkendroidApp.LOG_TAG, "*** time " + serverTime);
+	Log.d(LOG_TAG, "*** time " + serverTime);
 	final long timeDelta = System.nanoTime() / 1000000 - serverTime;
 	runOnUiThread(new Runnable() {
 
@@ -191,7 +191,7 @@ public class PlayerActivity extends Activity implements BlinkendroidListener, Ru
   }
 
   public void play(final int x, final int y, final long startTime, final BLM movie) {
-	Log.d(BlinkendroidApp.LOG_TAG, "*** play " + startTime);
+	Log.d(LOG_TAG, "*** play " + startTime);
 	runOnUiThread(new Runnable() {
 
 	  public void run() {
@@ -206,7 +206,7 @@ public class PlayerActivity extends Activity implements BlinkendroidListener, Ru
   }
 
   public void clip(final float startX, final float startY, final float endX, final float endY) {
-	Log.d(BlinkendroidApp.LOG_TAG, "*** clip " + startX + "," + startY + "," + endX + "," + endY);
+	Log.d(LOG_TAG, "*** clip " + startX + "," + startY + "," + endX + "," + endY);
 	runOnUiThread(new Runnable() {
 
 	  public void run() {
@@ -216,7 +216,7 @@ public class PlayerActivity extends Activity implements BlinkendroidListener, Ru
   }
 
   public void arrow(final long duration, final float angle, final int color) {
-	Log.d(BlinkendroidApp.LOG_TAG, "*** arrow " + angle + " " + duration);
+	Log.d(LOG_TAG, "*** arrow " + angle + " " + duration);
 	runOnUiThread(new Runnable() {
 
 	  public void run() {
@@ -230,7 +230,7 @@ public class PlayerActivity extends Activity implements BlinkendroidListener, Ru
   }
 
   public void connectionOpened(final ClientSocket clientSocket) {
-	Log.d(BlinkendroidApp.LOG_TAG, "*** connectionOpened " + clientSocket.getDestinationAddress().toString());
+	Log.d(LOG_TAG, "*** connectionOpened " + clientSocket.getDestinationAddress().toString());
 	runOnUiThread(new Runnable() {
 
 	  public void run() {
@@ -240,7 +240,7 @@ public class PlayerActivity extends Activity implements BlinkendroidListener, Ru
   }
 
   public void connectionClosed(final ClientSocket clientSocket) {
-	Log.d(BlinkendroidApp.LOG_TAG, "*** connectionClosed " + clientSocket.getDestinationAddress().toString());
+	Log.d(LOG_TAG, "*** connectionClosed " + clientSocket.getDestinationAddress().toString());
 	runOnUiThread(new Runnable() {
 
 	  public void run() {
@@ -255,7 +255,7 @@ public class PlayerActivity extends Activity implements BlinkendroidListener, Ru
 	runOnUiThread(new Runnable() {
 
 	  public void run() {
-		Log.w(BlinkendroidApp.LOG_TAG, getString(R.string.connection_failed) + ": " + message);
+		Log.w(LOG_TAG, getString(R.string.connection_failed) + ": " + message);
 		playerView.stopPlaying();
 		ownerView.setVisibility(View.VISIBLE);
 		new AlertDialog.Builder(PlayerActivity.this).setIcon(android.R.drawable.ic_dialog_alert)

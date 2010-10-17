@@ -27,6 +27,7 @@ import android.widget.Toast;
 
 public class ServerActivity extends Activity implements ConnectionListener, BLMManagerListener {
 
+  private final String LOG_TAG = "ServerActivity".intern();
   private ReceiverThread recieverThread;
   private TicketManager ticketManager;
   private BlinkendroidServer blinkendroidServer;
@@ -170,7 +171,7 @@ public class ServerActivity extends Activity implements ConnectionListener, BLMM
   }
 
   public void connectionOpened(final ClientSocket clientSocket) {
-	Log.d(BlinkendroidApp.LOG_TAG, "ServerActivity connectionOpened " + clientSocket.getDestinationAddress().toString());
+	Log.d(LOG_TAG, "ServerActivity connectionOpened " + clientSocket.getDestinationAddress().toString());
 	runOnUiThread(new Runnable() {
 
 	  public void run() {
@@ -180,7 +181,7 @@ public class ServerActivity extends Activity implements ConnectionListener, BLMM
   }
 
   public void connectionClosed(final ClientSocket clientSocket) {
-	Log.d(BlinkendroidApp.LOG_TAG, "ServerActivity connectionClosed " + clientSocket.getDestinationAddress().toString());
+	Log.d(LOG_TAG, "ServerActivity connectionClosed " + clientSocket.getDestinationAddress().toString());
 	runOnUiThread(new Runnable() {
 
 	  public void run() {
