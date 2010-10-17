@@ -30,6 +30,7 @@ public class ServerActivity extends Activity implements ConnectionListener, BLMM
   private ReceiverThread recieverThread;
   private TicketManager ticketManager;
   private BlinkendroidServer blinkendroidServer;
+  private BlinkendroidApp app;
   private BLMManager blmManager;
   private ArrayAdapter<String> movieAdapter;
   private ArrayAdapter<String> clientAdapter;
@@ -40,7 +41,9 @@ public class ServerActivity extends Activity implements ConnectionListener, BLMM
 	super.onCreate(savedInstanceState);
 
 	setContentView(R.layout.server_content);
-
+	app = (BlinkendroidApp) getApplication();
+	app.wantWakeLock(true);
+	
 	final TextView serverNameView = (TextView) findViewById(R.id.server_name);
 	final Spinner movieSpinner = (Spinner) findViewById(R.id.server_movie);
 	final Button startStopButton = (Button) findViewById(R.id.server_start_stop);
@@ -161,6 +164,7 @@ public class ServerActivity extends Activity implements ConnectionListener, BLMM
 	  blinkendroidServer.shutdown();
 	  blinkendroidServer = null;
 	}
+	app.wantWakeLock(false);
 
 	super.onDestroy();
   }

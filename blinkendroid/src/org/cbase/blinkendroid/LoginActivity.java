@@ -64,6 +64,7 @@ public class LoginActivity extends Activity implements Runnable {
   private ReceiverThread receiverThread;
   private Handler handler = new Handler();
   private SenderThread senderThread;
+  private BlinkendroidApp app;
 
   private static final String PREFS_KEY_OWNER = "owner";
 
@@ -72,11 +73,12 @@ public class LoginActivity extends Activity implements Runnable {
 
 	super.onCreate(savedInstanceState);
 
+	app = (BlinkendroidApp) getApplication();
+
 	requestWindowFeature(Window.FEATURE_LEFT_ICON);
 	setTitle(getTitle() + " - " + getString(R.string.select_server_to_connect));
 	setContentView(R.layout.login_content);
 	setFeatureDrawableResource(Window.FEATURE_LEFT_ICON, R.drawable.icon);
-
 	final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
 	serverListView = (ListView) findViewById(R.id.login_server_list);
@@ -153,7 +155,7 @@ public class LoginActivity extends Activity implements Runnable {
 				.setPositiveButton(getString(R.string.check_for_update), new OnClickListener() {
 
 				  public void onClick(DialogInterface dialog, int which) {
-					startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(BlinkendroidApp.DOWNLOAD_URL)));
+					startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(app.getDownloadUrl())));
 					finish();
 
 				  }
@@ -247,7 +249,7 @@ public class LoginActivity extends Activity implements Runnable {
 	}
 
 	case R.id.login_options_instructions: {
-	  startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(BlinkendroidApp.ABOUT_URL)));
+	  startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(app.getAboutUrl())));
 	  return true;
 	}
 

@@ -65,12 +65,17 @@ public class PlayerActivity extends Activity implements BlinkendroidListener, Ru
   private Map<Integer, Long> arrowDurations = new HashMap<Integer, Long>();
   private float arrowScale = 0f;
   private final Handler handler = new Handler();
+  private BlinkendroidApp app;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
 
 	super.onCreate(savedInstanceState);
-
+	
+	app = (BlinkendroidApp) getApplication();
+	
+	app.wantWakeLock(true);
+	
 	requestWindowFeature(Window.FEATURE_NO_TITLE);
 
 	setContentView(R.layout.player_content);
@@ -157,7 +162,9 @@ public class PlayerActivity extends Activity implements BlinkendroidListener, Ru
 	handler.removeCallbacks(this);
 
 	playerView.stopPlaying();
-
+	
+	app.wantWakeLock(false);
+	
 	if (blinkendroidClient != null) {
 	  blinkendroidClient.shutdown();
 	  blinkendroidClient = null;

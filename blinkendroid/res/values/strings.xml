@@ -23,4 +23,6 @@
 	<string name="enter_server_ip">Enter server IP:</string>
 	<string name="connection_closed">connection to server closed</string>
 	<string name="connection_failed">connection failed</string>
+<string name="about_url">http://code.google.com/p/blinkendroid</string>
+<string name="download_url">market://details?id=org.cbase.blinkendroid</string>
 </resources>
