@@ -12,7 +12,7 @@ public class ClientConnectionState extends ConnectionState implements CommandHan
 
     private ClientConnectionHeartbeat mHeartbeater;
 
-    private final String LOG_TAG = "ClientConnectionHeartbeat".intern();
+    private static final String LOG_TAG = "ClientConnectionHeartbeat".intern();
 
     public ClientConnectionState(ClientSocket clientSocket, ConnectionListener listener) {
 	super(clientSocket, listener);

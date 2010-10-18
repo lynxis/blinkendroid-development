@@ -16,7 +16,7 @@ import android.util.Log;
 
 public class TicketManager implements IPeerHandler, ConnectionListener {
 
-    private final String LOG_TAG = "TicketManager".intern();
+    private static final String LOG_TAG = "TicketManager".intern();
     int maxClients = 2;
     int clients = 0;
     private Set<String> tickets = new HashSet<String>();

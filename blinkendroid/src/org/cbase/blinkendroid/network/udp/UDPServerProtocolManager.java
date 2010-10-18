@@ -36,12 +36,12 @@ import android.util.Log;
 public class UDPServerProtocolManager extends UDPAbstractBlinkendroidProtocol implements CommandHandler,
 	ConnectionListener {
 
-    private final String LOG_TAG = "UDPServerProtocolManager".intern();
+    private static final String LOG_TAG = "UDPServerProtocolManager".intern();
     protected GlobalTimerThread globalTimerThread;
-    private PlayerManager m_PlayerManager;
+    private PlayerManager mPlayerManager;
 
     public void setPlayerManager(PlayerManager mPlayerManager) {
-	m_PlayerManager = mPlayerManager;
+	this.mPlayerManager = mPlayerManager;
     }
 
     public UDPServerProtocolManager(final DatagramSocket socket) throws IOException {
@@ -80,8 +80,8 @@ public class UDPServerProtocolManager extends UDPAbstractBlinkendroidProtocol im
 	    handler.handle(from, in);
 	    System.out.println("recieve proto " + proto + " handler " + handler.getClass().toString());
 	} else {
-	    if (m_PlayerManager != null) {
-		m_PlayerManager.handle(this, from, proto, in);
+	    if (mPlayerManager != null) {
+		mPlayerManager.handle(this, from, proto, in);
 	    }
 	}
     }

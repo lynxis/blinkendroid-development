@@ -11,23 +11,23 @@ import android.util.Log;
 public class UDPClientProtocolManager extends UDPAbstractBlinkendroidProtocol implements UDPDirectConnection {
 
     private static final String LOG_TAG = "UDPClientProtocolManager".intern();
-    private InetSocketAddress m_SocketAddr;
+    private InetSocketAddress mSocketAddr;
 
     public UDPClientProtocolManager(DatagramSocket socket, InetSocketAddress serverAddr) throws IOException {
 	super(socket);
-	this.m_SocketAddr = serverAddr;
+	this.mSocketAddr = serverAddr;
     }
 
     @Override
     public void receive(DatagramPacket packet) throws IOException {
 	/* drop datapackets from other servers */
 	Log.d(LOG_TAG, "Received packet " + packet.toString());
-	if (packet.getAddress().equals(m_SocketAddr.getAddress())) {
+	if (packet.getAddress().equals(mSocketAddr.getAddress())) {
 	    super.receive(packet);
 	}
     }
 
     public void send(ByteBuffer out) throws IOException {
-	send(m_SocketAddr, out);
+	send(mSocketAddr, out);
     }
 }

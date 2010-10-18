@@ -19,7 +19,7 @@ import android.util.Log;
 
 public class ConnectionState implements CommandHandler {
 
-    private final String LOG_TAG = "ConnectionState".intern();
+    private static final String LOG_TAG = "ConnectionState".intern();
     
     public static enum Command {
 	SYN, ACK, SYNACK, RESET, HEARTBEAT, REQUEST_DIRECT_HEARTBEAT

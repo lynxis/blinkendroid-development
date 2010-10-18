@@ -31,7 +31,7 @@ import android.util.Log;
 
 public class BlinkendroidVideoServerProtocol {
 
-  private final String LOG_TAG = "BlinkendroidVideoServerProtocol".intern();
+  private static final String LOG_TAG = "BlinkendroidVideoServerProtocol".intern();
   
   public static final Integer PROTOCOL_PLAYER = 42;
   public static final Integer COMMAND_PLAYER_TIME = 23;
@@ -68,11 +68,12 @@ public class BlinkendroidVideoServerProtocol {
 			Log.d(LOG_TAG, "try to read file with bytes " + movie.length());
 			InputStream is = new FileInputStream(movie);
 			byte[] buffer = new byte[1024];
-			int allLen = 0;
+			//commented because: not referenced
+//			int allLen = 0;
 			int len;
 			while ((len = is.read(buffer)) != -1) {
 			  out.write(buffer, 0, len);
-			  allLen += len;
+//			  allLen += len;
 			}
 			is.close();
 			Log.d(LOG_TAG, "send movie bytes " + movie.length());

@@ -31,7 +31,7 @@ import android.util.Log;
  */
 public class SenderThread extends Thread {
 
-    private final String LOG_TAG = "SenderThread".intern();
+    private static final String LOG_TAG = "SenderThread".intern();
   private final String message;
   private InetAddress group;
   volatile private boolean running = true;

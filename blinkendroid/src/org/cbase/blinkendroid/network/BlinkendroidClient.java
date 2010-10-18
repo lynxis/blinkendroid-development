@@ -31,12 +31,12 @@ import android.util.Log;
 
 public class BlinkendroidClient extends Thread {
 
-  private final String LOG_TAG = "BlinkendroidClient".intern();
+  private static final String LOG_TAG = "BlinkendroidClient".intern();
   private final InetSocketAddress socketAddress;
   private final BlinkendroidListener listener;
   private DatagramSocket socket;
   private UDPClientProtocolManager protocol;
-  private ClientConnectionState m_connstate;
+  private ClientConnectionState mConnstate;
   private BlinkendroidClientProtocol blinkenProto;
 
   public BlinkendroidClient(final InetSocketAddress socketAddress, final BlinkendroidListener listener) {
@@ -45,22 +45,22 @@ public class BlinkendroidClient extends Thread {
   }
 
   @Override
-  public void start() {
+  public synchronized void start() {
 	Log.d(LOG_TAG, "trying to connect to server: " + socketAddress);
 	try {
 	  socket = new DatagramSocket(BlinkendroidApp.BROADCAST_CLIENT_PORT);
 	  System.out.printf("UDP SOCKET CREATED");
 	  socket.setReuseAddress(true);
-	  long t = System.currentTimeMillis();
+	  long time = System.currentTimeMillis();
 	  protocol = new UDPClientProtocolManager(socket, socketAddress);
 
-	  m_connstate = new ClientConnectionState(new ClientSocket(protocol, socketAddress), listener);
-	  protocol.registerHandler(BlinkendroidApp.PROTOCOL_CONNECTION, m_connstate);
-	  m_connstate.openConnection();
+	  mConnstate = new ClientConnectionState(new ClientSocket(protocol, socketAddress), listener);
+	  protocol.registerHandler(BlinkendroidApp.PROTOCOL_CONNECTION, mConnstate);
+	  mConnstate.openConnection();
 
 	  blinkenProto = new BlinkendroidClientProtocol(listener);
 	  protocol.registerHandler(BlinkendroidApp.PROTOCOL_PLAYER, blinkenProto);
-	  Log.i(LOG_TAG, "connected " + (System.currentTimeMillis() - t));
+	  Log.i(LOG_TAG, "connected " + (System.currentTimeMillis() - time));
 
 	} catch (final IOException x) {
 	  Log.e(LOG_TAG, "connection failed");
@@ -70,8 +70,8 @@ public class BlinkendroidClient extends Thread {
   }
 
   public void shutdown() {
-	if (null != m_connstate)
-	  m_connstate.shutdown();
+	if (null != mConnstate)
+	  mConnstate.shutdown();
 	if (null != protocol)
 	  protocol.shutdown();
 	if (null != socket) {

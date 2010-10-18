@@ -13,7 +13,7 @@ import android.util.Log;
 
 public class BlinkendroidClientProtocol extends BlinkendroidProtocol implements CommandHandler {
   private BlinkendroidListener mListener;
-  private final String LOG_TAG = "BlinkendroidClientProtocol".intern();
+  private static final String LOG_TAG = "BlinkendroidClientProtocol".intern();
 
   public BlinkendroidClientProtocol(BlinkendroidListener listener) {
 	mListener = listener;

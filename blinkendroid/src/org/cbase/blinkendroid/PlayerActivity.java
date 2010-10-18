@@ -54,7 +54,7 @@ import android.widget.Toast;
  */
 public class PlayerActivity extends Activity implements BlinkendroidListener, Runnable {
 
-    private final String LOG_TAG = "PlayerActivity".intern();
+    private static final String LOG_TAG = "PlayerActivity".intern();
   public static final String INTENT_EXTRA_IP = "ip";
   public static final String INTENT_EXTRA_PORT = "port";
   private PlayerView playerView;

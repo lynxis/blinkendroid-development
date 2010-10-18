@@ -10,7 +10,7 @@ import android.util.Log;
 public class BlinkendroidServerProtocol extends BlinkendroidProtocol {
 
   private ClientSocket mClientSocket;
-  private final String LOG_TAG = "BlinkendroidServerProtocol".intern();
+  private static final String LOG_TAG = "BlinkendroidServerProtocol".intern();
   public BlinkendroidServerProtocol(ClientSocket clientSocket) {
 	mClientSocket = clientSocket;
   }

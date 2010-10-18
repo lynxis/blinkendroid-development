@@ -14,7 +14,7 @@ public class BLMManager {
 
   private List<BLMHeader> blmHeader;
   BLMManagerListener listener;
-  private final String LOG_TAG = "BLMManager".intern();
+  private static final String LOG_TAG = "BLMManager".intern();
 
   public BLMManager() {
 	blmHeader = new ArrayList<BLMHeader>();
@@ -84,9 +84,9 @@ public class BLMManager {
   private BLMHeader getBLMHeader(File f) {
 	try {
 	  ObjectInputStream objIn = new ObjectInputStream(new FileInputStream(f));
-	  Object o = objIn.readObject();
-	  if (o instanceof BLMHeader) {
-		return (BLMHeader) o;
+	  Object receivedObject = objIn.readObject();
+	  if (receivedObject instanceof BLMHeader) {
+		return (BLMHeader) receivedObject;
 	  }
 	} catch (Exception e) {
 	  Log.e(LOG_TAG, "could not get BMLHeader", e);

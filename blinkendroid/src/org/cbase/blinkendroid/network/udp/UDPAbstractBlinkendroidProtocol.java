@@ -24,14 +24,14 @@ public class UDPAbstractBlinkendroidProtocol implements UDPDirectConnection {
     private static final String LOG_TAG = "UDPAbstractBlinkendroidProtocol".intern();
     protected BufferedOutputStream out;
     protected BufferedInputStream in;
-    protected DatagramSocket m_Socket;
+    protected DatagramSocket mSocket;
     protected ReceiverThread receiverThread;
     protected final HashMap<Integer, CommandHandler> handlers = new HashMap<Integer, CommandHandler>();
     protected List<ConnectionListener> connectionListener = new ArrayList<ConnectionListener>();
     protected boolean server;
 
     protected UDPAbstractBlinkendroidProtocol(final DatagramSocket socket) throws IOException {
-	this.m_Socket = socket;
+	this.mSocket = socket;
 	receiverThread = new ReceiverThread();
 	receiverThread.start();
     }
@@ -53,7 +53,7 @@ public class UDPAbstractBlinkendroidProtocol implements UDPDirectConnection {
 	    out.close();
 	    if (!server)// TODO ugly hack, server needs to long
 		in.close();
-	    m_Socket.close();
+	    mSocket.close();
 	    Log.d(LOG_TAG, getMyName() + " BlinkendroidProtocol: Socket closed.");
 	} catch (IOException e) {
 	    Log.e(LOG_TAG, getMyName() + " BlinkendroidProtocol: closed failed ");
@@ -115,14 +115,14 @@ public class UDPAbstractBlinkendroidProtocol implements UDPDirectConnection {
 	    byte[] receiveData;
 	    DatagramPacket receivePacket;
 	    try {
-		m_Socket.setSoTimeout(1000);
+		mSocket.setSoTimeout(1000);
 		while (running) {
 		    receiveData = new byte[1024];
 		    receivePacket = new DatagramPacket(receiveData, receiveData.length);
 		    // Log.d(LOG_TAG, this.getName() + " received " +
 		    // receivePacket.toString());
 		    try {
-			m_Socket.receive(receivePacket);
+			mSocket.receive(receivePacket);
 			receive(receivePacket);
 		    } catch (InterruptedIOException e) {
 			// timeout happened - just a normal case, swallowing
@@ -152,13 +152,14 @@ public class UDPAbstractBlinkendroidProtocol implements UDPDirectConnection {
     }
 
     public void send(InetSocketAddress socketAddr, ByteBuffer out) throws IOException {
-	m_Socket.send(new DatagramPacket(out.array(), out.position(), socketAddr));
+	mSocket.send(new DatagramPacket(out.array(), out.position(), socketAddr));
     }
 
     protected String getMyName() {
-	if (server)
+	if (server) {
 	    return "Server ";// + socket.getRemoteSocketAddress();
-	else
+	} else {
 	    return "Client ";// + socket.getRemoteSocketAddress();
+	}
     }
 }

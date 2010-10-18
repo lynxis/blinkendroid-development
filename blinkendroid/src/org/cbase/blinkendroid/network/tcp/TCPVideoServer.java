@@ -8,7 +8,7 @@ import android.util.Log;
 
 public class TCPVideoServer extends Thread {
 
-  private final String LOG_TAG = "TCPVideoServer".intern();
+  private static final String LOG_TAG = "TCPVideoServer".intern();
   volatile private boolean running = true;
   ServerSocket serverSocket;
   private String videoName;
@@ -27,7 +27,7 @@ public class TCPVideoServer extends Thread {
 	  serverSocket.setReuseAddress(true);
 	  running = true;
 
-	  acceptLoop();
+//	  acceptLoop();
 
 	  serverSocket.close();
 	  Log.d(LOG_TAG, "VideoThread ended!!!!!!! ");
@@ -38,19 +38,20 @@ public class TCPVideoServer extends Thread {
   }
 
   // TODO do we need this method any longer?
-  private void acceptLoop() {
+//  private void acceptLoop() {
 
-	try {
-	  while (running) {
-		Socket connectionSocket;
-		connectionSocket = serverSocket.accept();
-		final BlinkendroidVideoServerProtocol blinkenVideoProtocol = new BlinkendroidVideoServerProtocol(
-			connectionSocket, videoName);
+//	try {
+//	  while (running) {
+//		Socket connectionSocket;
+//		connectionSocket = serverSocket.accept();
+		
+//		final BlinkendroidVideoServerProtocol blinkenVideoProtocol = new BlinkendroidVideoServerProtocol(
+//			connectionSocket, videoName);
 
-	  }
-	} catch (IOException e) {
-	  Log.e(LOG_TAG, "AcceptLoop issue", e);
-	}
+//	  }
+//	} catch (IOException e) {
+//	  Log.e(LOG_TAG, "AcceptLoop issue", e);
+//	}
 	/*
 	 * try { byte[] buffer = new byte[4]; while (running && in.read(buffer) !=
 	 * -1) { inputLine = ByteBuffer.wrap(buffer).getInt(); if (!running) // fast
@@ -65,7 +66,7 @@ public class TCPVideoServer extends Thread {
 	 * e) { System.out.println(getMyName() + " InputThread fucked ");
 	 * e.printStackTrace(); }
 	 */
-  }
+//  }
 
   public void setVideo(String videoName) {
 	this.videoName = videoName;

@@ -30,7 +30,7 @@ import android.util.Log;
  */
 public class BlinkendroidApp extends Application {
 
-  private final String LOG_TAG = "BlinkendroidApp".intern();
+  private static final String LOG_TAG = "BlinkendroidApp".intern();
   public static final int BROADCAST_ANNOUCEMENT_SERVER_PORT = 6998;
   public static final int BROADCAST_ANNOUCEMENT_CLIENT_PORT = 6999;
   public static final int BROADCAST_ANNOUCEMENT_CLIENT_TICKET_PORT = 7000;
@@ -64,11 +64,11 @@ public class BlinkendroidApp extends Application {
   }
 
   public String getAboutUrl() {
-	return aboutUrl == null ? getString(R.string.about_url) : aboutUrl;
+	return (aboutUrl == null) ? getString(R.string.about_url) : aboutUrl;
   }
 
   public String getDownloadUrl() {
-	return downloadUrl == null ? getString(R.string.download_url) : downloadUrl;
+	return (downloadUrl == null) ? getString(R.string.download_url) : downloadUrl;
   }
 
   public void wantWakeLock(boolean doWant) {

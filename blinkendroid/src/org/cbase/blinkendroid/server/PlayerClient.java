@@ -20,9 +20,9 @@ public class PlayerClient extends ConnectionState {
   // protocol
   long startTime;
   PlayerManager playerManager;
-  private ClientSocket m_clientSocket;
+  private ClientSocket mclientSocket;
   private BlinkendroidServerProtocol mBlinkenProtocol;
-  private final String LOG_TAG = "PlayerClient".intern();
+  private static final String LOG_TAG = "PlayerClient".intern();
   
   protected final HashMap<Integer, CommandHandler> handlers = new HashMap<Integer, CommandHandler>();
 
@@ -34,13 +34,13 @@ public class PlayerClient extends ConnectionState {
 	super(clientSocket, playerManager);
 	Log.d(LOG_TAG, "new PlayerClient");
 	this.playerManager = playerManager;
-	this.m_clientSocket = clientSocket;
+	this.mclientSocket = clientSocket;
 	this.registerHandler(BlinkendroidApp.PROTOCOL_CONNECTION, this);
 	mBlinkenProtocol = new BlinkendroidServerProtocol(clientSocket);
   }
 
   public SocketAddress getClientSocketAddress() {
-	return m_clientSocket.getInetSocketAddress();
+	return mclientSocket.getInetSocketAddress();
   }
 
   public void registerHandler(Integer proto, CommandHandler handler) {

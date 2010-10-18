@@ -33,14 +33,14 @@ import android.util.Log;
 public class BlinkendroidServer {
     // TODO schtief warum hier kein thread in server ui?
 
-    private final String LOG_TAG = "BlinkendroidServer".intern();
+    private static final String LOG_TAG = "BlinkendroidServer".intern();
     volatile private boolean running = false;
     volatile private DatagramSocket serverSocket;
     private int port = -1;
     private PlayerManager playerManager;
     private List<ConnectionListener> connectionListeners;
     // TODO muss der Server wissen wer der PlayerManager ist ?
-    private UDPServerProtocolManager m_ServerProto;
+    private UDPServerProtocolManager mServerProto;
     private TCPVideoServer videoSocket;
 
     public BlinkendroidServer(int port) {
@@ -63,17 +63,17 @@ public class BlinkendroidServer {
 	    serverSocket = new DatagramSocket(port);
 	    serverSocket.setBroadcast(true);
 	    serverSocket.setReuseAddress(true);
-	    m_ServerProto = new UDPServerProtocolManager(serverSocket);
+	    mServerProto = new UDPServerProtocolManager(serverSocket);
 
-	    playerManager = new PlayerManager(m_ServerProto);
+	    playerManager = new PlayerManager(mServerProto);
 	    playerManager.setVideoServer(videoSocket);
-	    m_ServerProto.setPlayerManager(playerManager);
+	    mServerProto.setPlayerManager(playerManager);
 
 	    for (ConnectionListener connectionListener : connectionListeners) {
-		m_ServerProto.addConnectionListener(connectionListener);
+		mServerProto.addConnectionListener(connectionListener);
 	    }
 
-	    m_ServerProto.startTimerThread();
+	    mServerProto.startTimerThread();
 
 	    // how is the protocol connected to the logic ?
 	} catch (SocketException e) {
@@ -87,7 +87,7 @@ public class BlinkendroidServer {
     public void shutdown() {
 	videoSocket.shutdown();
 	playerManager.shutdown();
-	m_ServerProto.shutdown();
+	mServerProto.shutdown();
 	serverSocket.close();
     }
 

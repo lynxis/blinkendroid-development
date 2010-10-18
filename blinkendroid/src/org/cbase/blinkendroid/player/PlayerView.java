@@ -58,14 +58,14 @@ public class PlayerView extends View implements Runnable {
 
 	this.blm = blm;
 	this.numFrames = blm.frames.size();
-	long t = 0;
+	long time = 0;
 	frameTime = new long[numFrames + 1];
 	for (int i = 0; i < numFrames; i++) {
-	  frameTime[i] = t;
-	  t += blm.frames.get(i).duration;
+	  frameTime[i] = time;
+	  time += blm.frames.get(i).duration;
 	}
-	frameTime[numFrames] = t;
-	duration = t;
+	frameTime[numFrames] = time;
+	duration = time;
 	frame = 0;
   }
 
@@ -121,12 +121,12 @@ public class PlayerView extends View implements Runnable {
 		  final int clippedX = x - absStartX;
 		  final int value = row[x] << (8 - blm.header.bits);
 		  if (blm.header.color) {
-			int r = ((row[x] & 48) >> 4) * 64;
-			int g = ((row[x] & 12) >> 2) * 64;
-			int b = (row[x] & 3) * 64;
+			int red = ((row[x] & 48) >> 4) * 64;
+			int green = ((row[x] & 12) >> 2) * 64;
+			int blue = (row[x] & 3) * 64;
 			// Log.d(Constants.LOG_TAG, r+","+g+","+b+":"+
 			// row[x]+";");
-			paint.setColor(Color.argb(255, r, g, b));
+			paint.setColor(Color.argb(255, red, green, blue));
 		  } else {
 			paint.setColor(Color.argb(255, value, value, value));
 		  }

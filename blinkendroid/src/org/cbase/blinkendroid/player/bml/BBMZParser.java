@@ -23,6 +23,7 @@ public class BBMZParser {
 
 	ByteArrayOutputStream os = new ByteArrayOutputStream();
 	byte inbuf[] = new byte[1];
+	//what is n?
 	int n;
 	try {
 	    while ((n = openRawResource.read(inbuf, 0, 1)) != -1) {
@@ -41,11 +42,11 @@ public class BBMZParser {
 	os = null;
 	try {
 	    ObjectInputStream objIn = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()));
-	    Object o = objIn.readObject();
+	    Object receivedObject = objIn.readObject();
 	    Log.d(LOG_TAG, "decompression and parsing time :" + (System.currentTimeMillis() - time));
 	    baos = null;
-	    if (o instanceof BLM) {
-		return (BLM) o;
+	    if (receivedObject instanceof BLM) {
+		return (BLM) receivedObject;
 	    } else {
 		Log.e(LOG_TAG, "invalid bbmz");
 	    }
@@ -63,6 +64,7 @@ public class BBMZParser {
 	    final int BUFSIZ = 4096;
 	    byte inbuf[] = new byte[BUFSIZ];
 	    int length = 0;
+	    //what is n?
 	    int n;
 	    while ((n = zis.read(inbuf, 0, BUFSIZ)) != -1) {
 		fos.write(inbuf, 0, n);

@@ -33,7 +33,7 @@ import android.util.Log;
  */
 public class ReceiverThread extends Thread {
 
-    private final String LOG_TAG = "ReceiverThread".intern();
+    private static final String LOG_TAG = "ReceiverThread".intern();
     volatile private boolean running = true;
     private List<IPeerHandler> handlers = Collections.synchronizedList(new ArrayList<IPeerHandler>());
     private DatagramSocket socket;
@@ -98,7 +98,7 @@ public class ReceiverThread extends Thread {
 		}
 
 		final InetAddress address = packet.getAddress();
-		final String name = receivedParts.length >= 3 ? receivedParts[2] : "";
+		final String name = (receivedParts.length >= 3) ? receivedParts[2] : "";
 
 		notifyHandlers(protocolVersion, name, address.getHostAddress());
 
