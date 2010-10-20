@@ -110,9 +110,7 @@ public class PlayerActivity extends Activity implements BlinkendroidListener, Ru
 	    WindowManager.LayoutParams lp = getWindow().getAttributes();
 	    lp.screenBrightness = 1.0f;
 	    getWindow().setAttributes(lp);
-	}
-	
-	//showImage(BitmapFactory.decodeStream(getResources().openRawResource(R.drawable.world)));
+	}	
   }
 
     /**
@@ -318,14 +316,18 @@ public class PlayerActivity extends Activity implements BlinkendroidListener, Ru
 	    handler.postDelayed(this, 20);
     }
 
-    @Override
     public void showImage(final Bitmap bmp) {
 	
 	runOnUiThread(new Runnable() {
 
 	    public void run() {
+		Bitmap image = bmp;
+		if(image == null) {
+		    image = BitmapFactory.decodeStream(getResources().openRawResource(R.drawable.world));
+		}
+		
 		ImageView imgView = new ImageView(PlayerActivity.this);
-		imgView.setImage(bmp);
+		imgView.setImage(image);
         	PlayerActivity.this.setContentView(imgView);
         	view = imgView;
 	    }
