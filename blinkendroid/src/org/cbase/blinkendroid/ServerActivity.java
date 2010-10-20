@@ -49,7 +49,7 @@ public class ServerActivity extends Activity implements ConnectionListener, BLMM
 	app.wantWakeLock(true);
 
 	blmManager = new BLMManager();
-	blmManager.readMovies(this);
+	// blmManager.readMovies(this);
 
 	imageManager = new ImageManager();
 	imageManager.readImages(this);

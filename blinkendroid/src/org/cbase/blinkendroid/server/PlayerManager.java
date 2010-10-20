@@ -125,7 +125,7 @@ public class PlayerManager implements ConnectionListener {
 	Log.i(LOG_TAG, "added Client at pos " + playerClient.x + ":" + playerClient.y);
 	mMatrixClients[playerClient.y][playerClient.x] = playerClient;
 
-	playerClient.getBlinkenProtocol().play(startTime, BlinkendroidProtocol.OPTION_PLAY_TYPE_MOVIE);
+	playerClient.getBlinkenProtocol().play(startTime, BlinkendroidProtocol.OPTION_PLAY_TYPE_IMAGE);
 	arrow(playerClient);
 
 	if (!found) {

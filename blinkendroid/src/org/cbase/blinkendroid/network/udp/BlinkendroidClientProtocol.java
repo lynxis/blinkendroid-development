@@ -44,6 +44,7 @@ public class BlinkendroidClientProtocol extends BlinkendroidProtocol implements 
 		    mListener.playBLM(startTime, blm);
 		    break;
 		case OPTION_PLAY_TYPE_IMAGE:
+		    final long startTime2 = in.getLong();
 		    Bitmap bmp = BlinkendroidDataClientProtocol.receiveImage((InetSocketAddress) from);
 		    mListener.showImage(bmp);
 		    break;

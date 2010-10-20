@@ -19,6 +19,7 @@ package org.cbase.blinkendroid.network.tcp;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
@@ -29,6 +30,7 @@ import org.cbase.blinkendroid.player.bml.BBMZParser;
 import org.cbase.blinkendroid.player.bml.BLM;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Log;
 
 public class BlinkendroidDataClientProtocol {
@@ -138,14 +140,29 @@ public class BlinkendroidDataClientProtocol {
 	    // socket.setSoTimeout(1000);
 	    BufferedOutputStream out = new BufferedOutputStream(socket.getOutputStream());
 	    BufferedInputStream in = new BufferedInputStream(socket.getInputStream());
-	    writeInt(out, 2353);
+	    writeInt(out, BlinkendroidProtocol.OPTION_PLAY_TYPE_IMAGE);
 	    out.flush();
 	    long length = readLong(in);
 	    // setSoTimeout
 	    if (length == 0) {
 		Log.i(LOG_TAG, "Play default image ");
 	    } else {
-		// TODO read BitMap
+		ByteArrayOutputStream os = new ByteArrayOutputStream();
+		byte inbuf[] = new byte[1];
+		// what is n?
+		int n;
+		try {
+		    while ((n = in.read(inbuf, 0, 1)) != -1) {
+			os.write(inbuf, 0, n);
+			length -= n;
+			if (length == 0)
+			    break;
+		    }
+		} catch (Exception e) {
+		    Log.e(LOG_TAG, "invalid image", e);
+		}
+		bmp = BitmapFactory.decodeByteArray(os.toByteArray(), 0, os.size());
+		os = null;
 	    }
 	    out.close();
 	    in.close();

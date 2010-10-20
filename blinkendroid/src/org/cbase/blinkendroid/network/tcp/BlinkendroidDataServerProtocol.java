@@ -93,13 +93,13 @@ public class BlinkendroidDataServerProtocol {
 		writeLong(out, 0);
 		Log.d(LOG_TAG, "Play default image ");
 	    } else {
-		File movie = new File(dataServer.getImageName());
-		if (null != movie && movie.exists()) {
+		File image = new File(dataServer.getImageName());
+		if (null != image && image.exists()) {
 
 		    try {
-			writeLong(out, movie.length());
-			Log.d(LOG_TAG, "try to read file with bytes " + movie.length());
-			InputStream is = new FileInputStream(movie);
+			writeLong(out, image.length());
+			Log.d(LOG_TAG, "try to read file with bytes " + image.length());
+			InputStream is = new FileInputStream(image);
 			byte[] buffer = new byte[1024];
 			// commented because: not referenced
 			// int allLen = 0;
@@ -109,8 +109,8 @@ public class BlinkendroidDataServerProtocol {
 			    // allLen += len;
 			}
 			is.close();
-			Log.d(LOG_TAG, "send movie bytes " + movie.length());
-			writeLong(out, movie.length());
+			Log.d(LOG_TAG, "send image bytes " + image.length());
+			writeLong(out, image.length());
 		    } catch (IOException ioe) {
 			Log.e(LOG_TAG, "sending movie failed", ioe);
 		    }

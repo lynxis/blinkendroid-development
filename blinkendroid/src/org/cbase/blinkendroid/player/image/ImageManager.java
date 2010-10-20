@@ -45,13 +45,11 @@ public class ImageManager {
 		if (null != files) {
 		    Log.d(LOG_TAG, "found files " + files.length);
 		    for (int i = 0; i < files.length; i++) {
-			if (!files[i].getName().endsWith(".jpg") || !files[i].getName().endsWith(".png"))
+			if (!files[i].getName().endsWith(".png"))
 			    continue;
 			ImageHeader header = getImageHeader(files[i]);
 			if (null != header) {
-			    header.filename = files[i].getAbsolutePath().substring(0,
-				    files[i].getAbsolutePath().length() - 5)
-				    + ".bbmz";
+			    header.filename = files[i].getAbsolutePath();
 			    imageHeader.add(header);
 			}
 		    }
@@ -87,6 +85,7 @@ public class ImageManager {
 	    defaultMovie.title = f.getName();
 	    defaultMovie.height = 32;
 	    defaultMovie.width = 32;
+	    return defaultMovie;
 	} catch (Exception e) {
 	    Log.e(LOG_TAG, "could not get ImageHeader", e);
 	}
