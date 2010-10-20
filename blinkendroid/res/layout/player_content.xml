@@ -7,7 +7,7 @@
 		android:id="@+id/player_image" android:keepScreenOn="true"
 		android:layout_width="fill_parent" android:layout_height="fill_parent" />
 
-	<ImageView android:id="@+id/player_puzzle_image"
+	<org.cbase.blinkendroid.player.ImageView android:id="@+id/player_puzzle_image"
 		android:keepScreenOn="true" android:layout_width="fill_parent"
 		android:layout_height="fill_parent" />
 
