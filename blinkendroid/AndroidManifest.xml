@@ -8,13 +8,13 @@
 		
 		<activity android:name=".Splash" android:screenOrientation="portrait"
 			android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen">
+		</activity>
+		<activity android:name=".LoginActivity" android:theme="@android:style/Theme.Light"
+			android:configChanges="orientation|keyboard|keyboardHidden">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
 				<category android:name="android.intent.category.LAUNCHER" />
 			</intent-filter>
-		</activity>
-		<activity android:name=".LoginActivity" android:theme="@android:style/Theme.Light"
-			android:configChanges="orientation|keyboard|keyboardHidden">
 		</activity>
 		<activity android:name=".ServerActivity"
 			android:configChanges="orientation|keyboard|keyboardHidden" />
