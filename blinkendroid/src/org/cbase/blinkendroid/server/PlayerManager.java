@@ -13,6 +13,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.cbase.blinkendroid.BlinkendroidApp;
 import org.cbase.blinkendroid.network.ConnectionListener;
 import org.cbase.blinkendroid.network.tcp.TCPVideoServer;
+import org.cbase.blinkendroid.network.udp.BlinkendroidProtocol;
 import org.cbase.blinkendroid.network.udp.ClientSocket;
 import org.cbase.blinkendroid.network.udp.CommandHandler;
 import org.cbase.blinkendroid.network.udp.ConnectionState;
@@ -123,7 +124,7 @@ public class PlayerManager implements ConnectionListener {
 	Log.i(LOG_TAG, "added Client at pos " + playerClient.x + ":" + playerClient.y);
 	mMatrixClients[playerClient.y][playerClient.x] = playerClient;
 
-	playerClient.getBlinkenProtocol().play(startTime, null); // send a play
+	playerClient.getBlinkenProtocol().play(startTime, BlinkendroidProtocol.OPTION_PLAY_TYPE_MOVIE);
 	arrow(playerClient);
 
 	if (!found) {
@@ -258,7 +259,8 @@ public class PlayerManager implements ConnectionListener {
 		for (int j = 0; j < maxX; j++) {
 		    if (null != mMatrixClients[i][j]) {
 			Log.i(LOG_TAG, "play PlayerClient " + j + ":" + i + " " + filename);
-			mMatrixClients[i][j].getBlinkenProtocol().play(startTime, filename);
+			mMatrixClients[i][j].getBlinkenProtocol().play(startTime,
+				BlinkendroidProtocol.OPTION_PLAY_TYPE_MOVIE);
 		    }
 		}
 	    }
