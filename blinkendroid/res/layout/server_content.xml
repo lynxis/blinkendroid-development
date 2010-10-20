@@ -16,6 +16,10 @@
 		android:layout_width="fill_parent" android:layout_height="18dp" />
 	<Spinner android:id="@+id/ticket_size" android:layout_width="fill_parent"
 		android:layout_height="wrap_content" android:hint="@string/ticket_hint" />
+	<TextView android:id="@+id/image_hint_view" android:text="@+string/image_hint"
+		android:layout_width="fill_parent" android:layout_height="18dp" />
+	<Spinner android:id="@+id/image_selector" android:layout_width="fill_parent"
+		android:layout_height="wrap_content" android:hint="@string/image_hint" />
 
 	<LinearLayout android:orientation="horizontal"
 		android:layout_width="fill_parent" android:layout_height="wrap_content">
