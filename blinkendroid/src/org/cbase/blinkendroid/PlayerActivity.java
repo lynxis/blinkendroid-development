@@ -61,6 +61,8 @@ public class PlayerActivity extends Activity implements BlinkendroidListener, Ru
     public static final String INTENT_EXTRA_IP = "ip";
     public static final String INTENT_EXTRA_PORT = "port";
     private View view;
+    private PlayerView playerView;
+    private ImageView imageView;
     private ArrowView arrowView;
     private TextView ownerView;
     private BlinkendroidClient blinkendroidClient;
@@ -82,6 +84,10 @@ public class PlayerActivity extends Activity implements BlinkendroidListener, Ru
 	requestWindowFeature(Window.FEATURE_NO_TITLE);
 
 	setContentView(R.layout.player_content);
+	playerView = (PlayerView) findViewById(R.id.player_image);
+	playerView.setVisibility(View.GONE);
+	imageView = (ImageView) findViewById(R.id.player_puzzle_image);
+	imageView.setVisibility(View.VISIBLE);
 
 	arrowView = (ArrowView) findViewById(R.id.player_arrow);
 	ownerView = (TextView) findViewById(R.id.player_owner);
@@ -197,25 +203,27 @@ public class PlayerActivity extends Activity implements BlinkendroidListener, Ru
     }
 
     public void playBLM(final long startTime, final BLM movie) {
-
-	if (!(view instanceof PlayerView)) {
-	    return;
-	}
-
 	Log.d(LOG_TAG, "*** play " + startTime);
 	runOnUiThread(new Runnable() {
 
 	    public void run() {
-		view = findViewById(R.id.player_image);
-		PlayerView playerView = (PlayerView) view;
-		blm = movie;
-		if (blm == null) {
-		    blm = new BBMZParser().parseBBMZ(getResources().openRawResource(R.raw.blinkendroid1), 14345);
-		}
+		try {
 
-		playerView.setBLM(blm);
-		playerView.setStartTime(startTime);
-		playerView.startPlaying();
+		    blm = movie;
+		    if (blm == null) {
+			blm = new BBMZParser().parseBBMZ(getResources().openRawResource(R.raw.blinkendroid1), 14345);
+		    }
+
+		    playerView.setBLM(blm);
+		    playerView.setStartTime(startTime);
+		    playerView.startPlaying();
+		    imageView.setVisibility(View.GONE);
+		    playerView.setVisibility(View.VISIBLE);
+		    view = playerView;
+		    view.invalidate();
+		} catch (Exception e) {
+		    e.printStackTrace();
+		}
 	    }
 	});
     }
@@ -322,11 +330,11 @@ public class PlayerActivity extends Activity implements BlinkendroidListener, Ru
 		if (image == null) {
 		    image = BitmapFactory.decodeStream(getResources().openRawResource(R.drawable.world));
 		}
-
-		ImageView imgView = new ImageView(PlayerActivity.this);
-		imgView.setImage(image);
-		PlayerActivity.this.setContentView(imgView);
-		view = imgView;
+		imageView.setImage(image);
+		imageView.setVisibility(View.VISIBLE);
+		playerView.setVisibility(View.GONE);
+		view = imageView;
+		view.invalidate();
 	    }
 	});
     }
