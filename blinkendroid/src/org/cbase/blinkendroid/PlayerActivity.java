@@ -26,6 +26,7 @@ import org.cbase.blinkendroid.network.BlinkendroidClient;
 import org.cbase.blinkendroid.network.BlinkendroidListener;
 import org.cbase.blinkendroid.network.udp.ClientSocket;
 import org.cbase.blinkendroid.player.ArrowView;
+import org.cbase.blinkendroid.player.ImageView;
 import org.cbase.blinkendroid.player.PlayerView;
 import org.cbase.blinkendroid.player.bml.BBMZParser;
 import org.cbase.blinkendroid.player.bml.BLM;
@@ -36,6 +37,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
@@ -55,18 +59,18 @@ import android.widget.Toast;
  */
 public class PlayerActivity extends Activity implements BlinkendroidListener, Runnable {
 
-    private static final String LOG_TAG = "PlayerActivity".intern();
-    public static final String INTENT_EXTRA_IP = "ip";
-    public static final String INTENT_EXTRA_PORT = "port";
-    private PlayerView playerView;
-    private ArrowView arrowView;
-    private TextView ownerView;
-    private BlinkendroidClient blinkendroidClient;
-    private BLM blm;
-    private Map<Integer, Long> arrowDurations = new HashMap<Integer, Long>();
-    private float arrowScale = 0f;
-    private final Handler handler = new Handler();
-    private BlinkendroidApp app;
+  private static final String LOG_TAG = "PlayerActivity".intern();
+  public static final String INTENT_EXTRA_IP = "ip";
+  public static final String INTENT_EXTRA_PORT = "port";
+  private View view;
+  private ArrowView arrowView;
+  private TextView ownerView;
+  private BlinkendroidClient blinkendroidClient;
+  private BLM blm;
+  private Map<Integer, Long> arrowDurations = new HashMap<Integer, Long>();
+  private float arrowScale = 0f;
+  private final Handler handler = new Handler();
+  private BlinkendroidApp app;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,10 +85,9 @@ public class PlayerActivity extends Activity implements BlinkendroidListener, Ru
 
 	setContentView(R.layout.player_content);
 
-	playerView = (PlayerView) findViewById(R.id.player_image);
 	arrowView = (ArrowView) findViewById(R.id.player_arrow);
 	ownerView = (TextView) findViewById(R.id.player_owner);
-	playerView.setOnTouchListener(new OnTouchListener() {
+	arrowView.setOnTouchListener(new OnTouchListener() {
 
 	    public boolean onTouch(View v, MotionEvent event) {
 		ownerView.setVisibility(View.VISIBLE);
@@ -108,7 +111,9 @@ public class PlayerActivity extends Activity implements BlinkendroidListener, Ru
 	    lp.screenBrightness = 1.0f;
 	    getWindow().setAttributes(lp);
 	}
-    }
+	
+	//showImage(BitmapFactory.decodeStream(getResources().openRawResource(R.drawable.world)));
+  }
 
     /**
      * Gets the owner's name from the preferences or falls back to the phone's
@@ -162,7 +167,9 @@ public class PlayerActivity extends Activity implements BlinkendroidListener, Ru
 
 	handler.removeCallbacks(this);
 
-	playerView.stopPlaying();
+	if(view instanceof PlayerView) {
+	    ((PlayerView)view).stopPlaying();
+	}
 
 	app.wantWakeLock(false);
 
@@ -186,32 +193,48 @@ public class PlayerActivity extends Activity implements BlinkendroidListener, Ru
 	runOnUiThread(new Runnable() {
 
 	    public void run() {
-		playerView.setTimeDelta(timeDelta);
+	        if(view instanceof PlayerView) {
+	            ((PlayerView)view).setTimeDelta(timeDelta);
+	        }
 	    }
 	});
     }
 
     public void playBLM(final long startTime, final BLM movie) {
+	
+	if(!(view instanceof PlayerView)) {
+	    return;
+	}
+	
 	Log.d(LOG_TAG, "*** play " + startTime);
 	runOnUiThread(new Runnable() {
 
 	    public void run() {
+		view = findViewById(R.id.player_image);
+		PlayerView playerView = (PlayerView)view;
 		blm = movie;
-		if (blm == null)
-		    blm = new BBMZParser().parseBBMZ(getResources().openRawResource(R.raw.blinkendroid1), 14345);
+		if (blm == null) {
+		  blm = new BBMZParser().parseBBMZ(getResources().openRawResource(R.raw.blinkendroid1), 14345);
+		}
+		
 		playerView.setBLM(blm);
 		playerView.setStartTime(startTime);
 		playerView.startPlaying();
 	    }
 	});
     }
-
+  
     public void clip(final float startX, final float startY, final float endX, final float endY) {
 	Log.d(LOG_TAG, "*** clip " + startX + "," + startY + "," + endX + "," + endY);
 	runOnUiThread(new Runnable() {
 
 	    public void run() {
-		playerView.setClipping(startX, startY, endX, endY);
+	      	if(view instanceof PlayerView) {
+	      	    ((PlayerView)view).setClipping(startX, startY, endX, endY);
+	      	}
+	      	else if (view instanceof ImageView) {
+	      	    ((ImageView)view).setClipping(startX, startY, endX, endY);
+	      	}
 	    }
 	});
     }
@@ -246,7 +269,9 @@ public class PlayerActivity extends Activity implements BlinkendroidListener, Ru
 
 	    public void run() {
 		Toast.makeText(PlayerActivity.this, getString(R.string.connection_closed), Toast.LENGTH_LONG).show();
-		playerView.stopPlaying();
+		if(view instanceof PlayerView) {
+		    ((PlayerView)view).stopPlaying();
+		}
 		ownerView.setVisibility(View.VISIBLE);
 	    }
 	});
@@ -257,7 +282,9 @@ public class PlayerActivity extends Activity implements BlinkendroidListener, Ru
 
 	    public void run() {
 		Log.w(LOG_TAG, getString(R.string.connection_failed) + ": " + message);
-		playerView.stopPlaying();
+		if(view instanceof PlayerView) {
+		    ((PlayerView)view).stopPlaying();
+		}
 		ownerView.setVisibility(View.VISIBLE);
 		new AlertDialog.Builder(PlayerActivity.this).setIcon(android.R.drawable.ic_dialog_alert).setTitle(
 			"Cannot connect to server").setMessage(message).setOnCancelListener(new OnCancelListener() {
@@ -291,8 +318,17 @@ public class PlayerActivity extends Activity implements BlinkendroidListener, Ru
 	    handler.postDelayed(this, 20);
     }
 
-    public void showImage(Bitmap bmp) {
-	// TODO Auto-generated method stub
+    @Override
+    public void showImage(final Bitmap bmp) {
+	
+	runOnUiThread(new Runnable() {
 
+	    public void run() {
+		ImageView imgView = new ImageView(PlayerActivity.this);
+		imgView.setImage(bmp);
+        	PlayerActivity.this.setContentView(imgView);
+        	view = imgView;
+	    }
+	});
     }
 }
