@@ -22,9 +22,9 @@ import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.net.SocketTimeoutException;
 import java.nio.ByteBuffer;
 
+import org.cbase.blinkendroid.network.udp.BlinkendroidProtocol;
 import org.cbase.blinkendroid.player.bml.BBMZParser;
 import org.cbase.blinkendroid.player.bml.BLM;
 
@@ -49,7 +49,7 @@ public class BlinkendroidVideoClientProtocol {
 	    // socket.setSoTimeout(1000);
 	    BufferedOutputStream out = new BufferedOutputStream(socket.getOutputStream());
 	    BufferedInputStream in = new BufferedInputStream(socket.getInputStream());
-	    writeInt(out, 2353);
+	    writeInt(out, BlinkendroidProtocol.OPTION_PLAY_TYPE_MOVIE);
 	    out.flush();
 	    long length = readLong(in); // TODO checking racecondition with
 	    // setSoTimeout
@@ -62,9 +62,9 @@ public class BlinkendroidVideoClientProtocol {
 	    out.close();
 	    in.close();
 	    socket.close();
-	} catch (SocketTimeoutException e) {
-	    // setSoTimeout outer
-	} catch (IOException e) {
+	} catch (Exception e) {
+	    System.out.println("receive movie failed");
+	    e.printStackTrace();
 	}
 	return blm;
     }
