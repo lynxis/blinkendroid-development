@@ -19,6 +19,7 @@ import org.cbase.blinkendroid.network.udp.CommandHandler;
 import org.cbase.blinkendroid.network.udp.ConnectionState;
 import org.cbase.blinkendroid.network.udp.UDPDirectConnection;
 import org.cbase.blinkendroid.player.bml.BLMHeader;
+import org.cbase.blinkendroid.player.image.ImageHeader;
 
 import android.graphics.Color;
 import android.util.Log;
@@ -253,7 +254,7 @@ public class PlayerManager implements ConnectionListener {
 	    return;
 	} else {
 	    filename = blmHeader.filename;
-	    videoServer.setVideo(filename);
+	    videoServer.setVideoName(filename);
 	    Log.i(LOG_TAG, "switch to movie " + blmHeader.title);
 	    for (int i = 0; i < maxY; i++) {
 		for (int j = 0; j < maxX; j++) {
@@ -261,6 +262,25 @@ public class PlayerManager implements ConnectionListener {
 			Log.i(LOG_TAG, "play PlayerClient " + j + ":" + i + " " + filename);
 			mMatrixClients[i][j].getBlinkenProtocol().play(startTime,
 				BlinkendroidProtocol.OPTION_PLAY_TYPE_MOVIE);
+		    }
+		}
+	    }
+	}
+    }
+
+    public void switchImage(ImageHeader imageHeader) {
+	if (videoServer == null) {
+	    return;
+	} else {
+	    filename = imageHeader.filename;
+	    videoServer.setImageName(filename);
+	    Log.i(LOG_TAG, "switch to image " + imageHeader.title);
+	    for (int i = 0; i < maxY; i++) {
+		for (int j = 0; j < maxX; j++) {
+		    if (null != mMatrixClients[i][j]) {
+			Log.i(LOG_TAG, "play PlayerClient " + j + ":" + i + " " + filename);
+			mMatrixClients[i][j].getBlinkenProtocol().play(startTime,
+				BlinkendroidProtocol.OPTION_PLAY_TYPE_IMAGE);
 		    }
 		}
 	    }

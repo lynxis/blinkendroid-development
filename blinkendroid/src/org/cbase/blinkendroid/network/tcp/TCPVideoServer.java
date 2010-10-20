@@ -12,11 +12,15 @@ public class TCPVideoServer extends Thread {
     volatile private boolean running = true;
     ServerSocket serverSocket;
     private String videoName;
+
+    private String imageName;
+
     private int videoPort;
 
     public TCPVideoServer(int videoPort) {
 	this.videoPort = videoPort;
 	this.videoName = null;
+	this.imageName = null;
     }
 
     @Override
@@ -45,31 +49,21 @@ public class TCPVideoServer extends Thread {
 		Socket connectionSocket;
 		connectionSocket = serverSocket.accept();
 
-		final BlinkendroidVideoServerProtocol blinkenVideoProtocol = new BlinkendroidVideoServerProtocol(
-			connectionSocket, videoName);
+		final BlinkendroidDataServerProtocol blinkenVideoProtocol = new BlinkendroidDataServerProtocol(
+			connectionSocket, this);
 
 	    }
 	} catch (IOException e) {
 	    Log.e(LOG_TAG, "AcceptLoop issue", e);
 	}
-	/*
-	 * try { byte[] buffer = new byte[4]; while (running && in.read(buffer)
-	 * != -1) { inputLine = ByteBuffer.wrap(buffer).getInt(); if (!running)
-	 * // fast exit break;
-	 * 
-	 * // System.out.println(getMyName() + // " InputThread received: " // +
-	 * inputLine);
-	 * 
-	 * CommandHandler handler = handlers.get(inputLine); if (null !=
-	 * handler) handler.handle(in); } } catch (SocketException e) {
-	 * System.out.println(getMyName() + " Socket closed."); } catch
-	 * (IOException e) { System.out.println(getMyName() +
-	 * " InputThread fucked "); e.printStackTrace(); }
-	 */
     }
 
-    public void setVideo(String videoName) {
+    public void setVideoName(String videoName) {
 	this.videoName = videoName;
+    }
+
+    public void setImageName(String imageName) {
+	this.imageName = imageName;
     }
 
     public void shutdown() {
@@ -85,4 +79,13 @@ public class TCPVideoServer extends Thread {
 	// }
 	Log.d(LOG_TAG, " ReceiverThread shutdown end");
     }
+
+    public String getVideoName() {
+	return videoName;
+    }
+
+    public String getImageName() {
+	return imageName;
+    }
+
 }

@@ -31,7 +31,7 @@ import org.cbase.blinkendroid.player.bml.BLM;
 import android.graphics.Bitmap;
 import android.util.Log;
 
-public class BlinkendroidVideoClientProtocol {
+public class BlinkendroidDataClientProtocol {
 
     private static final String LOG_TAG = "BlinkendroidVideoClientProtocol".intern();
     public static final Integer PROTOCOL_PLAYER = 42;

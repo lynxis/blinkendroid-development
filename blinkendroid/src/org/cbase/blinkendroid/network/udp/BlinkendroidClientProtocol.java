@@ -6,7 +6,7 @@ import java.net.SocketAddress;
 import java.nio.ByteBuffer;
 
 import org.cbase.blinkendroid.network.BlinkendroidListener;
-import org.cbase.blinkendroid.network.tcp.BlinkendroidVideoClientProtocol;
+import org.cbase.blinkendroid.network.tcp.BlinkendroidDataClientProtocol;
 import org.cbase.blinkendroid.player.bml.BLM;
 
 import android.graphics.Bitmap;
@@ -40,11 +40,11 @@ public class BlinkendroidClientProtocol extends BlinkendroidProtocol implements 
 		switch (dataType) {
 		case OPTION_PLAY_TYPE_MOVIE:
 		    final long startTime = in.getLong();
-		    BLM blm = BlinkendroidVideoClientProtocol.receiveMovie((InetSocketAddress) from);
+		    BLM blm = BlinkendroidDataClientProtocol.receiveMovie((InetSocketAddress) from);
 		    mListener.playBLM(startTime, blm);
 		    break;
 		case OPTION_PLAY_TYPE_IMAGE:
-		    Bitmap bmp = BlinkendroidVideoClientProtocol.receiveImage((InetSocketAddress) from);
+		    Bitmap bmp = BlinkendroidDataClientProtocol.receiveImage((InetSocketAddress) from);
 		    mListener.showImage(bmp);
 		    break;
 		default:

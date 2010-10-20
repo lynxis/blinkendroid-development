@@ -5,6 +5,8 @@ import org.cbase.blinkendroid.network.broadcast.ReceiverThread;
 import org.cbase.blinkendroid.network.udp.ClientSocket;
 import org.cbase.blinkendroid.player.bml.BLMManager;
 import org.cbase.blinkendroid.player.bml.BLMManager.BLMManagerListener;
+import org.cbase.blinkendroid.player.image.ImageManager;
+import org.cbase.blinkendroid.player.image.ImageManager.ImageManagerListener;
 import org.cbase.blinkendroid.server.BlinkendroidServer;
 import org.cbase.blinkendroid.server.TicketManager;
 import org.cbase.blinkendroid.utils.NetworkUtils;
@@ -17,15 +19,15 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.AdapterView.OnItemSelectedListener;
 
-public class ServerActivity extends Activity implements ConnectionListener, BLMManagerListener {
+public class ServerActivity extends Activity implements ConnectionListener, BLMManagerListener, ImageManagerListener {
 
     private static final String LOG_TAG = "ServerActivity".intern();
     private ReceiverThread receiverThread;
@@ -33,7 +35,9 @@ public class ServerActivity extends Activity implements ConnectionListener, BLMM
     private BlinkendroidServer blinkendroidServer;
     private BlinkendroidApp app;
     private BLMManager blmManager;
+    private ImageManager imageManager;
     private ArrayAdapter<String> movieAdapter;
+    private ArrayAdapter<String> imageAdapter;
     private ArrayAdapter<String> clientAdapter;
     private ArrayAdapter<Integer> ticketSizeAdapter;
 
@@ -47,8 +51,11 @@ public class ServerActivity extends Activity implements ConnectionListener, BLMM
 	blmManager = new BLMManager();
 	blmManager.readMovies(this);
 
+	imageManager = new ImageManager();
+	imageManager.readImages(this);
+
 	setContentView(R.layout.server_content);
-	
+
 	// Ticketmanager
 	String ownerName = PreferenceManager.getDefaultSharedPreferences(this).getString("owner", null);
 	if (ownerName == null)
@@ -57,15 +64,18 @@ public class ServerActivity extends Activity implements ConnectionListener, BLMM
 
 	movieAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item);
 	movieAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-	
+
+	imageAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item);
+	imageAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
 	final TextView serverNameView = (TextView) findViewById(R.id.server_name);
 	serverNameView.setText(PreferenceManager.getDefaultSharedPreferences(this).getString("owner", null));
 
 	instantiateMovieSpinner();
+	instantiateImageSpinner();
 	instantiateButtons();
 	instantiateTicketAdapter();
-	
+
     }
 
     @Override
@@ -129,6 +139,34 @@ public class ServerActivity extends Activity implements ConnectionListener, BLMM
 		// already running?
 		if (null != blinkendroidServer) {
 		    blinkendroidServer.switchMovie(blmManager.getBLMHeader(listElement));
+		}
+	    }
+
+	    public void onNothingSelected(AdapterView<?> arg0) {
+	    }
+	});
+    }
+
+    public void imagesReady() {
+	runOnUiThread(new Runnable() {
+
+	    public void run() {
+		imageManager.fillArrayAdapter(imageAdapter);
+		Toast.makeText(ServerActivity.this, "Images ready", Toast.LENGTH_SHORT).show();
+	    }
+	});
+    }
+
+    private void instantiateImageSpinner() {
+	final Spinner imageSpinner = (Spinner) findViewById(R.id.image_selector);
+	imageSpinner.setAdapter(imageAdapter);
+
+	imageSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
+
+	    public void onItemSelected(AdapterView<?> arg0, View arg1, int listElement, long arg3) {
+		// already running?
+		if (null != blinkendroidServer) {
+		    blinkendroidServer.switchImage(imageManager.getImageHeader(listElement));
 		}
 	    }
 
@@ -213,4 +251,5 @@ public class ServerActivity extends Activity implements ConnectionListener, BLMM
 	ticketSizeSpinner.setSelection(ticketManager.getMaxClients() - 1);
 	// ticketSizeAdapter.getPosition(ticketManager.getMaxClients());
     }
+
 }

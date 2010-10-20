@@ -31,32 +31,32 @@ import org.cbase.blinkendroid.network.udp.BlinkendroidProtocol;
 
 import android.util.Log;
 
-public class BlinkendroidVideoServerProtocol {
+public class BlinkendroidDataServerProtocol {
 
     private static final String LOG_TAG = "BlinkendroidVideoServerProtocol".intern();
 
     protected BufferedOutputStream out;
     protected BufferedInputStream in;
     protected Socket socket;
-    protected String movieFile;
     protected ReceiverThread receiver;
+    TCPVideoServer dataServer;
 
-    public BlinkendroidVideoServerProtocol(final Socket socket, String movieFile) throws IOException {
+    public BlinkendroidDataServerProtocol(final Socket socket, TCPVideoServer dataServer) throws IOException {
 	this.out = new BufferedOutputStream(socket.getOutputStream());
 	this.in = new BufferedInputStream(socket.getInputStream());
 	this.socket = socket;
-	this.movieFile = movieFile;
+	this.dataServer = dataServer;
 	receiver = new ReceiverThread();
 	receiver.start();
     }
 
     protected void sendMovie() {
 	try {
-	    if (null == movieFile) {
+	    if (null == dataServer.getVideoName()) {
 		writeLong(out, 0);
 		Log.d(LOG_TAG, "Play default video ");
 	    } else {
-		File movie = new File(movieFile);
+		File movie = new File(dataServer.getVideoName());
 		if (null != movie && movie.exists()) {
 
 		    try {
@@ -78,7 +78,7 @@ public class BlinkendroidVideoServerProtocol {
 			Log.e(LOG_TAG, "sending movie failed", ioe);
 		    }
 		} else {
-		    Log.e(LOG_TAG, "movie not found" + movieFile);
+		    Log.e(LOG_TAG, "movie not found" + dataServer.getVideoName());
 		}
 	    }
 
@@ -89,11 +89,11 @@ public class BlinkendroidVideoServerProtocol {
 
     protected void sendImage() {
 	try {
-	    if (null == movieFile) {
+	    if (null == dataServer.getImageName()) {
 		writeLong(out, 0);
 		Log.d(LOG_TAG, "Play default image ");
 	    } else {
-		File movie = new File(movieFile);
+		File movie = new File(dataServer.getImageName());
 		if (null != movie && movie.exists()) {
 
 		    try {
@@ -115,7 +115,7 @@ public class BlinkendroidVideoServerProtocol {
 			Log.e(LOG_TAG, "sending movie failed", ioe);
 		    }
 		} else {
-		    Log.e(LOG_TAG, "movie not found" + movieFile);
+		    Log.e(LOG_TAG, "movie not found" + dataServer.getImageName());
 		}
 	    }
 

@@ -27,6 +27,7 @@ import org.cbase.blinkendroid.network.ConnectionListener;
 import org.cbase.blinkendroid.network.tcp.TCPVideoServer;
 import org.cbase.blinkendroid.network.udp.UDPServerProtocolManager;
 import org.cbase.blinkendroid.player.bml.BLMHeader;
+import org.cbase.blinkendroid.player.image.ImageHeader;
 
 import android.util.Log;
 
@@ -97,5 +98,9 @@ public class BlinkendroidServer {
 
     public void switchMovie(BLMHeader blmHeader) {
 	playerManager.switchMovie(blmHeader);
+    }
+
+    public void switchImage(ImageHeader imageHeader) {
+	playerManager.switchImage(imageHeader);
     }
 }

@@ -27,8 +27,6 @@ public class BlinkendroidServerProtocol extends BlinkendroidProtocol {
 	    out.putInt(COMMAND_PLAY);
 	    out.putInt(dataType);
 	    out.putLong(startTime); // TODO we need only one start
-
-	    Log.d(LOG_TAG, "Play default video ");
 	    send(out);
 	} catch (IOException e) {
 	    e.printStackTrace();
