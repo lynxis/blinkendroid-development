@@ -24,10 +24,12 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.TabHost.TabSpec;
 
 public class ServerActivity extends Activity implements ConnectionListener, BLMManagerListener, ImageManagerListener {
 
@@ -59,7 +61,11 @@ public class ServerActivity extends Activity implements ConnectionListener, BLMM
 
 	setContentView(R.layout.server_content);
 
-	// Ticketmanager
+	final TabHost tabHost = (TabHost) this.findViewById(android.R.id.tabhost);
+	tabHost.setup();
+	tabHost.addTab(tabHost.newTabSpec("settings").setIndicator("Settings").setContent(R.id.tabcontent_settings));
+	tabHost.addTab(tabHost.newTabSpec("clients").setIndicator("Clients").setContent(R.id.tabcontent_clients));
+
 	String ownerName = PreferenceManager.getDefaultSharedPreferences(this).getString("owner", null);
 	if (ownerName == null)
 	  ownerName = System.currentTimeMillis() + "";
