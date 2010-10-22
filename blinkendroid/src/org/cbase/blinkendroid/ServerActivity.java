@@ -29,7 +29,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 import android.widget.AdapterView.OnItemSelectedListener;
-import android.widget.TabHost.TabSpec;
 
 public class ServerActivity extends Activity implements ConnectionListener, BLMManagerListener, ImageManagerListener {
 
@@ -155,6 +154,7 @@ public class ServerActivity extends Activity implements ConnectionListener, BLMM
 
 	  public void run() {
 		clientAdapter.add(clientSocket.getDestinationAddress().toString());
+		checkClientListEmpty();
 	  }
 	});
   }
@@ -165,8 +165,13 @@ public class ServerActivity extends Activity implements ConnectionListener, BLMM
 
 	  public void run() {
 		clientAdapter.remove(clientSocket.getDestinationAddress().toString());
+		checkClientListEmpty();
 	  }
 	});
+  }
+
+  private void checkClientListEmpty() {
+	findViewById(R.id.server_client_list_empty).setVisibility(clientAdapter.isEmpty() ? View.VISIBLE : View.INVISIBLE);
   }
 
   public void moviesReady() {
