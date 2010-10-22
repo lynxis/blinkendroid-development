@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 the original author or authors.
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -26,7 +26,7 @@ import org.cbase.blinkendroid.network.BlinkendroidClient;
 import org.cbase.blinkendroid.network.BlinkendroidListener;
 import org.cbase.blinkendroid.network.udp.ClientSocket;
 import org.cbase.blinkendroid.player.ArrowView;
-import org.cbase.blinkendroid.player.ImageView;
+import org.cbase.blinkendroid.player.PuzzleImageView;
 import org.cbase.blinkendroid.player.PlayerView;
 import org.cbase.blinkendroid.player.bml.BBMZParser;
 import org.cbase.blinkendroid.player.bml.BLM;
@@ -62,7 +62,7 @@ public class PlayerActivity extends Activity implements BlinkendroidListener, Ru
     public static final String INTENT_EXTRA_PORT = "port";
     private View view;
     private PlayerView playerView;
-    private ImageView imageView;
+    private PuzzleImageView imageView;
     private ArrowView arrowView;
     private TextView ownerView;
     private BlinkendroidClient blinkendroidClient;
@@ -86,7 +86,7 @@ public class PlayerActivity extends Activity implements BlinkendroidListener, Ru
 	setContentView(R.layout.player_content);
 	playerView = (PlayerView) findViewById(R.id.player_image);
 	playerView.setVisibility(View.GONE);
-	imageView = (ImageView) findViewById(R.id.player_puzzle_image);
+	imageView = (PuzzleImageView) findViewById(R.id.player_puzzle_image);
 	imageView.setVisibility(View.VISIBLE);
 
 	arrowView = (ArrowView) findViewById(R.id.player_arrow);
@@ -120,7 +120,7 @@ public class PlayerActivity extends Activity implements BlinkendroidListener, Ru
     /**
      * Gets the owner's name from the preferences or falls back to the phone's
      * primary number
-     * 
+     *
      * @return owner name or phone number
      */
     private String getPhoneIdentifier() {
@@ -159,7 +159,7 @@ public class PlayerActivity extends Activity implements BlinkendroidListener, Ru
 
 	/*
 	 * if (playing) playerView.startPlaying();
-	 * 
+	 *
 	 * if (!arrowDurations.isEmpty()) handler.post(this);
 	 */
     }
@@ -235,8 +235,8 @@ public class PlayerActivity extends Activity implements BlinkendroidListener, Ru
 	    public void run() {
 		if (view instanceof PlayerView) {
 		    ((PlayerView) view).setClipping(startX, startY, endX, endY);
-		} else if (view instanceof ImageView) {
-		    ((ImageView) view).setClipping(startX, startY, endX, endY);
+		} else if (view instanceof PuzzleImageView) {
+		    ((PuzzleImageView) view).setClipping(startX, startY, endX, endY);
 		}
 	    }
 	});
