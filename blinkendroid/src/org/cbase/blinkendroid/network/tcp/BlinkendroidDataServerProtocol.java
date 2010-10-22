@@ -27,12 +27,10 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.nio.ByteBuffer;
 
-import org.cbase.blinkendroid.network.broadcast.SenderThread;
 import org.cbase.blinkendroid.network.udp.BlinkendroidProtocol;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import android.util.Log;
 
 public class BlinkendroidDataServerProtocol {
 

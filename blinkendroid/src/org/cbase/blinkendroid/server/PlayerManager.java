@@ -25,7 +25,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import android.graphics.Color;
-import android.util.Log;
 
 public class PlayerManager implements ConnectionListener {
 

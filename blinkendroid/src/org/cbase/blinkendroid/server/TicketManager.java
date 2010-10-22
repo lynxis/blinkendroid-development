@@ -15,7 +15,6 @@ import org.cbase.blinkendroid.network.udp.ClientSocket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import android.util.Log;
 
 public class TicketManager implements IPeerHandler, ConnectionListener {
 

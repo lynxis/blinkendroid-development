@@ -21,18 +21,14 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
 
-import org.cbase.blinkendroid.network.tcp.BlinkendroidDataServerProtocol;
 import org.cbase.blinkendroid.player.bml.BLM.Frame;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
-import android.util.Log;
-
 public class BMLParser {
     private static final Logger logger = LoggerFactory.getLogger(BMLParser.class);
-
 
     private static final String BLM = "blm";
     private static final String BLM_ATTR_WIDTH = "width";
@@ -77,7 +73,7 @@ public class BMLParser {
 		}
 		eventType = parser.next();
 	    }
-	    logger.debug( "parsed BML with rows" + blm.frames.size());
+	    logger.debug("parsed BML with rows" + blm.frames.size());
 	    return blm;
 	} catch (Exception x) {
 	    throw new RuntimeException(x);

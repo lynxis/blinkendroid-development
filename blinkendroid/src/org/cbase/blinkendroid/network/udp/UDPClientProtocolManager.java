@@ -6,11 +6,8 @@ import java.net.DatagramSocket;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 
-import org.cbase.blinkendroid.network.tcp.BlinkendroidDataServerProtocol;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import android.util.Log;
 
 public class UDPClientProtocolManager extends UDPAbstractBlinkendroidProtocol implements UDPDirectConnection {
 

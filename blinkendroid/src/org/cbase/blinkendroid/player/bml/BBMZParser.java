@@ -9,11 +9,8 @@ import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.util.zip.ZipInputStream;
 
-import org.cbase.blinkendroid.network.tcp.BlinkendroidDataServerProtocol;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import android.util.Log;
 
 public class BBMZParser {
     private static final Logger logger = LoggerFactory.getLogger(BBMZParser.class);

@@ -13,7 +13,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import android.graphics.Bitmap;
-import android.util.Log;
 
 public class BlinkendroidClientProtocol extends BlinkendroidProtocol implements CommandHandler {
 

@@ -4,15 +4,12 @@ import java.net.SocketAddress;
 import java.util.HashMap;
 
 import org.cbase.blinkendroid.BlinkendroidApp;
-import org.cbase.blinkendroid.network.tcp.BlinkendroidDataServerProtocol;
 import org.cbase.blinkendroid.network.udp.BlinkendroidServerProtocol;
 import org.cbase.blinkendroid.network.udp.ClientSocket;
 import org.cbase.blinkendroid.network.udp.CommandHandler;
 import org.cbase.blinkendroid.network.udp.ConnectionState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import android.util.Log;
 
 public class PlayerClient extends ConnectionState {
 

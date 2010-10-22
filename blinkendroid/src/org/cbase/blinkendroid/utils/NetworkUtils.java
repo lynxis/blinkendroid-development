@@ -22,33 +22,35 @@ import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.util.Enumeration;
 
-import org.cbase.blinkendroid.BlinkendroidApp;
-
-import android.util.Log;
+import org.cbase.blinkendroid.player.bml.BLMManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Utilities for networking related methods.
  */
 public class NetworkUtils {
-  /**
-   * Gets the IPAdress of the local device
-   * 
-   * @return The IPAdress or null if none was found
-   */
-  public static String getLocalIpAddress() {
+    private static final Logger logger = LoggerFactory.getLogger(BLMManager.class);
+
+    /**
+     * Gets the IPAdress of the local device
+     * 
+     * @return The IPAdress or null if none was found
+     */
+    public static String getLocalIpAddress() {
 	try {
-	  for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements();) {
+	    for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements();) {
 		NetworkInterface intf = en.nextElement();
 		for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr.hasMoreElements();) {
-		  InetAddress inetAddress = enumIpAddr.nextElement();
-		  if (!inetAddress.isLoopbackAddress()) {
+		    InetAddress inetAddress = enumIpAddr.nextElement();
+		    if (!inetAddress.isLoopbackAddress()) {
 			return inetAddress.getHostAddress().toString();
-		  }
+		    }
 		}
-	  }
+	    }
 	} catch (SocketException ex) {
-	  Log.e("NetworkUtils", ex.toString());
+	    logger.error("NetworkUtils", ex.toString());
 	}
 	return null;
-  }
+    }
 }

@@ -28,13 +28,10 @@ import java.nio.ByteBuffer;
 
 import org.cbase.blinkendroid.BlinkendroidApp;
 import org.cbase.blinkendroid.network.ConnectionListener;
-import org.cbase.blinkendroid.network.tcp.BlinkendroidDataServerProtocol;
 import org.cbase.blinkendroid.network.udp.ConnectionState.Command;
 import org.cbase.blinkendroid.server.PlayerManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import android.util.Log;
 
 public class UDPServerProtocolManager extends UDPAbstractBlinkendroidProtocol implements CommandHandler,
 	ConnectionListener {
