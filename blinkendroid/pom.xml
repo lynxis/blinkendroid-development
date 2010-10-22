@@ -8,13 +8,19 @@
     <name>Blinkendroid App</name>
 
     <dependencies>
-        <dependency>
+         <dependency>
             <groupId>android</groupId>
             <artifactId>android</artifactId>
             <version>2.2_r2</version>
             <scope>provided</scope>
-        </dependency>
-        <!--<dependency>-->
+          </dependency>
+          <dependency>
+      <groupId>org.slf4j</groupId>
+    <artifactId>slf4j-android</artifactId>
+    <version>1.6.1-RC1</version>
+  </dependency>
+
+<!--<dependency>-->
             <!--<groupId>junit</groupId>-->
             <!--<artifactId>junit</artifactId>-->
             <!--<version>3.8.2</version>-->
