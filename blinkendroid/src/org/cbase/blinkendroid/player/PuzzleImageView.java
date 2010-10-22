@@ -46,7 +46,8 @@ public class PuzzleImageView extends View {
 	postInvalidate();
     }
 
-    protected void onDraw(Canvas canvas) {
+    @Override
+	protected void onDraw(Canvas canvas) {
 	if (image != null) {
 	    int absStartX = (int) (startX * image.getWidth());
 	    int absStartY = (int) (startY * image.getHeight());
