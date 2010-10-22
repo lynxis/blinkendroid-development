@@ -27,13 +27,16 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.nio.ByteBuffer;
 
+import org.cbase.blinkendroid.network.broadcast.SenderThread;
 import org.cbase.blinkendroid.network.udp.BlinkendroidProtocol;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import android.util.Log;
 
 public class BlinkendroidDataServerProtocol {
 
-    private static final String LOG_TAG = "BlinkendroidVideoServerProtocol".intern();
+    private static final Logger logger = LoggerFactory.getLogger(BlinkendroidDataServerProtocol.class);
 
     protected BufferedOutputStream out;
     protected BufferedInputStream in;
@@ -54,14 +57,14 @@ public class BlinkendroidDataServerProtocol {
 	try {
 	    if (null == dataServer.getVideoName()) {
 		writeLong(out, 0);
-		Log.d(LOG_TAG, "Play default video ");
+		logger.debug( "Play default video ");
 	    } else {
 		File movie = new File(dataServer.getVideoName());
 		if (null != movie && movie.exists()) {
 
 		    try {
 			writeLong(out, movie.length());
-			Log.d(LOG_TAG, "try to read file with bytes " + movie.length());
+			logger.debug( "try to read file with bytes " + movie.length());
 			InputStream is = new FileInputStream(movie);
 			byte[] buffer = new byte[1024];
 			// commented because: not referenced
@@ -72,13 +75,13 @@ public class BlinkendroidDataServerProtocol {
 			    // allLen += len;
 			}
 			is.close();
-			Log.d(LOG_TAG, "send movie bytes " + movie.length());
+			logger.debug( "send movie bytes " + movie.length());
 			writeLong(out, movie.length());
 		    } catch (IOException ioe) {
-			Log.e(LOG_TAG, "sending movie failed", ioe);
+			logger.error( "sending movie failed", ioe);
 		    }
 		} else {
-		    Log.e(LOG_TAG, "movie not found" + dataServer.getVideoName());
+		    logger.error( "movie not found" + dataServer.getVideoName());
 		}
 	    }
 
@@ -91,14 +94,14 @@ public class BlinkendroidDataServerProtocol {
 	try {
 	    if (null == dataServer.getImageName()) {
 		writeLong(out, 0);
-		Log.d(LOG_TAG, "Play default image ");
+		logger.debug( "Play default image ");
 	    } else {
 		File image = new File(dataServer.getImageName());
 		if (null != image && image.exists()) {
 
 		    try {
 			writeLong(out, image.length());
-			Log.d(LOG_TAG, "try to read file with bytes " + image.length());
+			logger.debug( "try to read file with bytes " + image.length());
 			InputStream is = new FileInputStream(image);
 			byte[] buffer = new byte[1024];
 			// commented because: not referenced
@@ -109,13 +112,13 @@ public class BlinkendroidDataServerProtocol {
 			    // allLen += len;
 			}
 			is.close();
-			Log.d(LOG_TAG, "send image bytes " + image.length());
+			logger.debug( "send image bytes " + image.length());
 			writeLong(out, image.length());
 		    } catch (IOException ioe) {
-			Log.e(LOG_TAG, "sending movie failed", ioe);
+			logger.error( "sending movie failed", ioe);
 		    }
 		} else {
-		    Log.e(LOG_TAG, "movie not found" + dataServer.getImageName());
+		    logger.error( "movie not found" + dataServer.getImageName());
 		}
 	    }
 
@@ -214,12 +217,12 @@ public class BlinkendroidDataServerProtocol {
 		    }
 		}
 	    } catch (SocketException e) {
-		Log.e(LOG_TAG, "Socket closed", e);
+		logger.error( "Socket closed", e);
 	    } catch (IOException e) {
-		Log.e(LOG_TAG, "InputThread fucked", e);
+		logger.error( "InputThread fucked", e);
 		e.printStackTrace();
 	    }
-	    Log.d(LOG_TAG, "InputThread ended!!!!!!!");
+	    logger.debug( "InputThread ended!!!!!!!");
 
 	}
 
@@ -239,17 +242,17 @@ public class BlinkendroidDataServerProtocol {
 	 */
 
 	public void shutdown() {
-	    Log.d(LOG_TAG, " ReceiverThread shutdown start");
+	    logger.debug( " ReceiverThread shutdown start");
 	    running = false;
 	    interrupt();
-	    Log.d(LOG_TAG, " ReceiverThread shutdown interrupted");
+	    logger.debug( " ReceiverThread shutdown interrupted");
 	    try {
 		join();
 	    } catch (InterruptedException e) {
-		Log.e(LOG_TAG, "ReceiverThread join failed", e);
+		logger.error( "ReceiverThread join failed", e);
 		e.printStackTrace();
 	    }
-	    Log.i(LOG_TAG, "ReceiverThread shutdown joined & end");
+	    logger.info( "ReceiverThread shutdown joined & end");
 	}
     }
 }

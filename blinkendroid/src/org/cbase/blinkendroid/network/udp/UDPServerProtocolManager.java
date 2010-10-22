@@ -28,15 +28,19 @@ import java.nio.ByteBuffer;
 
 import org.cbase.blinkendroid.BlinkendroidApp;
 import org.cbase.blinkendroid.network.ConnectionListener;
+import org.cbase.blinkendroid.network.tcp.BlinkendroidDataServerProtocol;
 import org.cbase.blinkendroid.network.udp.ConnectionState.Command;
 import org.cbase.blinkendroid.server.PlayerManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import android.util.Log;
 
 public class UDPServerProtocolManager extends UDPAbstractBlinkendroidProtocol implements CommandHandler,
 	ConnectionListener {
 
-    private static final String LOG_TAG = "UDPServerProtocolManager".intern();
+    private static final Logger logger = LoggerFactory.getLogger(UDPServerProtocolManager.class);
+
     protected GlobalTimerThread globalTimerThread;
     private PlayerManager mPlayerManager;
 
@@ -93,9 +97,9 @@ public class UDPServerProtocolManager extends UDPAbstractBlinkendroidProtocol im
 	    send(new InetSocketAddress(InetAddress.getAllByName("255.255.255.255")[0],
 		    BlinkendroidApp.BROADCAST_CLIENT_PORT), out);
 	} catch (UnknownHostException e) {
-	    Log.e(LOG_TAG, "Don't know where to send the broadcast", e);
+	    logger.error( "Don't know where to send the broadcast", e);
 	} catch (IOException e) {
-	    Log.e(LOG_TAG, "IOException", e);
+	    logger.error( "IOException", e);
 	}
     }
 
@@ -115,7 +119,7 @@ public class UDPServerProtocolManager extends UDPAbstractBlinkendroidProtocol im
 	@Override
 	public void run() {
 	    this.setName("SRV Send GlobalTimer");
-	    Log.d(LOG_TAG, "GlobalTimerThread started");
+	    logger.debug( "GlobalTimerThread started");
 	    while (running) {
 		try {
 		    Thread.sleep(1000);
@@ -130,15 +134,15 @@ public class UDPServerProtocolManager extends UDPAbstractBlinkendroidProtocol im
 		out.putInt(Command.HEARTBEAT.ordinal());
 		out.putLong(System.currentTimeMillis());
 		sendBroadcast(out);
-		// Log.d(LOG_TAG, "GlobalTimerThread Broadcast sent: " + out);
+		// logger.debug( "GlobalTimerThread Broadcast sent: " + out);
 	    }
-	    Log.d(LOG_TAG, "GlobalTimerThread stopped");
+	    logger.debug( "GlobalTimerThread stopped");
 	}
 
 	public void shutdown() {
 	    running = false;
 	    interrupt();
-	    Log.d(LOG_TAG, "GlobalTimerThread initiating shutdown");
+	    logger.debug( "GlobalTimerThread initiating shutdown");
 	}
     }
 

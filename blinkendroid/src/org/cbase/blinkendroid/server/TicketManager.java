@@ -10,13 +10,17 @@ import java.util.Set;
 import org.cbase.blinkendroid.BlinkendroidApp;
 import org.cbase.blinkendroid.network.ConnectionListener;
 import org.cbase.blinkendroid.network.broadcast.IPeerHandler;
+import org.cbase.blinkendroid.network.tcp.BlinkendroidDataServerProtocol;
 import org.cbase.blinkendroid.network.udp.ClientSocket;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import android.util.Log;
 
 public class TicketManager implements IPeerHandler, ConnectionListener {
 
-    private static final String LOG_TAG = "TicketManager".intern();
+    private static final Logger logger = LoggerFactory.getLogger(TicketManager.class);
+
     int maxClients = 2;
     int clients = 0;
     private Set<String> tickets = new HashSet<String>();
@@ -46,18 +50,18 @@ public class TicketManager implements IPeerHandler, ConnectionListener {
 		final byte[] messageBytes = message.getBytes("UTF-8");
 		final DatagramPacket packet = new DatagramPacket(messageBytes, messageBytes.length, socketAddr);
 		socket.send(packet);
-		Log.d(LOG_TAG, "send Ticket for " + name + " " + ip);
+		logger.debug( "send Ticket for " + name + " " + ip);
 		if (!tickets.contains(ip)) {
 		    clients++;
 		    tickets.add(ip);
 		} else {
-		    Log.d(LOG_TAG, "reset sent ticket for " + name + " " + ip);
+		    logger.debug( "reset sent ticket for " + name + " " + ip);
 		}
 	    } catch (Exception e) {
-		Log.e(LOG_TAG, "Exception in TicketManager", e);
+		logger.error( "Exception in TicketManager", e);
 	    }
 	} else {
-	    Log.d(LOG_TAG, "Server is full");
+	    logger.debug( "Server is full");
 	}
 	// pech jehabt
     }

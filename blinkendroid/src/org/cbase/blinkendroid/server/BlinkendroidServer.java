@@ -28,13 +28,14 @@ import org.cbase.blinkendroid.network.tcp.TCPVideoServer;
 import org.cbase.blinkendroid.network.udp.UDPServerProtocolManager;
 import org.cbase.blinkendroid.player.bml.BLMHeader;
 import org.cbase.blinkendroid.player.image.ImageHeader;
-
-import android.util.Log;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class BlinkendroidServer {
     // TODO schtief warum hier kein thread in server ui?
 
-    private static final String LOG_TAG = "BlinkendroidServer".intern();
+    private static final Logger logger = LoggerFactory.getLogger(BlinkendroidServer.class);
+
     volatile private boolean running = false;
     volatile private DatagramSocket serverSocket;
     private int port = -1;
@@ -78,9 +79,9 @@ public class BlinkendroidServer {
 
 	    // how is the protocol connected to the logic ?
 	} catch (SocketException e) {
-	    Log.e(LOG_TAG, "SocketException", e);
+	    logger.error("SocketException", e);
 	} catch (IOException e) {
-	    Log.e(LOG_TAG, "IOException", e);
+	    logger.error("IOException", e);
 	}
     }
 

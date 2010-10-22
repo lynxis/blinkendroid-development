@@ -26,10 +26,12 @@ import org.cbase.blinkendroid.network.BlinkendroidClient;
 import org.cbase.blinkendroid.network.BlinkendroidListener;
 import org.cbase.blinkendroid.network.udp.ClientSocket;
 import org.cbase.blinkendroid.player.ArrowView;
-import org.cbase.blinkendroid.player.PuzzleImageView;
 import org.cbase.blinkendroid.player.PlayerView;
+import org.cbase.blinkendroid.player.PuzzleImageView;
 import org.cbase.blinkendroid.player.bml.BBMZParser;
 import org.cbase.blinkendroid.player.bml.BLM;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -42,13 +44,12 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.telephony.TelephonyManager;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnTouchListener;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.View.OnTouchListener;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -57,7 +58,8 @@ import android.widget.Toast;
  */
 public class PlayerActivity extends Activity implements BlinkendroidListener, Runnable {
 
-    private static final String LOG_TAG = "PlayerActivity".intern();
+    private static final Logger logger = LoggerFactory.getLogger(PlayerActivity.class);
+
     public static final String INTENT_EXTRA_IP = "ip";
     public static final String INTENT_EXTRA_PORT = "port";
     private View view;
@@ -110,7 +112,7 @@ public class PlayerActivity extends Activity implements BlinkendroidListener, Ru
 
 	// forcing the screen brightness to max out while playing
 	if (isAllowedToChangeBrightness()) {
-	    Log.d(LOG_TAG, "Maxing out the brightness");
+	    logger.debug("Maxing out the brightness");
 	    WindowManager.LayoutParams lp = getWindow().getAttributes();
 	    lp.screenBrightness = 1.0f;
 	    getWindow().setAttributes(lp);
@@ -120,7 +122,7 @@ public class PlayerActivity extends Activity implements BlinkendroidListener, Ru
     /**
      * Gets the owner's name from the preferences or falls back to the phone's
      * primary number
-     *
+     * 
      * @return owner name or phone number
      */
     private String getPhoneIdentifier() {
@@ -159,7 +161,7 @@ public class PlayerActivity extends Activity implements BlinkendroidListener, Ru
 
 	/*
 	 * if (playing) playerView.startPlaying();
-	 *
+	 * 
 	 * if (!arrowDurations.isEmpty()) handler.post(this);
 	 */
     }
@@ -190,7 +192,7 @@ public class PlayerActivity extends Activity implements BlinkendroidListener, Ru
     }
 
     public void serverTime(final long serverTime) {
-	Log.d(LOG_TAG, "*** time " + serverTime);
+	logger.debug("*** time " + serverTime);
 	final long timeDelta = System.nanoTime() / 1000000 - serverTime;
 	runOnUiThread(new Runnable() {
 
@@ -203,7 +205,7 @@ public class PlayerActivity extends Activity implements BlinkendroidListener, Ru
     }
 
     public void playBLM(final long startTime, final BLM movie) {
-	Log.d(LOG_TAG, "*** play " + startTime);
+	logger.debug("*** play " + startTime);
 	runOnUiThread(new Runnable() {
 
 	    public void run() {
@@ -229,7 +231,7 @@ public class PlayerActivity extends Activity implements BlinkendroidListener, Ru
     }
 
     public void clip(final float startX, final float startY, final float endX, final float endY) {
-	Log.d(LOG_TAG, "*** clip " + startX + "," + startY + "," + endX + "," + endY);
+	logger.debug("*** clip " + startX + "," + startY + "," + endX + "," + endY);
 	runOnUiThread(new Runnable() {
 
 	    public void run() {
@@ -243,7 +245,7 @@ public class PlayerActivity extends Activity implements BlinkendroidListener, Ru
     }
 
     public void arrow(final long duration, final float angle, final int color) {
-	Log.d(LOG_TAG, "*** arrow " + angle + " " + duration);
+	logger.debug("*** arrow " + angle + " " + duration);
 	runOnUiThread(new Runnable() {
 
 	    public void run() {
@@ -257,7 +259,7 @@ public class PlayerActivity extends Activity implements BlinkendroidListener, Ru
     }
 
     public void connectionOpened(final ClientSocket clientSocket) {
-	Log.d(LOG_TAG, "*** connectionOpened " + clientSocket.getDestinationAddress().toString());
+	logger.debug("*** connectionOpened " + clientSocket.getDestinationAddress().toString());
 	runOnUiThread(new Runnable() {
 
 	    public void run() {
@@ -267,7 +269,7 @@ public class PlayerActivity extends Activity implements BlinkendroidListener, Ru
     }
 
     public void connectionClosed(final ClientSocket clientSocket) {
-	Log.d(LOG_TAG, "*** connectionClosed " + clientSocket.getDestinationAddress().toString());
+	logger.debug("*** connectionClosed " + clientSocket.getDestinationAddress().toString());
 	runOnUiThread(new Runnable() {
 
 	    public void run() {
@@ -284,18 +286,19 @@ public class PlayerActivity extends Activity implements BlinkendroidListener, Ru
 	runOnUiThread(new Runnable() {
 
 	    public void run() {
-		Log.w(LOG_TAG, getString(R.string.connection_failed) + ": " + message);
+		logger.warn(getString(R.string.connection_failed) + ": " + message);
 		if (view instanceof PlayerView) {
 		    ((PlayerView) view).stopPlaying();
 		}
 		ownerView.setVisibility(View.VISIBLE);
-		new AlertDialog.Builder(PlayerActivity.this).setIcon(android.R.drawable.ic_dialog_alert).setTitle(
-			"Cannot connect to server").setMessage(message).setOnCancelListener(new OnCancelListener() {
+		new AlertDialog.Builder(PlayerActivity.this).setIcon(android.R.drawable.ic_dialog_alert)
+			.setTitle("Cannot connect to server").setMessage(message)
+			.setOnCancelListener(new OnCancelListener() {
 
-		    public void onCancel(DialogInterface dialog) {
-			finish();
-		    }
-		}).create().show();
+			    public void onCancel(DialogInterface dialog) {
+				finish();
+			    }
+			}).create().show();
 	    }
 	});
     }

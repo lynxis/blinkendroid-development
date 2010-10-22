@@ -6,6 +6,10 @@ import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.cbase.blinkendroid.network.tcp.BlinkendroidDataServerProtocol;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import android.os.Environment;
 import android.util.Log;
 import android.widget.ArrayAdapter;
@@ -14,7 +18,8 @@ public class BLMManager {
 
   private List<BLMHeader> blmHeader;
   BLMManagerListener listener;
-  private static final String LOG_TAG = "BLMManager".intern();
+  private static final Logger logger = LoggerFactory.getLogger(BLMManager.class);
+
 
   public BLMManager() {
 	blmHeader = new ArrayList<BLMHeader>();
@@ -40,12 +45,12 @@ public class BLMManager {
 		File blinkendroidDir = new File(Environment.getExternalStorageDirectory().getPath() + File.separator
 			+ "blinkendroid");
 		if (!blinkendroidDir.exists()) {
-		  Log.d(LOG_TAG, "/blinkendroid does not exist");
+		  logger.debug( "/blinkendroid does not exist");
 		  return;
 		}
 		File[] files = blinkendroidDir.listFiles();
 		if (null != files) {
-		  Log.d(LOG_TAG, "found files " + files.length);
+		  logger.debug( "found files " + files.length);
 		  for (int i = 0; i < files.length; i++) {
 			if (!files[i].getName().endsWith(".info"))
 			  continue;
@@ -75,7 +80,7 @@ public class BLMManager {
 		if (null == header.title) {
 		  title = header.filename.substring(20) + "(" + header.width + "*" + header.height + ")";
 		}
-		Log.d(LOG_TAG, "added " + title);
+		logger.debug( "added " + title);
 		adapter.add(title);
 	  }
 	}
@@ -89,7 +94,7 @@ public class BLMManager {
 		return (BLMHeader) receivedObject;
 	  }
 	} catch (Exception e) {
-	  Log.e(LOG_TAG, "could not get BMLHeader", e);
+	  logger.error( "could not get BMLHeader", e);
 	}
 	return null;
   }

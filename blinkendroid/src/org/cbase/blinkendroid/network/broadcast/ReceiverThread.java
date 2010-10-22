@@ -26,6 +26,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import android.util.Log;
 
 /**
@@ -33,7 +36,7 @@ import android.util.Log;
  */
 public class ReceiverThread extends Thread {
 
-    private static final String LOG_TAG = "ReceiverThread".intern();
+    private static final Logger logger = LoggerFactory.getLogger(ReceiverThread.class);
     volatile private boolean running = true;
     private List<IPeerHandler> handlers = Collections.synchronizedList(new ArrayList<IPeerHandler>());
     private DatagramSocket socket;
@@ -73,25 +76,19 @@ public class ReceiverThread extends Thread {
 	    socket = new DatagramSocket(port);
 	    socket.setReuseAddress(true);
 	    socket.setBroadcast(true);
-	    Log.d(LOG_TAG, "Receiver thread started.");
+	    logger.debug("Receiver thread started.");
 	    while (running) {
 
 		final byte[] buf = new byte[512];
 		final DatagramPacket packet = new DatagramPacket(buf, buf.length);
-		// Log.d(LOG_TAG, "Receiving.");
 		receive(packet);
-		// Log.d(LOG_TAG, "Received.");
 		if (!running) // fast exit
 		    break;
 
 		final String receivedString = new String(packet.getData(), 0, packet.getLength(), "UTF-8");
-		// Log.d(LOG_TAG, "received via broadcast: '" + receivedString +
-		// "'");
 		final String[] receivedParts = receivedString.split(" ");
 
 		final int protocolVersion = Integer.parseInt(receivedParts[0]);
-		// if (protocolVersion <= Constants.BROADCAST_PROTOCOL_VERSION)
-		// {
 
 		if (!receivedParts[1].equals(command)) {
 		    continue;
@@ -101,18 +98,11 @@ public class ReceiverThread extends Thread {
 		final String name = (receivedParts.length >= 3) ? receivedParts[2] : "";
 
 		notifyHandlers(protocolVersion, name, address.getHostAddress());
-
-		// Log.d(LOG_TAG, receivedString + " " + packet.getAddress() +
-		// " Thread: "
-		// + Thread.currentThread().getId());
-		// } else {
-		// notifyHandlers(protocolVersion);
-		// }
 	    }
 	    socket.close();
-	    Log.d(LOG_TAG, "ReceiverThread: shutdown complete");
+	    logger.debug("ReceiverThread: shutdown complete");
 	} catch (final IOException x) {
-	    Log.e(LOG_TAG, "problem receiving", x);
+	    logger.error("problem receiving", x);
 	}
     }
 
@@ -127,7 +117,7 @@ public class ReceiverThread extends Thread {
     }
 
     public void shutdown() {
-	Log.d(LOG_TAG, "ReceiverThread: initiating shutdown");
+	logger.debug("ReceiverThread: initiating shutdown");
 	running = false;
 	handlers.clear();
 	if (null != socket)

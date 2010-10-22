@@ -1,5 +1,9 @@
 package org.cbase.blinkendroid.player;
 
+import org.cbase.blinkendroid.network.tcp.BlinkendroidDataServerProtocol;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -10,7 +14,8 @@ import android.view.View;
 
 public class PuzzleImageView extends View {
 
-    private static final String LOG_TAG = "ImageView".intern();
+    private static final Logger logger = LoggerFactory.getLogger(PuzzleImageView.class);
+
 
     private Bitmap image = null;
     private float startX = 0f, startY = 0f, endX = 1f, endY = 1f;
@@ -57,7 +62,7 @@ public class PuzzleImageView extends View {
 	    Rect dstRect = new Rect(absImgStartX, absImgStartY, absImgEndX,
 		    absImgEndY);
 
-	    Log.d(LOG_TAG, "*** clip " + absStartX + "," + absStartY + ","
+	    logger.debug( "*** clip " + absStartX + "," + absStartY + ","
 		    + absEndX + "," + absEndY);
 
 	    canvas.drawBitmap(image, srcRect, dstRect, null);

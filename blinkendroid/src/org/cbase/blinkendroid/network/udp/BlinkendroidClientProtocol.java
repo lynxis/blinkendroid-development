@@ -7,7 +7,10 @@ import java.nio.ByteBuffer;
 
 import org.cbase.blinkendroid.network.BlinkendroidListener;
 import org.cbase.blinkendroid.network.tcp.BlinkendroidDataClientProtocol;
+import org.cbase.blinkendroid.network.tcp.BlinkendroidDataServerProtocol;
 import org.cbase.blinkendroid.player.bml.BLM;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import android.graphics.Bitmap;
 import android.util.Log;
@@ -15,7 +18,7 @@ import android.util.Log;
 public class BlinkendroidClientProtocol extends BlinkendroidProtocol implements CommandHandler {
 
     private BlinkendroidListener mListener;
-    private final String LOG_TAG = "BlinkendroidClientProtocol".intern();
+    private static final Logger logger = LoggerFactory.getLogger(BlinkendroidClientProtocol.class);
 
     public BlinkendroidClientProtocol(BlinkendroidListener listener) {
 	mListener = listener;
@@ -24,7 +27,7 @@ public class BlinkendroidClientProtocol extends BlinkendroidProtocol implements 
     public void handle(SocketAddress from, ByteBuffer in) throws IOException {
 	int command = in.getInt();
 
-	Log.d(LOG_TAG, "received: " + command);
+	logger.debug( "received: " + command);
 	if (mListener != null) {
 	    if (command == COMMAND_HEARTBEAT) {
 		mListener.serverTime(in.getLong());

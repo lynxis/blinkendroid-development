@@ -4,10 +4,13 @@ import java.net.SocketAddress;
 import java.util.HashMap;
 
 import org.cbase.blinkendroid.BlinkendroidApp;
+import org.cbase.blinkendroid.network.tcp.BlinkendroidDataServerProtocol;
 import org.cbase.blinkendroid.network.udp.BlinkendroidServerProtocol;
 import org.cbase.blinkendroid.network.udp.ClientSocket;
 import org.cbase.blinkendroid.network.udp.CommandHandler;
 import org.cbase.blinkendroid.network.udp.ConnectionState;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import android.util.Log;
 
@@ -22,7 +25,8 @@ public class PlayerClient extends ConnectionState {
   PlayerManager playerManager;
   private ClientSocket mclientSocket;
   private BlinkendroidServerProtocol mBlinkenProtocol;
-  private static final String LOG_TAG = "PlayerClient".intern();
+  private static final Logger logger = LoggerFactory.getLogger(PlayerClient.class);
+
   
   protected final HashMap<Integer, CommandHandler> handlers = new HashMap<Integer, CommandHandler>();
 
@@ -32,7 +36,7 @@ public class PlayerClient extends ConnectionState {
 
   public PlayerClient(PlayerManager playerManager, ClientSocket clientSocket) {
 	super(clientSocket, playerManager);
-	Log.d(LOG_TAG, "new PlayerClient");
+	logger.debug( "new PlayerClient");
 	this.playerManager = playerManager;
 	this.mclientSocket = clientSocket;
 	this.registerHandler(BlinkendroidApp.PROTOCOL_CONNECTION, this);

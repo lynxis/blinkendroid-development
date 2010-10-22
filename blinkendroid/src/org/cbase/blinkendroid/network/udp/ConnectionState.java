@@ -7,6 +7,9 @@ import java.nio.ByteBuffer;
 
 import org.cbase.blinkendroid.BlinkendroidApp;
 import org.cbase.blinkendroid.network.ConnectionListener;
+import org.cbase.blinkendroid.network.tcp.BlinkendroidDataServerProtocol;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import android.util.Log;
 
@@ -19,7 +22,8 @@ import android.util.Log;
 
 public class ConnectionState implements CommandHandler {
 
-    private static final String LOG_TAG = "ConnectionState".intern();
+    private static final Logger logger = LoggerFactory.getLogger(ConnectionState.class);
+
     
     public static enum Command {
 	SYN, ACK, SYNACK, RESET, HEARTBEAT, REQUEST_DIRECT_HEARTBEAT
@@ -48,7 +52,7 @@ public class ConnectionState implements CommandHandler {
 	@Override
 	public void run() {
 	    this.setName("SRV Send DirectTimer");
-	    Log.d(LOG_TAG, "DirectTimerThread started");
+	    logger.debug( "DirectTimerThread started");
 	    while (running) {
 		try {
 		    Thread.sleep(1000);
@@ -58,7 +62,7 @@ public class ConnectionState implements CommandHandler {
 		if (!running) // fast exit
 		    break;
 
-		Log.d(LOG_TAG, "DirectTimerThread running for " + m_connId);
+		logger.debug( "DirectTimerThread running for " + m_connId);
 		ByteBuffer out = ByteBuffer.allocate(128);
 		out.putInt(BlinkendroidApp.PROTOCOL_HEARTBEAT);
 		out.putInt(ConnectionState.Command.HEARTBEAT.ordinal());
@@ -67,16 +71,16 @@ public class ConnectionState implements CommandHandler {
 		    // ConnectionState.this.send(out); this adds protocol 1
 		    mClientSocket.send(out);
 		} catch (IOException e) {
-		    Log.e(LOG_TAG, "", e);
+		    logger.error( "", e);
 		}
 	    }
-	    Log.d(LOG_TAG, "DirectTimerThread stopped");
+	    logger.debug( "DirectTimerThread stopped");
 	}
 
 	public void shutdown() {
 	    running = false;
 	    interrupt();
-	    Log.d(LOG_TAG, "DirectTimerThread initiating shutdown");
+	    logger.debug( "DirectTimerThread initiating shutdown");
 	}
     }
 
@@ -146,7 +150,7 @@ public class ConnectionState implements CommandHandler {
     }
 
     protected void stateChange(Connstate newState) {
-	Log.d(LOG_TAG, "ConnectionStateChanged " + newState);
+	logger.debug( "ConnectionStateChanged " + newState);
 	if (newState == m_state) {
 	    return;
 	}
@@ -174,7 +178,7 @@ public class ConnectionState implements CommandHandler {
     }
 
     protected void receivedSynAck() throws IOException {
-	Log.d(LOG_TAG, "receivedSynAck");
+	logger.debug( "receivedSynAck");
 	if (m_state == Connstate.SYNACKWAIT) {
 	    stateChange(Connstate.ESTABLISHED);
 	    sendAck();
@@ -184,7 +188,7 @@ public class ConnectionState implements CommandHandler {
     protected void receivedSyn(int connId) {
 	if (m_state == Connstate.NONE) {
 	    m_connId = connId;
-	    Log.d(LOG_TAG, "receivedSyn");
+	    logger.debug( "receivedSyn");
 	    sendSynAck();
 	    stateChange(Connstate.ACKWAIT);
 	}
@@ -192,18 +196,18 @@ public class ConnectionState implements CommandHandler {
 
     protected void receivedAck() {
 	if (m_state == Connstate.ACKWAIT) {
-	    Log.d(LOG_TAG, "receivedAck");
+	    logger.debug( "receivedAck");
 	    stateChange(Connstate.ESTABLISHED);
 	}
     }
 
     protected void receivedReset() {
-	Log.d(LOG_TAG, "receivedReset");
+	logger.debug( "receivedReset");
 	stateChange(Connstate.NONE);
     }
 
     protected void receivedDirectHeartbeatRequest() {
-	Log.d(LOG_TAG, "receivedDirectHeartbeatRequest " + m_connId);
+	logger.debug( "receivedDirectHeartbeatRequest " + m_connId);
 	if (directTimerThread == null) {
 	    directTimerThread = new DirectTimerThread();
 	    directTimerThread.start();
@@ -216,7 +220,7 @@ public class ConnectionState implements CommandHandler {
     }
 
     protected void sendSyn() {
-	Log.d(LOG_TAG, "sendSyn");
+	logger.debug( "sendSyn");
 	ByteBuffer out = ByteBuffer.allocate(1024);
 	out.putInt(Command.SYN.ordinal());
 	m_connId = (int) System.currentTimeMillis();
@@ -225,69 +229,69 @@ public class ConnectionState implements CommandHandler {
 	try {
 	    send(out);
 	} catch (IOException e) {
-	    Log.e(LOG_TAG, "sendSyn caused an Exception", e);
+	    logger.error( "sendSyn caused an Exception", e);
 	}
     }
 
     protected void sendSynAck() {
-	Log.d(LOG_TAG, "sendSynAck " + m_connId);
+	logger.debug( "sendSynAck " + m_connId);
 	ByteBuffer out = ByteBuffer.allocate(1024);
 	out.putInt(Command.SYNACK.ordinal());
 	out.putInt(m_connId);
 	try {
 	    send(out);
 	} catch (IOException e) {
-	    Log.e(LOG_TAG, "sendSynAck failed", e);
+	    logger.error( "sendSynAck failed", e);
 	}
     }
 
     protected void sendAck() {
-	Log.d(LOG_TAG, "sendAck");
+	logger.debug( "sendAck");
 	ByteBuffer out = ByteBuffer.allocate(1024);
 	out.putInt(Command.ACK.ordinal());
 	out.putInt(m_connId);
 	try {
 	    send(out);
 	} catch (IOException e) {
-	    Log.e(LOG_TAG, "sendAck failed", e);
+	    logger.error( "sendAck failed", e);
 	}
     }
 
     protected void sendReset() {
-	Log.d(LOG_TAG, "sendReset");
+	logger.debug( "sendReset");
 	ByteBuffer out = ByteBuffer.allocate(1024);
 	out.putInt(Command.RESET.ordinal());
 	out.putInt(m_connId);
 	try {
 	    send(out);
 	} catch (IOException e) {
-	    Log.e(LOG_TAG, "sendReset failed", e);
+	    logger.error( "sendReset failed", e);
 	}
 
 	stateChange(Connstate.NONE);
     }
 
     protected void sendDirectHeartbeatRequest() {
-	Log.d(LOG_TAG, "sendDirectHeartbeatRequest");
+	logger.debug( "sendDirectHeartbeatRequest");
 	ByteBuffer out = ByteBuffer.allocate(1024);
 	out.putInt(Command.REQUEST_DIRECT_HEARTBEAT.ordinal());
 	out.putInt(m_connId);
 	try {
 	    send(out);
 	} catch (IOException e) {
-	    Log.e(LOG_TAG, "requestDirectHeartbeat failed", e);
+	    logger.error( "requestDirectHeartbeat failed", e);
 	}
     }
 
     protected void sendHeartbeat() {
-	Log.d(LOG_TAG, "sendHeartbeat");
+	logger.debug( "sendHeartbeat");
 	ByteBuffer out = ByteBuffer.allocate(1024);
 	out.putInt(Command.HEARTBEAT.ordinal());
 	out.putInt(m_connId);
 	try {
 	    send(out);
 	} catch (IOException e) {
-	    Log.e(LOG_TAG, "sendHeartbeat failed", e);
+	    logger.error( "sendHeartbeat failed", e);
 	}
     }
 
@@ -297,7 +301,7 @@ public class ConnectionState implements CommandHandler {
      *            in seconds
      */
     public void checkTimeout(int timeout) {
-	Log.d(LOG_TAG, "checkTimeout");
+	logger.debug( "checkTimeout");
 	if (m_state != Connstate.ESTABLISHED) {
 	    return;
 	}

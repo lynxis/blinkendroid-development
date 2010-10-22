@@ -9,10 +9,15 @@ import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.util.zip.ZipInputStream;
 
+import org.cbase.blinkendroid.network.tcp.BlinkendroidDataServerProtocol;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import android.util.Log;
 
 public class BBMZParser {
-    private final static String LOG_TAG = "BBMZParser".intern();
+    private static final Logger logger = LoggerFactory.getLogger(BBMZParser.class);
+
 
     public BLM parseBBMZ(ByteBuffer input, long length) {
 	return parseBBMZ(new ByteArrayInputStream(input.array()), length);
@@ -33,7 +38,7 @@ public class BBMZParser {
 		    break;
 	    }
 	} catch (Exception e) {
-	    Log.e(LOG_TAG, "invalid bbmz", e);
+	    logger.error( "invalid bbmz", e);
 	}
 
 	ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -43,15 +48,15 @@ public class BBMZParser {
 	try {
 	    ObjectInputStream objIn = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()));
 	    Object receivedObject = objIn.readObject();
-	    Log.d(LOG_TAG, "decompression and parsing time :" + (System.currentTimeMillis() - time));
+	    logger.debug( "decompression and parsing time :" + (System.currentTimeMillis() - time));
 	    baos = null;
 	    if (receivedObject instanceof BLM) {
 		return (BLM) receivedObject;
 	    } else {
-		Log.e(LOG_TAG, "invalid bbmz");
+		logger.error( "invalid bbmz");
 	    }
 	} catch (Exception e) {
-	    Log.e(LOG_TAG, "invalid bbmz", e);
+	    logger.error( "invalid bbmz", e);
 	}
 	baos = null;
 	return null;
@@ -70,13 +75,13 @@ public class BBMZParser {
 		fos.write(inbuf, 0, n);
 		length += n;
 	    }
-	    Log.d(LOG_TAG, "BBMZParser read bytes " + length);
+	    logger.debug( "BBMZParser read bytes " + length);
 	    // zis.close();
 	    // fis = null;
 	    // fos.close();
 	    // fos = null;
 	} catch (IOException e) {
-	    Log.e(LOG_TAG, "invalid bbmz", e);
+	    logger.error( "invalid bbmz", e);
 	} finally {
 	    try {
 		// if (fis != null)

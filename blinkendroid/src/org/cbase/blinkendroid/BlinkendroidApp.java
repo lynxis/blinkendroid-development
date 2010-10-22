@@ -17,11 +17,13 @@
 
 package org.cbase.blinkendroid;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import android.app.Application;
 import android.content.Context;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
-import android.util.Log;
 
 /**
  * Our Application class
@@ -30,54 +32,55 @@ import android.util.Log;
  */
 public class BlinkendroidApp extends Application {
 
-  private static final String LOG_TAG = "BlinkendroidApp".intern();
-  public static final int BROADCAST_ANNOUCEMENT_SERVER_PORT = 6998;
-  public static final int BROADCAST_ANNOUCEMENT_CLIENT_PORT = 6999;
-  public static final int BROADCAST_ANNOUCEMENT_CLIENT_TICKET_PORT = 7000;
-  public static final int BROADCAST_ANNOUCEMENT_SERVER_TICKET_PORT = 7001;
-  public static final int BROADCAST_CLIENT_PORT = 6789;
-  public static final int BROADCAST_SERVER_PORT = 6790;
-  public static final int BROADCAST_IDLE_THRESHOLD = 10000;
-  public static final String MULTICAST_GROUP = "230.0.0.1";
-  public static final String CLIENT_BROADCAST_COMMAND = "BLINKENDROID_CLIENT";
-  public static final String SERVER_TICKET_COMMAND = "BLINKENDROID_TICKET";
-  // public static final int SERVER_PORT = 9876;
-  public static final int SERVER_SOCKET_CONNECT_TIMEOUT = 5000;
-  public static final int SHOW_OWNER_DURATION = 1500;
-  public static final int BROADCAST_PROTOCOL_VERSION = 4;
+    private static final Logger logger = LoggerFactory.getLogger(BlinkendroidApp.class);
 
-  public static final int PROTOCOL_CONNECTION = 1;
-  public static final int PROTOCOL_PLAYER = 42;
-  public static final int PROTOCOL_HEARTBEAT = 23;
+    public static final int BROADCAST_ANNOUCEMENT_SERVER_PORT = 6998;
+    public static final int BROADCAST_ANNOUCEMENT_CLIENT_PORT = 6999;
+    public static final int BROADCAST_ANNOUCEMENT_CLIENT_TICKET_PORT = 7000;
+    public static final int BROADCAST_ANNOUCEMENT_SERVER_TICKET_PORT = 7001;
+    public static final int BROADCAST_CLIENT_PORT = 6789;
+    public static final int BROADCAST_SERVER_PORT = 6790;
+    public static final int BROADCAST_IDLE_THRESHOLD = 10000;
+    public static final String MULTICAST_GROUP = "230.0.0.1";
+    public static final String CLIENT_BROADCAST_COMMAND = "BLINKENDROID_CLIENT";
+    public static final String SERVER_TICKET_COMMAND = "BLINKENDROID_TICKET";
+    // public static final int SERVER_PORT = 9876;
+    public static final int SERVER_SOCKET_CONNECT_TIMEOUT = 5000;
+    public static final int SHOW_OWNER_DURATION = 1500;
+    public static final int BROADCAST_PROTOCOL_VERSION = 4;
 
-  private String downloadUrl;
-  private String aboutUrl;
+    public static final int PROTOCOL_CONNECTION = 1;
+    public static final int PROTOCOL_PLAYER = 42;
+    public static final int PROTOCOL_HEARTBEAT = 23;
 
-  private WakeLock wakeLock;
+    private String downloadUrl;
+    private String aboutUrl;
 
-  @Override
-  public void onCreate() {
+    private WakeLock wakeLock;
+
+    @Override
+    public void onCreate() {
 	super.onCreate();
 
 	wakeLock = ((PowerManager) getSystemService(Context.POWER_SERVICE)).newWakeLock(PowerManager.FULL_WAKE_LOCK,
-		LOG_TAG);
-  }
+		"BlinkendroidApp");
+    }
 
-  public String getAboutUrl() {
+    public String getAboutUrl() {
 	return (aboutUrl == null) ? getString(R.string.about_url) : aboutUrl;
-  }
+    }
 
-  public String getDownloadUrl() {
+    public String getDownloadUrl() {
 	return (downloadUrl == null) ? getString(R.string.download_url) : downloadUrl;
-  }
+    }
 
-  public void wantWakeLock(boolean doWant) {
+    public void wantWakeLock(boolean doWant) {
 	if (doWant && !wakeLock.isHeld()) {
-	  wakeLock.acquire();
-	} else if (!doWant && wakeLock.isHeld()){
-	  wakeLock.release();
+	    wakeLock.acquire();
+	} else if (!doWant && wakeLock.isHeld()) {
+	    wakeLock.release();
 	}
-	Log.d(LOG_TAG, "WakeLock is " + wakeLock.isHeld());
-  }
+	logger.debug("WakeLock is " + wakeLock.isHeld());
+    }
 
 }

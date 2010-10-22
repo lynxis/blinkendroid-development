@@ -23,80 +23,81 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 
 import org.cbase.blinkendroid.BlinkendroidApp;
-
-import android.util.Log;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A multicast sender that sends a server name to blinkendroid clients.
  */
 public class SenderThread extends Thread {
 
-    private static final String LOG_TAG = "SenderThread".intern();
-  private final String message;
-  private InetAddress group;
-  volatile private boolean running = true;
-  private DatagramSocket socket;
+    private static final Logger logger = LoggerFactory.getLogger(SenderThread.class);
+    private final String message;
+    private InetAddress group;
+    volatile private boolean running = true;
+    private DatagramSocket socket;
 
-  /**
-   * Creates a new {@link SenderThread}
-   * 
-   * @param serverName
-   *          The server's name.
-   */
-  public SenderThread(String name) {
+    /**
+     * Creates a new {@link SenderThread}
+     * 
+     * @param serverName
+     *            The server's name.
+     */
+    public SenderThread(String name) {
 	// workaround: remove spaces, as those currently break the protocol
 	name = name.replaceAll("\\s", "");
-	message = BlinkendroidApp.BROADCAST_PROTOCOL_VERSION + " " + BlinkendroidApp.CLIENT_BROADCAST_COMMAND + " " + name;
-  }
+	message = BlinkendroidApp.BROADCAST_PROTOCOL_VERSION + " " + BlinkendroidApp.CLIENT_BROADCAST_COMMAND + " "
+		+ name;
+    }
 
-  @Override
-  public void run() {
+    @Override
+    public void run() {
 	try {
-	  this.setName("SRV Send Annouce");
-	  socket = new DatagramSocket(BlinkendroidApp.BROADCAST_ANNOUCEMENT_CLIENT_PORT);
-	  socket.setReuseAddress(true);
-	  socket.setBroadcast(true);
-	  Log.d(LOG_TAG, "Sender thread started.");
-	  // TODO have to figure out whether
-	  // getAllByName("255.255.255.255")[0]; or
-	  // getByName("255.255.255.255"); is more useful.
-	  group = InetAddress.getAllByName("255.255.255.255")[0];
-	  Log.i(LOG_TAG, "Server ip: " + group.toString());
+	    this.setName("SRV Send Annouce");
+	    socket = new DatagramSocket(BlinkendroidApp.BROADCAST_ANNOUCEMENT_CLIENT_PORT);
+	    socket.setReuseAddress(true);
+	    socket.setBroadcast(true);
+	    logger.debug( "Sender thread started.");
+	    // TODO have to figure out whether
+	    // getAllByName("255.255.255.255")[0]; or
+	    // getByName("255.255.255.255"); is more useful.
+	    group = InetAddress.getAllByName("255.255.255.255")[0];
+	    logger.info("Server ip: " + group.toString());
 
-	  while (running) {
+	    while (running) {
 		final byte[] messageBytes = message.getBytes("UTF-8");
 		final DatagramPacket initPacket = new DatagramPacket(messageBytes, messageBytes.length, group,
 			BlinkendroidApp.BROADCAST_ANNOUCEMENT_SERVER_PORT);
-		Log.d(LOG_TAG, "Broadcasting Packet");
+		logger.debug( "Broadcasting Packet");
 		socket.send(initPacket);
 
-		Log.d(LOG_TAG, "Broadcasting: '" + message + "'");
+		logger.debug( "Broadcasting: '" + message + "'");
 		try {
-		  Thread.sleep(5000);
+		    Thread.sleep(5000);
 		} catch (final InterruptedException x) {
-		  // swallow, this is expected when being interrupted
+		    // swallow, this is expected when being interrupted
 		}
-	  }
+	    }
 
-	  socket.close();
+	    socket.close();
 
 	} catch (final IOException x) {
-	  Log.e(LOG_TAG, "problem sending", x);
+	    logger.error( "problem sending", x);
 	}
-  }
+    }
 
-  public void shutdown() {
-	Log.d(LOG_TAG, "SenderThread: initiating shutdown");
+    public void shutdown() {
+	logger.debug( "SenderThread: initiating shutdown");
 	running = false;
 
 	if (socket != null) {
-	  socket.close();
+	    socket.close();
 	}
 	interrupt();
 	try {
-	  join();
+	    join();
 	} catch (final InterruptedException x) {
-	  throw new RuntimeException(x);
+	    throw new RuntimeException(x);
 	}
-  }
+    }
 }

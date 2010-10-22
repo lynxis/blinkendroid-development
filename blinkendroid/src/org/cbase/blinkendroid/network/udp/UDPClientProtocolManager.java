@@ -6,11 +6,16 @@ import java.net.DatagramSocket;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 
+import org.cbase.blinkendroid.network.tcp.BlinkendroidDataServerProtocol;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import android.util.Log;
 
 public class UDPClientProtocolManager extends UDPAbstractBlinkendroidProtocol implements UDPDirectConnection {
 
-    private static final String LOG_TAG = "UDPClientProtocolManager".intern();
+    private static final Logger logger = LoggerFactory.getLogger(UDPClientProtocolManager.class);
+
     private InetSocketAddress mSocketAddr;
 
     public UDPClientProtocolManager(DatagramSocket socket, InetSocketAddress serverAddr) throws IOException {
@@ -21,7 +26,7 @@ public class UDPClientProtocolManager extends UDPAbstractBlinkendroidProtocol im
     @Override
     public void receive(DatagramPacket packet) throws IOException {
 	/* drop datapackets from other servers */
-	Log.d(LOG_TAG, "Received packet " + packet.toString());
+	logger.debug( "Received packet " + packet.toString());
 	if (packet.getAddress().equals(mSocketAddr.getAddress())) {
 	    super.receive(packet);
 	}

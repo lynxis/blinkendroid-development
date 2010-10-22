@@ -12,6 +12,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.cbase.blinkendroid.BlinkendroidApp;
 import org.cbase.blinkendroid.network.ConnectionListener;
+import org.cbase.blinkendroid.network.tcp.BlinkendroidDataServerProtocol;
 import org.cbase.blinkendroid.network.tcp.TCPVideoServer;
 import org.cbase.blinkendroid.network.udp.BlinkendroidProtocol;
 import org.cbase.blinkendroid.network.udp.ClientSocket;
@@ -20,13 +21,16 @@ import org.cbase.blinkendroid.network.udp.ConnectionState;
 import org.cbase.blinkendroid.network.udp.UDPDirectConnection;
 import org.cbase.blinkendroid.player.bml.BLMHeader;
 import org.cbase.blinkendroid.player.image.ImageHeader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import android.graphics.Color;
 import android.util.Log;
 
 public class PlayerManager implements ConnectionListener {
 
-    private final String LOG_TAG = "PlayerManager".intern();
+    private static final Logger logger = LoggerFactory.getLogger(PlayerManager.class);
+
     private PlayerClient[][] mMatrixClients = new PlayerClient[20][20];
     private List<PlayerClient> mClients = new ArrayList<PlayerClient>();
     private ConnectionListener connectionListenerManager;
@@ -87,7 +91,7 @@ public class PlayerManager implements ConnectionListener {
 
     public synchronized PlayerClient addClientToMatrix(PlayerClient playerClient) {
 	if (!running) {
-	    Log.e(LOG_TAG, "PlayerManager not running ignore addClient ");
+	    logger.error( "PlayerManager not running ignore addClient ");
 	    return null;
 	}
 	if (startTime == 0)
@@ -122,7 +126,7 @@ public class PlayerManager implements ConnectionListener {
 		maxX++;
 	    }
 	}
-	Log.i(LOG_TAG, "added Client at pos " + playerClient.x + ":" + playerClient.y);
+	logger.info( "added Client at pos " + playerClient.x + ":" + playerClient.y);
 	mMatrixClients[playerClient.y][playerClient.x] = playerClient;
 
 	playerClient.getBlinkenProtocol().play(startTime, BlinkendroidProtocol.OPTION_PLAY_TYPE_IMAGE);
@@ -191,17 +195,17 @@ public class PlayerManager implements ConnectionListener {
 
     public synchronized void shutdown() {
 	running = false;
-	Log.i(LOG_TAG, "PlayerManager.shutdown() start");
+	logger.info( "PlayerManager.shutdown() start");
 	for (int i = 0; i < maxY; i++) {
 	    for (int j = 0; j < maxX; j++) {
 		if (null != mMatrixClients[i][j]) {
-		    Log.i(LOG_TAG, "shutdown PlayerClient " + j + ":" + i);
+		    logger.info( "shutdown PlayerClient " + j + ":" + i);
 		    mMatrixClients[i][j].shutdown();
 		}
 	    }
 	}
 	timeouter.shutdown();
-	Log.i(LOG_TAG, "PlayerManager.shutdown() end!!!");
+	logger.info( "PlayerManager.shutdown() end!!!");
 
     }
 
@@ -216,11 +220,11 @@ public class PlayerManager implements ConnectionListener {
 
     public synchronized void removeClientFromMatrix(PlayerClient playerClient) {
 	if (!running) {
-	    Log.e(LOG_TAG, "PlayerManager not running ignore removeClient");
+	    logger.error( "PlayerManager not running ignore removeClient");
 	    return;
 	}
 
-	Log.i(LOG_TAG, "removeClient " + playerClient.x + ":" + playerClient.y);
+	logger.info( "removeClient " + playerClient.x + ":" + playerClient.y);
 	mMatrixClients[playerClient.y][playerClient.x] = null;
 
 	boolean newMaxX = true;
@@ -232,7 +236,7 @@ public class PlayerManager implements ConnectionListener {
 	}
 	if (newMaxX && maxX > 1) {
 	    maxX--;
-	    Log.i(LOG_TAG, "newMaxX " + maxX);
+	    logger.info( "newMaxX " + maxX);
 	}
 
 	boolean newMaxY = true;
@@ -244,7 +248,7 @@ public class PlayerManager implements ConnectionListener {
 	}
 	if (newMaxY && maxY > 1) {
 	    maxY--;
-	    Log.i(LOG_TAG, "newMaxY " + maxY);
+	    logger.info( "newMaxY " + maxY);
 	}
 	clip(true);
     }
@@ -255,11 +259,11 @@ public class PlayerManager implements ConnectionListener {
 	} else {
 	    filename = blmHeader.filename;
 	    videoServer.setVideoName(filename);
-	    Log.i(LOG_TAG, "switch to movie " + blmHeader.title);
+	    logger.info( "switch to movie " + blmHeader.title);
 	    for (int i = 0; i < maxY; i++) {
 		for (int j = 0; j < maxX; j++) {
 		    if (null != mMatrixClients[i][j]) {
-			Log.i(LOG_TAG, "play PlayerClient " + j + ":" + i + " " + filename);
+			logger.info( "play PlayerClient " + j + ":" + i + " " + filename);
 			mMatrixClients[i][j].getBlinkenProtocol().play(startTime,
 				BlinkendroidProtocol.OPTION_PLAY_TYPE_MOVIE);
 		    }
@@ -274,11 +278,11 @@ public class PlayerManager implements ConnectionListener {
 	} else {
 	    filename = imageHeader.filename;
 	    videoServer.setImageName(filename);
-	    Log.i(LOG_TAG, "switch to image " + imageHeader.title);
+	    logger.info( "switch to image " + imageHeader.title);
 	    for (int i = 0; i < maxY; i++) {
 		for (int j = 0; j < maxX; j++) {
 		    if (null != mMatrixClients[i][j]) {
-			Log.i(LOG_TAG, "play PlayerClient " + j + ":" + i + " " + filename);
+			logger.info( "play PlayerClient " + j + ":" + i + " " + filename);
 			mMatrixClients[i][j].getBlinkenProtocol().play(startTime,
 				BlinkendroidProtocol.OPTION_PLAY_TYPE_IMAGE);
 		    }
@@ -365,7 +369,7 @@ public class PlayerManager implements ConnectionListener {
 	    // System.out.println("handle without client");
 	    if (proto == BlinkendroidApp.PROTOCOL_CONNECTION) {
 		int data = protoData.getInt();
-		Log.d(LOG_TAG, "Playermanager data " + data);
+		logger.debug( "Playermanager data " + data);
 		if (ConnectionState.Command.SYN.ordinal() == data) {
 		    // new connection
 		    try {
@@ -377,9 +381,9 @@ public class PlayerManager implements ConnectionListener {
 			// protocol
 			// handler
 		    } catch (SocketException e) {
-			Log.e(LOG_TAG, "SocketException in PlayerManager", e);
+			logger.error( "SocketException in PlayerManager", e);
 		    } catch (IOException e) {
-			Log.e(LOG_TAG, "IOException in PlayerManager", e);
+			logger.error( "IOException in PlayerManager", e);
 		    }
 		}
 	    }
@@ -396,7 +400,7 @@ public class PlayerManager implements ConnectionListener {
 	@Override
 	public void run() {
 	    this.setName("SRV PlayerManager Timeouter");
-	    Log.i(LOG_TAG, "TimeouterThread started");
+	    logger.info( "TimeouterThread started");
 	    while (running) {
 		try {
 		    Thread.sleep(3000);
@@ -407,13 +411,13 @@ public class PlayerManager implements ConnectionListener {
 		    break;
 		checkTimeouts();
 	    }
-	    Log.d(LOG_TAG, "TimeouterThread stopped");
+	    logger.debug( "TimeouterThread stopped");
 	}
 
 	public void shutdown() {
 	    running = false;
 	    interrupt();
-	    Log.d(LOG_TAG, "TimeouterThread initiating shutdown");
+	    logger.debug( "TimeouterThread initiating shutdown");
 	}
     }
 }

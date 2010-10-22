@@ -25,9 +25,12 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.nio.ByteBuffer;
 
+import org.cbase.blinkendroid.network.broadcast.SenderThread;
 import org.cbase.blinkendroid.network.udp.BlinkendroidProtocol;
 import org.cbase.blinkendroid.player.bml.BBMZParser;
 import org.cbase.blinkendroid.player.bml.BLM;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -35,7 +38,7 @@ import android.util.Log;
 
 public class BlinkendroidDataClientProtocol {
 
-    private static final String LOG_TAG = "BlinkendroidVideoClientProtocol".intern();
+    private static final Logger logger = LoggerFactory.getLogger(SenderThread.class);
     public static final Integer PROTOCOL_PLAYER = 42;
     public static final Integer COMMAND_PLAYER_TIME = 23;
     public static final Integer COMMAND_CLIP = 17;
@@ -56,7 +59,7 @@ public class BlinkendroidDataClientProtocol {
 	    long length = readLong(in); // TODO checking racecondition with
 	    // setSoTimeout
 	    if (length == 0) {
-		Log.i(LOG_TAG, "Play default video ");
+		logger.info( "Play default video ");
 	    } else {
 		BBMZParser parser = new BBMZParser();
 		blm = parser.parseBBMZ(in, length);
@@ -145,7 +148,7 @@ public class BlinkendroidDataClientProtocol {
 	    long length = readLong(in);
 	    // setSoTimeout
 	    if (length == 0) {
-		Log.i(LOG_TAG, "Play default image ");
+		logger.info( "Play default image ");
 	    } else {
 		ByteArrayOutputStream os = new ByteArrayOutputStream();
 		byte inbuf[] = new byte[1];
@@ -159,7 +162,7 @@ public class BlinkendroidDataClientProtocol {
 			    break;
 		    }
 		} catch (Exception e) {
-		    Log.e(LOG_TAG, "invalid image", e);
+		    logger.error( "invalid image", e);
 		}
 		bmp = BitmapFactory.decodeByteArray(os.toByteArray(), 0, os.size());
 		os = null;
@@ -168,7 +171,7 @@ public class BlinkendroidDataClientProtocol {
 	    in.close();
 	    socket.close();
 	} catch (Exception e) {
-	    Log.e(LOG_TAG, "receiving image failed", e);
+	    logger.error( "receiving image failed", e);
 	}
 	return bmp;
     }

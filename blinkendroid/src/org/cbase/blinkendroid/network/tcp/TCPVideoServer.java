@@ -4,11 +4,13 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-import android.util.Log;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class TCPVideoServer extends Thread {
 
-    private static final String LOG_TAG = "TCPVideoServer".intern();
+    private static final Logger logger = LoggerFactory.getLogger(TCPVideoServer.class);
+
     volatile private boolean running = true;
     ServerSocket serverSocket;
     private String videoName;
@@ -34,10 +36,10 @@ public class TCPVideoServer extends Thread {
 	    acceptLoop();
 
 	    serverSocket.close();
-	    Log.d(LOG_TAG, "VideoThread ended!!!!!!! ");
+	    logger.debug("VideoThread ended!!!!!!! ");
 
 	} catch (IOException e) {
-	    Log.e(LOG_TAG, "VideoThread fuckup", e);
+	    logger.error("VideoThread fuckup", e);
 	}
     }
 
@@ -54,7 +56,7 @@ public class TCPVideoServer extends Thread {
 
 	    }
 	} catch (IOException e) {
-	    Log.e(LOG_TAG, "AcceptLoop issue", e);
+	    logger.error("AcceptLoop issue", e);
 	}
     }
 
@@ -67,17 +69,17 @@ public class TCPVideoServer extends Thread {
     }
 
     public void shutdown() {
-	Log.d(LOG_TAG, " VideoServer shutdown start");
+	logger.debug(" VideoServer shutdown start");
 	running = false;
 	interrupt();
-	Log.d(LOG_TAG, " VideoServer shutdown interrupted");
+	logger.debug(" VideoServer shutdown interrupted");
 	// try {
 	// join();
 	// } catch (InterruptedException e) {
 	// System.out.println(getMyName() + " ReceiverThread join failed");
 	// e.printStackTrace();
 	// }
-	Log.d(LOG_TAG, " ReceiverThread shutdown end");
+	logger.debug(" ReceiverThread shutdown end");
     }
 
     public String getVideoName() {

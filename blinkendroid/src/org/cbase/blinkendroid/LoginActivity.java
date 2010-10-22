@@ -25,7 +25,10 @@ import java.util.List;
 import org.cbase.blinkendroid.network.broadcast.IPeerHandler;
 import org.cbase.blinkendroid.network.broadcast.ReceiverThread;
 import org.cbase.blinkendroid.network.broadcast.SenderThread;
+import org.cbase.blinkendroid.network.tcp.BlinkendroidDataServerProtocol;
 import org.cbase.blinkendroid.utils.NetworkUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -59,7 +62,8 @@ import android.widget.Toast;
  */
 public class LoginActivity extends Activity implements Runnable {
 
-    private final String LOG_TAG = "LoginActivity".intern();
+    private static final Logger logger = LoggerFactory.getLogger(LoginActivity.class);
+
   private final List<ListEntry> serverList = new ArrayList<ListEntry>();
   private ServerListAdapter serverListAdapter;
   private ListView serverListView;
@@ -134,7 +138,7 @@ public class LoginActivity extends Activity implements Runnable {
 	receiverThread.addHandler(new IPeerHandler() {
 
 	  public void foundPeer(final String serverName, final String serverIp, final int protocolVersion) {
-		Log.i(LOG_TAG, "recieved Ticket");
+		logger.info( "recieved Ticket");
 		runOnUiThread(new Runnable() {
 
 		  public void run() {

@@ -4,13 +4,17 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 
 import org.cbase.blinkendroid.BlinkendroidApp;
+import org.cbase.blinkendroid.network.tcp.BlinkendroidDataServerProtocol;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import android.util.Log;
 
 public class BlinkendroidServerProtocol extends BlinkendroidProtocol {
 
     private ClientSocket mClientSocket;
-    private final String LOG_TAG = "BlinkendroidServerProtocol".intern();
+    private static final Logger logger = LoggerFactory.getLogger(BlinkendroidServerProtocol.class);
+
 
     public BlinkendroidServerProtocol(ClientSocket clientSocket) {
 
@@ -30,7 +34,7 @@ public class BlinkendroidServerProtocol extends BlinkendroidProtocol {
 	    send(out);
 	} catch (IOException e) {
 	    e.printStackTrace();
-	    Log.e(LOG_TAG, "play failed", e);
+	    logger.error( "play failed", e);
 	}
     }
 
@@ -43,7 +47,7 @@ public class BlinkendroidServerProtocol extends BlinkendroidProtocol {
 
 	    send(out);
 	} catch (IOException e) {
-	    Log.e(LOG_TAG, "arrow failed ", e);
+	    logger.error( "arrow failed ", e);
 	}
     }
 
@@ -57,9 +61,9 @@ public class BlinkendroidServerProtocol extends BlinkendroidProtocol {
 	    out.putFloat(endX);
 	    out.putFloat(endY);
 	    send(out);
-	    Log.d(LOG_TAG, "clip flushed ");
+	    logger.debug( "clip flushed ");
 	} catch (IOException e) {
-	    Log.e(LOG_TAG, "clip failed ", e);
+	    logger.error( "clip failed ", e);
 	}
     }
 

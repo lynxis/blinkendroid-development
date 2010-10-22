@@ -2,6 +2,7 @@ package org.cbase.blinkendroid;
 
 import org.cbase.blinkendroid.network.ConnectionListener;
 import org.cbase.blinkendroid.network.broadcast.ReceiverThread;
+import org.cbase.blinkendroid.network.tcp.BlinkendroidDataServerProtocol;
 import org.cbase.blinkendroid.network.udp.ClientSocket;
 import org.cbase.blinkendroid.player.bml.BLMManager;
 import org.cbase.blinkendroid.player.bml.BLMManager.BLMManagerListener;
@@ -10,6 +11,8 @@ import org.cbase.blinkendroid.player.image.ImageManager.ImageManagerListener;
 import org.cbase.blinkendroid.server.BlinkendroidServer;
 import org.cbase.blinkendroid.server.TicketManager;
 import org.cbase.blinkendroid.utils.NetworkUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -29,7 +32,8 @@ import android.widget.AdapterView.OnItemSelectedListener;
 
 public class ServerActivity extends Activity implements ConnectionListener, BLMManagerListener, ImageManagerListener {
 
-    private static final String LOG_TAG = "ServerActivity".intern();
+    private static final Logger logger = LoggerFactory.getLogger(ServerActivity.class);
+
     private ReceiverThread receiverThread;
     private TicketManager ticketManager;
     private BlinkendroidServer blinkendroidServer;
@@ -96,7 +100,7 @@ public class ServerActivity extends Activity implements ConnectionListener, BLMM
     }
 
     public void connectionOpened(final ClientSocket clientSocket) {
-	Log.d(LOG_TAG, "ServerActivity connectionOpened " + clientSocket.getDestinationAddress().toString());
+	logger.debug( "ServerActivity connectionOpened " + clientSocket.getDestinationAddress().toString());
 	runOnUiThread(new Runnable() {
 
 	    public void run() {
@@ -106,7 +110,7 @@ public class ServerActivity extends Activity implements ConnectionListener, BLMM
     }
 
     public void connectionClosed(final ClientSocket clientSocket) {
-	Log.d(LOG_TAG, "ServerActivity connectionClosed " + clientSocket.getDestinationAddress().toString());
+	logger.debug( "ServerActivity connectionClosed " + clientSocket.getDestinationAddress().toString());
 	runOnUiThread(new Runnable() {
 
 	    public void run() {
