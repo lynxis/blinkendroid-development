@@ -52,12 +52,6 @@ public class ServerActivity extends Activity implements ConnectionListener, BLMM
 	app = (BlinkendroidApp) getApplication();
 	app.wantWakeLock(true);
 
-	blmManager = new BLMManager();
-	blmManager.readMovies(this);
-
-	imageManager = new ImageManager();
-	imageManager.readImages(this);
-
 	setContentView(R.layout.server_content);
 
 	final TabHost tabHost = (TabHost) this.findViewById(android.R.id.tabhost);
@@ -94,7 +88,7 @@ public class ServerActivity extends Activity implements ConnectionListener, BLMM
 	final ToggleButton serverSwitchButton = (ToggleButton) findViewById(R.id.server_switch);
 	serverSwitchButton.setOnClickListener(new OnClickListener() {
 
-	  public void onClick(View v) {
+	  public void onClick(final View v) {
 		if (serverSwitchButton.isChecked()) {
 
 		  // start recieverthread
@@ -106,9 +100,8 @@ public class ServerActivity extends Activity implements ConnectionListener, BLMM
 		  blinkendroidServer = new BlinkendroidServer(BlinkendroidApp.BROADCAST_SERVER_PORT);
 		  blinkendroidServer.addConnectionListener(ServerActivity.this);
 		  blinkendroidServer.addConnectionListener(ticketManager);
-
 		  blinkendroidServer.start();
-		  // TODO schtief warum hier kein thread in server ui?
+
 		  clientButton.setEnabled(true);
 		  serverNameView.setEnabled(false);
 		} else {
@@ -126,9 +119,73 @@ public class ServerActivity extends Activity implements ConnectionListener, BLMM
 	  }
 	});
 
-	instantiateMovieSpinner();
-	instantiateImageSpinner();
-	instantiateTicketAdapter();
+	final Spinner movieSpinner = (Spinner) findViewById(R.id.server_movie);
+	movieSpinner.setAdapter(movieAdapter);
+
+	final ListView clientList = (ListView) findViewById(R.id.server_client_list);
+	clientAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1);
+	clientList.setAdapter(clientAdapter);
+
+	movieSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
+
+	  public void onItemSelected(AdapterView<?> arg0, View arg1, int listElement, long arg3) {
+		// already running?
+		if (null != blinkendroidServer) {
+		  blinkendroidServer.switchMovie(blmManager.getBLMHeader(listElement));
+		}
+	  }
+
+	  public void onNothingSelected(AdapterView<?> arg0) {
+	  }
+	});
+
+	final Spinner imageSpinner = (Spinner) findViewById(R.id.image_selector);
+	imageSpinner.setAdapter(imageAdapter);
+
+	imageSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
+
+	  public void onItemSelected(AdapterView<?> arg0, View arg1, int listElement, long arg3) {
+		// already running?
+		if (null != blinkendroidServer) {
+		  blinkendroidServer.switchImage(imageManager.getImageHeader(listElement));
+		}
+	  }
+
+	  public void onNothingSelected(AdapterView<?> arg0) {
+	  }
+	});
+
+	final Spinner ticketSizeSpinner = (Spinner) findViewById(R.id.ticket_size);
+	ticketSizeAdapter = new ArrayAdapter<Integer>(this, android.R.layout.simple_spinner_item);
+	ticketSizeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+	// TODO change to int i = 20; i <= 200; i += 20 for productive version
+	for (int i = 1; i <= 200; i++) {
+	  ticketSizeAdapter.add(i);
+	}
+
+	ticketSizeSpinner.setAdapter(ticketSizeAdapter);
+
+	ticketSizeSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
+
+	  public void onItemSelected(AdapterView<?> arg0, View arg1, int maxClients, long arg3) {
+		if (ticketManager != null) {
+		  ticketManager.setMaxClients(maxClients);
+		}
+	  }
+
+	  public void onNothingSelected(AdapterView<?> arg0) {
+	  }
+	});
+
+	ticketSizeSpinner.setSelection(ticketManager.getMaxClients() - 1);
+	// ticketSizeAdapter.getPosition(ticketManager.getMaxClients());
+
+	blmManager = new BLMManager();
+	blmManager.readMovies(this);
+
+	imageManager = new ImageManager();
+	imageManager.readImages(this);
   }
 
   @Override
@@ -184,28 +241,6 @@ public class ServerActivity extends Activity implements ConnectionListener, BLMM
 	});
   }
 
-  private void instantiateMovieSpinner() {
-	final Spinner movieSpinner = (Spinner) findViewById(R.id.server_movie);
-	movieSpinner.setAdapter(movieAdapter);
-
-	final ListView clientList = (ListView) findViewById(R.id.server_client_list);
-	clientAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1);
-	clientList.setAdapter(clientAdapter);
-
-	movieSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
-
-	  public void onItemSelected(AdapterView<?> arg0, View arg1, int listElement, long arg3) {
-		// already running?
-		if (null != blinkendroidServer) {
-		  blinkendroidServer.switchMovie(blmManager.getBLMHeader(listElement));
-		}
-	  }
-
-	  public void onNothingSelected(AdapterView<?> arg0) {
-	  }
-	});
-  }
-
   public void imagesReady() {
 	runOnUiThread(new Runnable() {
 
@@ -215,50 +250,4 @@ public class ServerActivity extends Activity implements ConnectionListener, BLMM
 	  }
 	});
   }
-
-  private void instantiateImageSpinner() {
-	final Spinner imageSpinner = (Spinner) findViewById(R.id.image_selector);
-	imageSpinner.setAdapter(imageAdapter);
-
-	imageSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
-
-	  public void onItemSelected(AdapterView<?> arg0, View arg1, int listElement, long arg3) {
-		// already running?
-		if (null != blinkendroidServer) {
-		  blinkendroidServer.switchImage(imageManager.getImageHeader(listElement));
-		}
-	  }
-
-	  public void onNothingSelected(AdapterView<?> arg0) {
-	  }
-	});
-  }
-
-  private void instantiateTicketAdapter() {
-	final Spinner ticketSizeSpinner = (Spinner) findViewById(R.id.ticket_size);
-	ticketSizeAdapter = new ArrayAdapter<Integer>(this, android.R.layout.simple_spinner_item);
-	ticketSizeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-	// TODO change to int i = 20; i <= 200; i += 20 for productive version
-	for (int i = 1; i <= 200; i++) {
-	  ticketSizeAdapter.add(i);
-	}
-	ticketSizeSpinner.setAdapter(ticketSizeAdapter);
-
-	ticketSizeSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
-
-	  public void onItemSelected(AdapterView<?> arg0, View arg1, int maxClients, long arg3) {
-		if (ticketManager != null) {
-		  ticketManager.setMaxClients(maxClients);
-		}
-	  }
-
-	  public void onNothingSelected(AdapterView<?> arg0) {
-	  }
-	});
-
-	ticketSizeSpinner.setSelection(ticketManager.getMaxClients() - 1);
-	// ticketSizeAdapter.getPosition(ticketManager.getMaxClients());
-  }
-
 }
