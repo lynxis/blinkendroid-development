@@ -43,14 +43,14 @@ public class ImageManager {
 	    public void run() {
 		File blinkendroidDir = new File(ImageManager.this.dir);
 		if (!blinkendroidDir.exists()) {
-		    logger.debug("/blinkendroid does not exist");
+		    logger.error(ImageManager.this.dir + " dir does not exist");
 		    return;
 		}
 		File[] files = blinkendroidDir.listFiles();
 		if (null != files) {
 		    logger.debug("found files " + files.length);
 		    for (int i = 0; i < files.length; i++) {
-			if (!files[i].getName().endsWith(".png"))
+			if (!(files[i].getName().endsWith(".png") || files[i].getName().endsWith(".jpg")))
 			    continue;
 			ImageHeader header = getImageHeader(files[i]);
 			if (null != header) {

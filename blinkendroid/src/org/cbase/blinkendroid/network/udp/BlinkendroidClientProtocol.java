@@ -5,6 +5,7 @@ import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.nio.ByteBuffer;
 
+import org.cbase.blinkendroid.BlinkendroidApp;
 import org.cbase.blinkendroid.network.BlinkendroidListener;
 import org.cbase.blinkendroid.network.tcp.BlinkendroidDataClientProtocol;
 import org.cbase.blinkendroid.player.bml.BLM;
@@ -17,9 +18,22 @@ public class BlinkendroidClientProtocol extends BlinkendroidProtocol implements 
 
     private BlinkendroidListener mListener;
     private static final Logger logger = LoggerFactory.getLogger(BlinkendroidClientProtocol.class);
+    private ClientSocket serverSocket;
 
-    public BlinkendroidClientProtocol(BlinkendroidListener listener) {
+    public BlinkendroidClientProtocol(BlinkendroidListener listener, ClientSocket serverSocket) {
 	mListener = listener;
+	this.serverSocket = serverSocket;
+    }
+
+    public void locateMe() {
+	ByteBuffer out = ByteBuffer.allocate(1024);
+	try {
+	    out.putInt(COMMAND_LOCATEME);
+	    send(out);
+	} catch (IOException e) {
+	    e.printStackTrace();
+	    logger.error("play failed", e);
+	}
     }
 
     public void handle(SocketAddress from, ByteBuffer in) throws IOException {
@@ -61,4 +75,10 @@ public class BlinkendroidClientProtocol extends BlinkendroidProtocol implements 
 	}
     }
 
+    protected void send(ByteBuffer command) throws IOException {
+	ByteBuffer out = ByteBuffer.allocate(command.position() + Integer.SIZE);
+	out.putInt(BlinkendroidApp.PROTOCOL_CLIENT); /* protocol header */
+	out.put(command.array(), 0, command.position());
+	serverSocket.send(out);
+    }
 }

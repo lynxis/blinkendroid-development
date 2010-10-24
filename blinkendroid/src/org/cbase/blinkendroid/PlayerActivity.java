@@ -47,9 +47,9 @@ import android.telephony.TelephonyManager;
 import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnTouchListener;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.View.OnTouchListener;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -103,6 +103,7 @@ public class PlayerActivity extends Activity implements BlinkendroidListener, Ru
 			ownerView.setVisibility(View.INVISIBLE);
 		    }
 		}, BlinkendroidApp.SHOW_OWNER_DURATION);
+		blinkendroidClient.locateMe();
 		return false;
 	    }
 	});
@@ -291,14 +292,13 @@ public class PlayerActivity extends Activity implements BlinkendroidListener, Ru
 		    ((PlayerView) view).stopPlaying();
 		}
 		ownerView.setVisibility(View.VISIBLE);
-		new AlertDialog.Builder(PlayerActivity.this).setIcon(android.R.drawable.ic_dialog_alert)
-			.setTitle("Cannot connect to server").setMessage(message)
-			.setOnCancelListener(new OnCancelListener() {
+		new AlertDialog.Builder(PlayerActivity.this).setIcon(android.R.drawable.ic_dialog_alert).setTitle(
+			"Cannot connect to server").setMessage(message).setOnCancelListener(new OnCancelListener() {
 
-			    public void onCancel(DialogInterface dialog) {
-				finish();
-			    }
-			}).create().show();
+		    public void onCancel(DialogInterface dialog) {
+			finish();
+		    }
+		}).create().show();
 	    }
 	});
     }

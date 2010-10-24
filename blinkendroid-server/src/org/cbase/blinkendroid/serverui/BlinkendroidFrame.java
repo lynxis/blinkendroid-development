@@ -31,7 +31,7 @@ public class BlinkendroidFrame extends JFrame implements ImageManagerListener,
     private JLabel titleLbl, moviesLbl, imagesLbl;
     private JList clientsList;
 
-    @Override
+
     public void imagesReady() {
 	JOptionPane.showMessageDialog(this, "Images Ready");
 
@@ -43,7 +43,7 @@ public class BlinkendroidFrame extends JFrame implements ImageManagerListener,
 	}
     }
 
-    @Override
+
     public void moviesReady() {
 	JOptionPane.showMessageDialog(this, "Movies Ready");
 
@@ -136,7 +136,7 @@ public class BlinkendroidFrame extends JFrame implements ImageManagerListener,
 
     private class ButtonActionListener implements ActionListener {
 
-	@Override
+
 	public void actionPerformed(ActionEvent e) {
 
 	    switch (Commands.valueOf(e.getActionCommand())) {

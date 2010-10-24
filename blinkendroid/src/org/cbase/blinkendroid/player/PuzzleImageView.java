@@ -1,6 +1,5 @@
 package org.cbase.blinkendroid.player;
 
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -9,13 +8,11 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.util.AttributeSet;
-
 import android.view.View;
 
 public class PuzzleImageView extends View {
 
     private static final Logger logger = LoggerFactory.getLogger(PuzzleImageView.class);
-
 
     private Bitmap image = null;
     private float startX = 0f, startY = 0f, endX = 1f, endY = 1f;
@@ -25,21 +22,20 @@ public class PuzzleImageView extends View {
     }
 
     public PuzzleImageView(Context context) {
-        super(context);
-        // setClipping(0.33f, 0.33f, 0.66f, 0.66f);
+	super(context);
+	// setClipping(0.33f, 0.33f, 0.66f, 0.66f);
     }
 
     public void setImage(Bitmap image) {
-        if (image != null) {
-            image.recycle();
-        }
+	if (this.image != null) {
+	    this.image.recycle();
+	}
 	this.image = image;
     }
 
     public Bitmap getImage() {
 	return image;
     }
-
 
     public void setClipping(float startX, float startY, float endX, float endY) {
 	this.startX = startX;
@@ -51,7 +47,7 @@ public class PuzzleImageView extends View {
     }
 
     @Override
-	protected void onDraw(Canvas canvas) {
+    protected void onDraw(Canvas canvas) {
 	if (image != null) {
 	    int absStartX = (int) (startX * image.getWidth());
 	    int absStartY = (int) (startY * image.getHeight());
@@ -64,11 +60,9 @@ public class PuzzleImageView extends View {
 	    int absImgEndY = canvas.getHeight();
 
 	    Rect srcRect = new Rect(absStartX, absStartY, absEndX, absEndY);
-	    Rect dstRect = new Rect(absImgStartX, absImgStartY, absImgEndX,
-		    absImgEndY);
+	    Rect dstRect = new Rect(absImgStartX, absImgStartY, absImgEndX, absImgEndY);
 
-	    logger.debug( "*** clip " + absStartX + "," + absStartY + ","
-		    + absEndX + "," + absEndY);
+	    logger.debug("*** clip " + absStartX + "," + absStartY + "," + absEndX + "," + absEndY);
 
 	    canvas.drawBitmap(image, srcRect, dstRect, null);
 	}

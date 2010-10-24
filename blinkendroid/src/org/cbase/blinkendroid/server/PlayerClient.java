@@ -13,47 +13,46 @@ import org.slf4j.LoggerFactory;
 
 public class PlayerClient extends ConnectionState {
 
-  // position
-  int x, y;
-  // clipping
-  float startX, endX, startY, endY;
-  // protocol
-  long startTime;
-  PlayerManager playerManager;
-  private ClientSocket mclientSocket;
-  private BlinkendroidServerProtocol mBlinkenProtocol;
-  private static final Logger logger = LoggerFactory.getLogger(PlayerClient.class);
+    // position
+    int x, y;
+    // clipping
+    float startX, endX, startY, endY;
+    // protocol
+    long startTime;
+    PlayerManager playerManager;
+    private ClientSocket mclientSocket;
+    private BlinkendroidServerProtocol mBlinkenProtocol;
+    private static final Logger logger = LoggerFactory.getLogger(PlayerClient.class);
 
-  
-  protected final HashMap<Integer, CommandHandler> handlers = new HashMap<Integer, CommandHandler>();
+    protected final HashMap<Integer, CommandHandler> handlers = new HashMap<Integer, CommandHandler>();
 
-  public HashMap<Integer, CommandHandler> getHandlers() {
+    public HashMap<Integer, CommandHandler> getHandlers() {
 	return handlers;
-  }
+    }
 
-  public PlayerClient(PlayerManager playerManager, ClientSocket clientSocket) {
+    public PlayerClient(PlayerManager playerManager, ClientSocket clientSocket) {
 	super(clientSocket, playerManager);
-	logger.debug( "new PlayerClient");
+	logger.debug("new PlayerClient");
 	this.playerManager = playerManager;
 	this.mclientSocket = clientSocket;
 	this.registerHandler(BlinkendroidApp.PROTOCOL_CONNECTION, this);
-	mBlinkenProtocol = new BlinkendroidServerProtocol(clientSocket);
-  }
+	mBlinkenProtocol = new BlinkendroidServerProtocol(playerManager, clientSocket);
+    }
 
-  public SocketAddress getClientSocketAddress() {
+    public SocketAddress getClientSocketAddress() {
 	return mclientSocket.getInetSocketAddress();
-  }
+    }
 
-  public void registerHandler(Integer proto, CommandHandler handler) {
+    public void registerHandler(Integer proto, CommandHandler handler) {
 	handlers.put(proto, handler);
-  }
+    }
 
-  public void unregisterHandler(CommandHandler handler) {
+    public void unregisterHandler(CommandHandler handler) {
 	handlers.remove(handler);
-  }
+    }
 
-  public BlinkendroidServerProtocol getBlinkenProtocol() {
+    public BlinkendroidServerProtocol getBlinkenProtocol() {
 	return mBlinkenProtocol;
-  }
+    }
 
 }

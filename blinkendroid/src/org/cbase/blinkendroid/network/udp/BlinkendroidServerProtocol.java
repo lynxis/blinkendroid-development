@@ -1,19 +1,21 @@
 package org.cbase.blinkendroid.network.udp;
 
 import java.io.IOException;
+import java.net.SocketAddress;
 import java.nio.ByteBuffer;
 
 import org.cbase.blinkendroid.BlinkendroidApp;
+import org.cbase.blinkendroid.network.BlinkendroidServerListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class BlinkendroidServerProtocol extends BlinkendroidProtocol {
+public class BlinkendroidServerProtocol extends BlinkendroidProtocol implements CommandHandler {
 
     private ClientSocket mClientSocket;
     private static final Logger logger = LoggerFactory.getLogger(BlinkendroidServerProtocol.class);
+    private BlinkendroidServerListener mListener;
 
-
-    public BlinkendroidServerProtocol(ClientSocket clientSocket) {
+    public BlinkendroidServerProtocol(BlinkendroidServerListener mListener, ClientSocket clientSocket) {
 
 	mClientSocket = clientSocket;
     }
@@ -31,7 +33,7 @@ public class BlinkendroidServerProtocol extends BlinkendroidProtocol {
 	    send(out);
 	} catch (IOException e) {
 	    e.printStackTrace();
-	    logger.error( "play failed", e);
+	    logger.error("play failed", e);
 	}
     }
 
@@ -44,7 +46,7 @@ public class BlinkendroidServerProtocol extends BlinkendroidProtocol {
 
 	    send(out);
 	} catch (IOException e) {
-	    logger.error( "arrow failed ", e);
+	    logger.error("arrow failed ", e);
 	}
     }
 
@@ -58,9 +60,9 @@ public class BlinkendroidServerProtocol extends BlinkendroidProtocol {
 	    out.putFloat(endX);
 	    out.putFloat(endY);
 	    send(out);
-	    logger.debug( "clip flushed ");
+	    logger.debug("clip flushed ");
 	} catch (IOException e) {
-	    logger.error( "clip failed ", e);
+	    logger.error("clip failed ", e);
 	}
     }
 
@@ -69,5 +71,16 @@ public class BlinkendroidServerProtocol extends BlinkendroidProtocol {
 	out.putInt(BlinkendroidApp.PROTOCOL_PLAYER); /* protocol header */
 	out.put(command.array(), 0, command.position());
 	mClientSocket.send(out);
+    }
+
+    public void handle(SocketAddress from, ByteBuffer in) throws IOException {
+	int command = in.getInt();
+
+	logger.debug("received: " + command);
+	if (mListener != null) {
+	    if (command == COMMAND_LOCATEME) {
+		mListener.locateMe(from);
+	    }
+	}
     }
 }

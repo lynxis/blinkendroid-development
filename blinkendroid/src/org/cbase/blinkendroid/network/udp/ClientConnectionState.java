@@ -66,4 +66,5 @@ public class ClientConnectionState extends ConnectionState implements CommandHan
 	    logger.debug("ClientConnectionState initiating shutdown");
 	}
     }
+
 }

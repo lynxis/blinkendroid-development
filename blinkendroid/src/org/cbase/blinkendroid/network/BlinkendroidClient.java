@@ -54,11 +54,12 @@ public class BlinkendroidClient extends Thread {
 	    long time = System.currentTimeMillis();
 	    protocol = new UDPClientProtocolManager(socket, socketAddress);
 
-	    mConnstate = new ClientConnectionState(new ClientSocket(protocol, socketAddress), listener);
+	    ClientSocket serverSocket = new ClientSocket(protocol, socketAddress);
+	    mConnstate = new ClientConnectionState(serverSocket, listener);
 	    protocol.registerHandler(BlinkendroidApp.PROTOCOL_CONNECTION, mConnstate);
 	    mConnstate.openConnection();
 
-	    blinkenProto = new BlinkendroidClientProtocol(listener);
+	    blinkenProto = new BlinkendroidClientProtocol(listener, serverSocket);
 	    protocol.registerHandler(BlinkendroidApp.PROTOCOL_PLAYER, blinkenProto);
 	    logger.info("connected " + (System.currentTimeMillis() - time));
 
@@ -82,6 +83,6 @@ public class BlinkendroidClient extends Thread {
     }
 
     public void locateMe() {
-	// TODO Auto-generated method stub
+	blinkenProto.locateMe();
     }
 }

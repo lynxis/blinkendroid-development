@@ -318,4 +318,8 @@ public class ConnectionState implements CommandHandler {
 	out.put(command.array(), 0, command.position());
 	mClientSocket.send(out);
     }
+
+    public int getConnectionId() {
+	return m_connId;
+    }
 }

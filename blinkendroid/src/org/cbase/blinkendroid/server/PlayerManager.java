@@ -11,6 +11,7 @@ import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.cbase.blinkendroid.BlinkendroidApp;
+import org.cbase.blinkendroid.network.BlinkendroidServerListener;
 import org.cbase.blinkendroid.network.ConnectionListener;
 import org.cbase.blinkendroid.network.tcp.DataServer;
 import org.cbase.blinkendroid.network.udp.BlinkendroidProtocol;
@@ -25,7 +26,7 @@ import org.slf4j.LoggerFactory;
 
 import android.graphics.Color;
 
-public class PlayerManager implements ConnectionListener {
+public class PlayerManager implements ConnectionListener, BlinkendroidServerListener {
 
     private static final Logger logger = LoggerFactory.getLogger(PlayerManager.class);
 
@@ -420,5 +421,10 @@ public class PlayerManager implements ConnectionListener {
 	    interrupt();
 	    logger.debug("TimeouterThread initiating shutdown");
 	}
+    }
+
+    public void locateMe(SocketAddress clientAddress) {
+	PlayerClient playerClient = getPlayerClientBySocketAddress(clientAddress);
+	arrow(playerClient);
     }
 }

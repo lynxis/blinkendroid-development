@@ -26,8 +26,6 @@ import android.preference.PreferenceManager;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
@@ -36,6 +34,8 @@ import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemSelectedListener;
 
 public class ServerActivity extends Activity implements ConnectionListener, BLMManagerListener, ImageManagerListener,
 	ClientQueueListener {
@@ -198,18 +198,18 @@ public class ServerActivity extends Activity implements ConnectionListener, BLMM
 	clientQueueList.setAdapter(clientQueueAdapter);
 	clientQueueList.setOnItemClickListener(new OnItemClickListener() {
 
-        @Override
-        public void onItemClick(AdapterView<?> adapter, View v, int position, long arg3) {
-            if (ticketManager != null) {
-                String ip = (String) adapter.getItemAtPosition(position);
-                ticketManager.clientStateChangedFromWaitingToConnected(ip);
-//                ticketSizeSpinner.setSelection(ticketSizeSpinner.getSelectedItemPosition() + 1);
-                clientNoLongerWaiting(ip);
-                
-            }            
-        }
-	    
-        });
+	    public void onItemClick(AdapterView<?> adapter, View v, int position, long arg3) {
+		if (ticketManager != null) {
+		    String ip = (String) adapter.getItemAtPosition(position);
+		    ticketManager.clientStateChangedFromWaitingToConnected(ip);
+		    // ticketSizeSpinner.setSelection(ticketSizeSpinner.getSelectedItemPosition()
+		    // + 1);
+		    clientNoLongerWaiting(ip);
+
+		}
+	    }
+
+	});
 
 	// ticketSizeAdapter.getPosition(ticketManager.getMaxClients());
 

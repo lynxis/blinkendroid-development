@@ -1,5 +1,7 @@
 package org.cbase.blinkendroid.serverui;
 
+import java.io.File;
+
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
@@ -81,7 +83,7 @@ public final class BlinkendroidSwingServer implements ConnectionListener {
 	System.out.println("Setting " + getUI() + "as listener for movies");
 
 	imageManager = new ImageManager();
-	getImageManager().readImages(getUI(), "/Users/dima/Pictures/");
+	getImageManager().readImages(getUI(), "c:"+File.separator+"blinkendroid");
     }
 
     public void switchMovie(BLMHeader movieHeader) {
@@ -118,15 +120,14 @@ public final class BlinkendroidSwingServer implements ConnectionListener {
 	}
     }
 
-    @Override
-    public void connectionClosed(ClientSocket clientSocket) {
-	// TODO Auto-generated method stub
+	public void connectionClosed(ClientSocket clientSocket) {
+		// TODO Auto-generated method stub
+		
+	}
 
-    }
+	public void connectionOpened(ClientSocket clientSocket) {
+		// TODO Auto-generated method stub
+		
+	}
 
-    @Override
-    public void connectionOpened(ClientSocket clientSocket) {
-	// TODO Auto-generated method stub
-
-    }
 }
