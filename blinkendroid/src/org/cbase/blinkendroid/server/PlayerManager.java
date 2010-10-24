@@ -12,7 +12,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.cbase.blinkendroid.BlinkendroidApp;
 import org.cbase.blinkendroid.network.ConnectionListener;
-import org.cbase.blinkendroid.network.tcp.TCPVideoServer;
+import org.cbase.blinkendroid.network.tcp.DataServer;
 import org.cbase.blinkendroid.network.udp.BlinkendroidProtocol;
 import org.cbase.blinkendroid.network.udp.ClientSocket;
 import org.cbase.blinkendroid.network.udp.CommandHandler;
@@ -44,14 +44,14 @@ public class PlayerManager implements ConnectionListener {
     private TimeouterThread timeouter = new TimeouterThread();
     private AtomicInteger arrowColorIndex = new AtomicInteger(new Random().nextInt(ARROW_COLORS.length));
     // private long serverPlayer = System.currentTimeMillis();
-    private TCPVideoServer videoServer;
+    private DataServer videoServer;
     private int runningMediaType = BlinkendroidProtocol.OPTION_PLAY_TYPE_IMAGE;
 
-    public TCPVideoServer getVideoServer() {
+    public DataServer getVideoServer() {
 	return videoServer;
     }
 
-    public void setVideoServer(TCPVideoServer videoServer) {
+    public void setVideoServer(DataServer videoServer) {
 	this.videoServer = videoServer;
     }
 

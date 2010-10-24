@@ -39,9 +39,9 @@ public class BlinkendroidDataServerProtocol {
     protected BufferedInputStream in;
     protected Socket socket;
     protected ReceiverThread receiver;
-    TCPVideoServer dataServer;
+    DataServer dataServer;
 
-    public BlinkendroidDataServerProtocol(final Socket socket, TCPVideoServer dataServer) throws IOException {
+    public BlinkendroidDataServerProtocol(final Socket socket, DataServer dataServer) throws IOException {
 	this.out = new BufferedOutputStream(socket.getOutputStream());
 	this.in = new BufferedInputStream(socket.getInputStream());
 	this.socket = socket;
@@ -219,8 +219,7 @@ public class BlinkendroidDataServerProtocol {
 		logger.error("InputThread fucked", e);
 		e.printStackTrace();
 	    }
-	    logger.debug("InputThread ended!!!!!!!");
-
+	    logger.debug("ReceiverThread ended!!!!!!!");
 	}
 
 	// TODO shutdown ? howto do it

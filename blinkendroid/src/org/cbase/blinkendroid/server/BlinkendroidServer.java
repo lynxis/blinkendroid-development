@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.cbase.blinkendroid.network.ConnectionListener;
-import org.cbase.blinkendroid.network.tcp.TCPVideoServer;
+import org.cbase.blinkendroid.network.tcp.DataServer;
 import org.cbase.blinkendroid.network.udp.UDPServerProtocolManager;
 import org.cbase.blinkendroid.player.bml.BLMHeader;
 import org.cbase.blinkendroid.player.image.ImageHeader;
@@ -43,7 +43,7 @@ public class BlinkendroidServer {
     private List<ConnectionListener> connectionListeners;
     // TODO muss der Server wissen wer der PlayerManager ist ?
     private UDPServerProtocolManager mServerProto;
-    private TCPVideoServer videoSocket;
+    private DataServer videoSocket;
 
     public BlinkendroidServer(int port) {
 	this.connectionListeners = new ArrayList<ConnectionListener>();
@@ -59,7 +59,7 @@ public class BlinkendroidServer {
 	running = true;
 
 	try {
-	    videoSocket = new TCPVideoServer(port);
+	    videoSocket = new DataServer(port);
 	    videoSocket.start();
 
 	    serverSocket = new DatagramSocket(port);
