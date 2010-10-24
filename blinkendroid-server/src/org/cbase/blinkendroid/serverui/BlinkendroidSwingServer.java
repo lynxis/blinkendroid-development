@@ -7,111 +7,126 @@ import org.cbase.blinkendroid.BlinkendroidApp;
 import org.cbase.blinkendroid.network.ConnectionListener;
 import org.cbase.blinkendroid.network.broadcast.ReceiverThread;
 import org.cbase.blinkendroid.network.udp.ClientSocket;
+import org.cbase.blinkendroid.player.bml.BLMHeader;
 import org.cbase.blinkendroid.player.bml.BLMManager;
-import org.cbase.blinkendroid.player.bml.BLMManager.BLMManagerListener;
+import org.cbase.blinkendroid.player.image.ImageHeader;
 import org.cbase.blinkendroid.player.image.ImageManager;
-import org.cbase.blinkendroid.player.image.ImageManager.ImageManagerListener;
 import org.cbase.blinkendroid.server.BlinkendroidServer;
 import org.cbase.blinkendroid.server.TicketManager;
 
-public final class BlinkendroidSwingServer implements ConnectionListener, BLMManagerListener, ImageManagerListener {
+public final class BlinkendroidSwingServer implements ConnectionListener {
 
     private ReceiverThread receiverThread;
     private TicketManager ticketManager;
     private BlinkendroidServer blinkendroidServer;
-	private BlinkendroidFrame blinkendroidFrame;
-	
+
     private BLMManager blmManager;
     private ImageManager imageManager;
-	
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
+    private BlinkendroidFrame serverUI;
 
-		SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
-				JFrame.setDefaultLookAndFeelDecorated(true);
-				BlinkendroidSwingServer server = new BlinkendroidSwingServer();
-				
-				 JFrame.setDefaultLookAndFeelDecorated(true);
-				    JFrame frame =new BlinkendroidFrame(server);
-				    frame.setTitle("My First Swing Application");
-				    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-				    frame.setVisible(true);
-			}
-		});
+    public ImageManager getImageManager() {
+	return imageManager;
+    }
+
+    public BLMManager getBlmManager() {
+	return blmManager;
+    }
+
+    public BlinkendroidFrame getUI() {
+	return serverUI;
+    }
+
+    public void setUI(BlinkendroidFrame serverUI) {
+	this.serverUI = serverUI;
+    }
+
+    public boolean isRunning() {
+	if (blinkendroidServer != null) {
+	    return blinkendroidServer.isRunning();
+	} else {
+	    return false;
 	}
+    }
 
-	
-	
-	public BlinkendroidSwingServer() {
-		super();
-		ticketManager = new TicketManager("BlinkendroidSwingServer");
-		blmManager=	new BLMManager();
-		blmManager.readMovies(this, "c:\blinkendroid");
-		
-		imageManager=	new ImageManager();
-		imageManager.readImages(this, "c:\blinkendroid");
+    /**
+     * @param args
+     */
+    public static void main(String[] args) {
+
+	SwingUtilities.invokeLater(new Runnable() {
+	    public void run() {
+		JFrame.setDefaultLookAndFeelDecorated(true);
+		BlinkendroidSwingServer server = new BlinkendroidSwingServer();
+
+		JFrame.setDefaultLookAndFeelDecorated(true);
+		BlinkendroidFrame frame = new BlinkendroidFrame(server);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		server.setUI(frame);
+		frame.setVisible(true);
+
+		server.loadMedia();
+	    }
+	});
+    }
+
+    public BlinkendroidSwingServer() {
+	super();
+	ticketManager = new TicketManager("BlinkendroidSwingServer");
+    }
+
+    public void loadMedia() {
+	blmManager = new BLMManager();
+	getBlmManager().readMovies(getUI(), "c:\blinkendroid");
+
+	System.out.println("Setting " + getUI() + "as listener for movies");
+
+	imageManager = new ImageManager();
+	getImageManager().readImages(getUI(), "/Users/dima/Pictures/");
+    }
+
+    public void switchMovie(BLMHeader movieHeader) {
+	blinkendroidServer.switchMovie(movieHeader);
+    }
+    
+    public void switchImage(ImageHeader imgHeader) {
+	blinkendroidServer.switchImage(imgHeader);
+    }
+    
+    public void start() {
+	if (null == blinkendroidServer) {
+	    // start recieverthread
+	    receiverThread = new ReceiverThread(
+		    BlinkendroidApp.BROADCAST_ANNOUCEMENT_SERVER_PORT,
+		    BlinkendroidApp.CLIENT_BROADCAST_COMMAND);
+	    receiverThread.addHandler(ticketManager);
+	    receiverThread.start();
+
+	    blinkendroidServer = new BlinkendroidServer(
+		    BlinkendroidApp.BROADCAST_SERVER_PORT);
+	    blinkendroidServer.addConnectionListener(this);
+	    blinkendroidServer.addConnectionListener(ticketManager);
+
+	    blinkendroidServer.start();
+	} else {
+	    receiverThread.shutdown();
+	    receiverThread = null;
+
+	    blinkendroidServer.shutdown();
+	    blinkendroidServer = null;
+
+	    ticketManager.reset();
 	}
+    }
 
+    @Override
+    public void connectionClosed(ClientSocket clientSocket) {
+	// TODO Auto-generated method stub
 
+    }
 
-	public void startButton() {
-		if (null == blinkendroidServer) {
-		    // start recieverthread
-		    receiverThread = new ReceiverThread(BlinkendroidApp.BROADCAST_ANNOUCEMENT_SERVER_PORT,
-			    BlinkendroidApp.CLIENT_BROADCAST_COMMAND);
-		    receiverThread.addHandler(ticketManager);
-		    receiverThread.start();
+    @Override
+    public void connectionOpened(ClientSocket clientSocket) {
+	// TODO Auto-generated method stub
 
-		    blinkendroidServer = new BlinkendroidServer(BlinkendroidApp.BROADCAST_SERVER_PORT);
-		    blinkendroidServer.addConnectionListener(this);
-		    blinkendroidServer.addConnectionListener(ticketManager);
-
-		    blinkendroidServer.start();
-		    blinkendroidFrame.getStartStopButton().setText("stop");
-		} else {
-		    receiverThread.shutdown();
-		    receiverThread = null;
-
-		    blinkendroidServer.shutdown();
-		    blinkendroidServer = null;
-
-		    ticketManager.reset();
-		    blinkendroidFrame.getStartStopButton().setText("start");
-		}
-	}
-
-	public void setBlinkendroidFrame(BlinkendroidFrame blinkendroidFrame) {
-		this.blinkendroidFrame=blinkendroidFrame;
-	}
-
-	@Override
-	public void connectionClosed(ClientSocket clientSocket) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void connectionOpened(ClientSocket clientSocket) {
-		// TODO Auto-generated method stub
-		
-	}
-
-
-
-	@Override
-	public void moviesReady() {
-		// TODO Auto-generated method stub
-		
-	}
-
-
-
-	@Override
-	public void imagesReady() {
-		// TODO Auto-generated method stub
-		
-	}
+    }
 }
