@@ -92,7 +92,7 @@ public class BlinkendroidFrame extends JFrame implements ImageManagerListener,
 	moviesLbl = new JLabel("Movies:");
 	imagesLbl = new JLabel("Images:");
 
-	clientsList = new JList();
+	clientsList = new JList(new DefaultListModel());
 
 	ActionListener actionListener = new FormActionListener();
 	imagesList = new JComboBox(new String[] { "Images" });
@@ -200,6 +200,10 @@ public class BlinkendroidFrame extends JFrame implements ImageManagerListener,
 	    case REMOVE_CLIENT:
 		DefaultListModel listModel = (DefaultListModel) clientsList
 			.getModel();
+		
+		if(clientsList.getSelectedIndex() == -1) {
+		    return;
+		}
 		
 		Object selectedClient = listModel
 		.get(clientsList.getSelectedIndex());
