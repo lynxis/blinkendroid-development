@@ -24,7 +24,15 @@ public class PuzzleImageView extends View {
 	super(context, attrs);
     }
 
+    public PuzzleImageView(Context context) {
+        super(context);
+        // setClipping(0.33f, 0.33f, 0.66f, 0.66f);
+    }
+
     public void setImage(Bitmap image) {
+        if (image != null) {
+            image.recycle();
+        }
 	this.image = image;
     }
 
@@ -32,10 +40,6 @@ public class PuzzleImageView extends View {
 	return image;
     }
 
-    public PuzzleImageView(Context context) {
-	super(context);
-	// setClipping(0.33f, 0.33f, 0.66f, 0.66f);
-    }
 
     public void setClipping(float startX, float startY, float endX, float endY) {
 	this.startX = startX;
