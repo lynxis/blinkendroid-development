@@ -26,7 +26,6 @@ public class TicketManager implements IPeerHandler, ConnectionListener {
     DatagramSocket socket = null;
     private ClientQueueListener clientQueueListener = null;
 
-
     public TicketManager(String ownerName) {
         this.ownerName = ownerName;
         try {
@@ -54,9 +53,10 @@ public class TicketManager implements IPeerHandler, ConnectionListener {
                     clients++;
                     tickets.add(ip);
                     waitingQueue.remove(ip);
-                    if (clientQueueListener != null)
+                    if (clientQueueListener != null) {
                         clientQueueListener.clientNoLongerWaiting(ip);
-                    logger.debug("send Ticket for " + name + " " + ip);
+                        logger.debug("send Ticket for " + name + " " + ip);
+                    }
                 } else {
                     logger.debug("resend sent ticket for " + name + " " + ip);
                 }
@@ -91,18 +91,18 @@ public class TicketManager implements IPeerHandler, ConnectionListener {
         waitingQueue.remove(ip);
     }
 
-    /**
-     * @return the waitingQueue
-     */
-    public Set<String> getWaitingQueue() {
-        return waitingQueue;
-    }
-    
+//    /**
+//     * @return the waitingQueue
+//     */
+//    public Set<String> getWaitingQueue() {
+//        return waitingQueue;
+//    }
+
     public void clientStateChangedFromWaitingToConnected(String ip) {
         tickets.add(ip);
         waitingQueue.remove(ip);
         clients++;
-//        maxClients++;
+        // maxClients++;
     }
 
     public void connectionOpened(ClientSocket clientSocket) {
