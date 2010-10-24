@@ -7,16 +7,22 @@ import org.cbase.blinkendroid.BlinkendroidApp;
 import org.cbase.blinkendroid.network.ConnectionListener;
 import org.cbase.blinkendroid.network.broadcast.ReceiverThread;
 import org.cbase.blinkendroid.network.udp.ClientSocket;
+import org.cbase.blinkendroid.player.bml.BLMManager;
+import org.cbase.blinkendroid.player.bml.BLMManager.BLMManagerListener;
+import org.cbase.blinkendroid.player.image.ImageManager;
+import org.cbase.blinkendroid.player.image.ImageManager.ImageManagerListener;
 import org.cbase.blinkendroid.server.BlinkendroidServer;
 import org.cbase.blinkendroid.server.TicketManager;
 
-public final class BlinkendroidSwingServer implements ConnectionListener {
+public final class BlinkendroidSwingServer implements ConnectionListener, BLMManagerListener, ImageManagerListener {
 
     private ReceiverThread receiverThread;
     private TicketManager ticketManager;
     private BlinkendroidServer blinkendroidServer;
 	private BlinkendroidFrame blinkendroidFrame;
 	
+    private BLMManager blmManager;
+    private ImageManager imageManager;
 	
 	/**
 	 * @param args
@@ -42,6 +48,11 @@ public final class BlinkendroidSwingServer implements ConnectionListener {
 	public BlinkendroidSwingServer() {
 		super();
 		ticketManager = new TicketManager("BlinkendroidSwingServer");
+		blmManager=	new BLMManager();
+		blmManager.readMovies(this, "c:\blinkendroid");
+		
+		imageManager=	new ImageManager();
+		imageManager.readImages(this, "c:\blinkendroid");
 	}
 
 
@@ -84,6 +95,22 @@ public final class BlinkendroidSwingServer implements ConnectionListener {
 
 	@Override
 	public void connectionOpened(ClientSocket clientSocket) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+
+	@Override
+	public void moviesReady() {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+
+	@Override
+	public void imagesReady() {
 		// TODO Auto-generated method stub
 		
 	}
