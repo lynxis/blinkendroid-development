@@ -201,12 +201,14 @@ public class BlinkendroidFrame extends JFrame implements ImageManagerListener,
 		DefaultListModel listModel = (DefaultListModel) clientsList
 			.getModel();
 		
-		ClientSocket clientSock = (ClientSocket) listModel
-			.get(clientsList.getSelectedIndex());
+		Object selectedClient = listModel
+		.get(clientsList.getSelectedIndex());
 		
-		if(clientSock == null) {
+		if(selectedClient == null || !(selectedClient instanceof ClientSocket)) {
 		    return;
 		}
+		
+		ClientSocket clientSock = (ClientSocket)selectedClient; 
 		
 		// TODO:
 		// server.closeConnection(clientSock);

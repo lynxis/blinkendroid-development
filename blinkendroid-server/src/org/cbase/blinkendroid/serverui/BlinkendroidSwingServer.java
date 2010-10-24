@@ -107,6 +107,7 @@ public final class BlinkendroidSwingServer implements ConnectionListener {
 		    BlinkendroidApp.BROADCAST_SERVER_PORT);
 	    blinkendroidServer.addConnectionListener(this);
 	    blinkendroidServer.addConnectionListener(ticketManager);
+	    blinkendroidServer.addConnectionListener(getUI());
 
 	    blinkendroidServer.start();
 	} else {
