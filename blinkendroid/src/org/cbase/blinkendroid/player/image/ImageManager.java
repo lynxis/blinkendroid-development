@@ -7,14 +7,17 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import android.os.Environment;
-import android.widget.ArrayAdapter;
-
 public class ImageManager {
 
     private List<ImageHeader> imageHeader;
+
+    public List<ImageHeader> getImageHeader() {
+	return imageHeader;
+    }
+
     ImageManagerListener listener;
     private static final Logger logger = LoggerFactory.getLogger(ImageManager.class);
+    private String dir;
 
     public ImageManager() {
 	imageHeader = new ArrayList<ImageHeader>();
@@ -32,13 +35,13 @@ public class ImageManager {
 	public void imagesReady();
     }
 
-    public void readImages(final ImageManagerListener listener) {
+    public void readImages(final ImageManagerListener listener, String dir) {
 	this.listener = listener;
+	this.dir = dir;
 	new Thread() {
 	    @Override
 	    public void run() {
-		File blinkendroidDir = new File(Environment.getExternalStorageDirectory().getPath() + File.separator
-			+ "blinkendroid");
+		File blinkendroidDir = new File(ImageManager.this.dir);
 		if (!blinkendroidDir.exists()) {
 		    logger.debug("/blinkendroid does not exist");
 		    return;
@@ -60,24 +63,6 @@ public class ImageManager {
 	    }
 	}.start();
 
-    }
-
-    public void fillArrayAdapter(ArrayAdapter<String> adapter) {
-	for (ImageHeader header : imageHeader) {
-
-	    if (null == header) {
-		// TODO null check
-	    } else if (null == header.filename && null == header.title) {
-		// TODO null check
-	    } else {
-		String title = header.title + "(" + header.width + "*" + header.height + ")";
-		if (null == header.title) {
-		    title = header.filename.substring(20) + "(" + header.width + "*" + header.height + ")";
-		}
-		logger.debug("added " + title);
-		adapter.add(title);
-	    }
-	}
     }
 
     private ImageHeader getImageHeader(File f) {
