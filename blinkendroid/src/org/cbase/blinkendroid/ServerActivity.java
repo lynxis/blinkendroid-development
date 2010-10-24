@@ -26,6 +26,8 @@ import android.preference.PreferenceManager;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
@@ -34,7 +36,6 @@ import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
-import android.widget.AdapterView.OnItemSelectedListener;
 
 public class ServerActivity extends Activity implements ConnectionListener, BLMManagerListener, ImageManagerListener,
 	ClientQueueListener {
@@ -195,6 +196,20 @@ public class ServerActivity extends Activity implements ConnectionListener, BLMM
 	final ListView clientQueueList = (ListView) findViewById(R.id.server_client_list_waiting);
 	clientQueueAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1);
 	clientQueueList.setAdapter(clientQueueAdapter);
+	clientQueueList.setOnItemClickListener(new OnItemClickListener() {
+
+        @Override
+        public void onItemClick(AdapterView<?> adapter, View v, int position, long arg3) {
+            if (ticketManager != null) {
+                String ip = (String) adapter.getItemAtPosition(position);
+                ticketManager.clientStateChangedFromWaitingToConnected(ip);
+//                ticketSizeSpinner.setSelection(ticketSizeSpinner.getSelectedItemPosition() + 1);
+                clientNoLongerWaiting(ip);
+                
+            }            
+        }
+	    
+        });
 
 	// ticketSizeAdapter.getPosition(ticketManager.getMaxClients());
 
@@ -253,7 +268,7 @@ public class ServerActivity extends Activity implements ConnectionListener, BLMM
      * blinkendroid.network.udp.ClientSocket)
      */
     public void clientWaiting(final String ip) {
-	logger.debug("ServerActivity connectionOpened " + ip);
+	logger.debug("ServerActivity clientWaiting " + ip);
 	runOnUiThread(new Runnable() {
 
 	    public void run() {
@@ -271,7 +286,7 @@ public class ServerActivity extends Activity implements ConnectionListener, BLMM
      * cbase.blinkendroid.network.udp.ClientSocket)
      */
     public void clientNoLongerWaiting(final String ip) {
-	logger.debug("ServerActivity connectionClosed " + ip);
+	logger.debug("ServerActivity clientNoLongerWaiting " + ip);
 	runOnUiThread(new Runnable() {
 
 	    public void run() {
