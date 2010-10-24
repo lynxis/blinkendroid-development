@@ -7,9 +7,9 @@ import java.net.Socket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class DataServer extends Thread {
+public class TCPDataServer extends Thread {
 
-    private static final Logger logger = LoggerFactory.getLogger(DataServer.class);
+    private static final Logger logger = LoggerFactory.getLogger(TCPDataServer.class);
 
     volatile private boolean running = true;
     ServerSocket serverSocket;
@@ -19,7 +19,7 @@ public class DataServer extends Thread {
 
     private int videoPort;
 
-    public DataServer(int videoPort) {
+    public TCPDataServer(int videoPort) {
 	this.videoPort = videoPort;
 	this.videoName = null;
 	this.imageName = null;

@@ -39,9 +39,9 @@ public class BlinkendroidDataServerProtocol {
     protected BufferedInputStream in;
     protected Socket socket;
     protected ReceiverThread receiver;
-    DataServer dataServer;
+    TCPDataServer dataServer;
 
-    public BlinkendroidDataServerProtocol(final Socket socket, DataServer dataServer) throws IOException {
+    public BlinkendroidDataServerProtocol(final Socket socket, TCPDataServer dataServer) throws IOException {
 	this.out = new BufferedOutputStream(socket.getOutputStream());
 	this.in = new BufferedInputStream(socket.getInputStream());
 	this.socket = socket;
