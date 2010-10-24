@@ -41,6 +41,7 @@
                         <platform>4</platform>
                     </sdk>
                     <deleteConflictingFiles>true</deleteConflictingFiles>
+                    <sign><debug>false</debug></sign>
                 </configuration>
                 <extensions>true</extensions>
             </plugin>
