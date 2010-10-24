@@ -25,7 +25,7 @@ import java.util.List;
 import org.cbase.blinkendroid.network.broadcast.IPeerHandler;
 import org.cbase.blinkendroid.network.broadcast.ReceiverThread;
 import org.cbase.blinkendroid.network.broadcast.SenderThread;
-import org.cbase.blinkendroid.network.tcp.BlinkendroidDataServerProtocol;
+
 import org.cbase.blinkendroid.utils.NetworkUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,7 +41,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
-import android.util.Log;
+
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;

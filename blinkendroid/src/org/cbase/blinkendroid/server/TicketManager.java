@@ -21,6 +21,7 @@ public class TicketManager implements IPeerHandler, ConnectionListener {
     int maxClients = 2;
     int clients = 0;
     private Set<String> tickets = new HashSet<String>();
+    private Set<String> waitingQueue = new HashSet<String>();
     private String ownerName;
     DatagramSocket socket = null;
 
@@ -58,7 +59,8 @@ public class TicketManager implements IPeerHandler, ConnectionListener {
 		logger.error("Exception in TicketManager", e);
 	    }
 	} else {
-	    logger.debug("Server is full");
+	    waitingQueue.add(ip);
+	    logger.debug("Server is full, adding to queue");
 	}
 	// pech jehabt
     }
@@ -71,11 +73,18 @@ public class TicketManager implements IPeerHandler, ConnectionListener {
 	String ip = clientSocket.getDestinationAddress().getHostAddress();
 	clients--;
 	tickets.remove(ip);
+	waitingQueue.remove(ip);
+    }
+
+    /**
+     * @return the waitingQueue
+     */
+    public Set<String> getWaitingQueue() {
+        return waitingQueue;
     }
 
     public void connectionOpened(ClientSocket clientSocket) {
 	// TODO clients merken und abhaken
-
     }
 
     public int getMaxClients() {

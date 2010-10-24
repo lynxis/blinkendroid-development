@@ -1,6 +1,6 @@
 package org.cbase.blinkendroid.player;
 
-import org.cbase.blinkendroid.network.tcp.BlinkendroidDataServerProtocol;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -9,7 +9,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.util.AttributeSet;
-import android.util.Log;
+
 import android.view.View;
 
 public class PuzzleImageView extends View {
