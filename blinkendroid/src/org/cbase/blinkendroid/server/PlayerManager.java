@@ -16,7 +16,6 @@ import org.cbase.blinkendroid.network.ConnectionListener;
 import org.cbase.blinkendroid.network.tcp.DataServer;
 import org.cbase.blinkendroid.network.udp.BlinkendroidProtocol;
 import org.cbase.blinkendroid.network.udp.ClientSocket;
-import org.cbase.blinkendroid.network.udp.CommandHandler;
 import org.cbase.blinkendroid.network.udp.ConnectionState;
 import org.cbase.blinkendroid.network.udp.UDPDirectConnection;
 import org.cbase.blinkendroid.player.bml.BLMHeader;
@@ -148,7 +147,7 @@ public class PlayerManager implements ConnectionListener, BlinkendroidServerList
 	// server starts thread to send globaltime
     }
 
-    private void arrow(final PlayerClient pClient) {
+    public void arrow(final PlayerClient pClient) {
 	// TODO remove in final for puzzle
 	arrow(pClient, 0, 1, 0);
 	arrow(pClient, -1, 1, 45);
@@ -359,15 +358,15 @@ public class PlayerManager implements ConnectionListener, BlinkendroidServerList
 	PlayerClient client = getPlayerClientBySocketAddress(socketAddr);
 
 	if (client != null) {
-	    CommandHandler handler = client.getHandlers().get(proto);
-	    if (handler != null) {
-		try {
-		    client.handle(socketAddr, protoData);
-		} catch (IOException e) {
-		    // TODO Auto-generated catch block
-		    e.printStackTrace();
-		}
+	    // TODO schtief remove this ugly hack
+	    // CommandHandler handler = client.getHandlers().get(proto);
+	    // if (handler != null) {
+	    try {
+		client.handle(socketAddr, protoData);
+	    } catch (IOException e) {
+		logger.error("PlayerClient could not handle", e);
 	    }
+	    // }
 	} else { // no client found
 	    if (proto == BlinkendroidApp.PROTOCOL_CONNECTION) {
 		int data = protoData.getInt();

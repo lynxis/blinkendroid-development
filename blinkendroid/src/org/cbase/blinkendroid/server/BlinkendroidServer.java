@@ -71,6 +71,8 @@ public class BlinkendroidServer {
 	    playerManager.setVideoServer(videoSocket);
 	    mServerProto.setPlayerManager(playerManager);
 
+	    // mServerProto.registerHandler(proto, playerManager);
+
 	    for (ConnectionListener connectionListener : connectionListeners) {
 		mServerProto.addConnectionListener(connectionListener);
 	    }

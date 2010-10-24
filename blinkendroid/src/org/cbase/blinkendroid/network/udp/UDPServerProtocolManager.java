@@ -22,7 +22,6 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
-import java.net.SocketAddress;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 
@@ -33,8 +32,7 @@ import org.cbase.blinkendroid.server.PlayerManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class UDPServerProtocolManager extends UDPAbstractBlinkendroidProtocol implements CommandHandler,
-	ConnectionListener {
+public class UDPServerProtocolManager extends UDPAbstractBlinkendroidProtocol implements ConnectionListener {
 
     private static final Logger logger = LoggerFactory.getLogger(UDPServerProtocolManager.class);
 
@@ -96,12 +94,6 @@ public class UDPServerProtocolManager extends UDPAbstractBlinkendroidProtocol im
 	} catch (IOException e) {
 	    logger.error("IOException", e);
 	}
-    }
-
-    public void handle(SocketAddress socketAddr, ByteBuffer bybuff) throws IOException {
-	// TODO impl here when client to server action needed Why doesn't this
-	// method do anything?
-	throw new IOException("This method does nothing else but throwing this Exception.");
     }
 
     /**

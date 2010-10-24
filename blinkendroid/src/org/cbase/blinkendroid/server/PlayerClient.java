@@ -1,9 +1,11 @@
 package org.cbase.blinkendroid.server;
 
+import java.io.IOException;
 import java.net.SocketAddress;
+import java.nio.ByteBuffer;
 import java.util.HashMap;
 
-import org.cbase.blinkendroid.BlinkendroidApp;
+import org.cbase.blinkendroid.network.udp.BlinkendroidProtocol;
 import org.cbase.blinkendroid.network.udp.BlinkendroidServerProtocol;
 import org.cbase.blinkendroid.network.udp.ClientSocket;
 import org.cbase.blinkendroid.network.udp.CommandHandler;
@@ -35,8 +37,19 @@ public class PlayerClient extends ConnectionState {
 	logger.debug("new PlayerClient");
 	this.playerManager = playerManager;
 	this.mclientSocket = clientSocket;
-	this.registerHandler(BlinkendroidApp.PROTOCOL_CONNECTION, this);
+	// this.registerHandler(BlinkendroidApp.PROTOCOL_CONNECTION, this);
 	mBlinkenProtocol = new BlinkendroidServerProtocol(playerManager, clientSocket);
+    }
+
+    public void handle(SocketAddress socketAddr, ByteBuffer bybuff) throws IOException {
+	int pos = bybuff.position();
+	final int iCommand = bybuff.getInt();
+	if (iCommand == BlinkendroidProtocol.COMMAND_LOCATEME) {
+	    this.playerManager.arrow(this);
+	} else {
+	    bybuff.position(pos);
+	    super.handle(socketAddr, bybuff);
+	}
     }
 
     public SocketAddress getClientSocketAddress() {
