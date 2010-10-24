@@ -7,33 +7,38 @@ import java.net.SocketException;
 import java.nio.ByteBuffer;
 
 public class ClientSocket {
-  private UDPDirectConnection mSocket;
-  private InetSocketAddress mSocketAddr;
+    private UDPDirectConnection mSocket;
+    private InetSocketAddress mSocketAddr;
 
-  public UDPDirectConnection getDirectConnection() {
+    public UDPDirectConnection getDirectConnection() {
 	return mSocket;
-  }
+    }
 
-  public int getDestinationPort() {
+    public int getDestinationPort() {
 	return mSocketAddr.getPort();
-  }
+    }
 
-  public InetAddress getDestinationAddress() {
+    public InetAddress getDestinationAddress() {
 	return mSocketAddr.getAddress();
-  }
+    }
 
-  public InetSocketAddress getInetSocketAddress() {
+    public InetSocketAddress getInetSocketAddress() {
 	return mSocketAddr;
-  }
+    }
 
-  // create socket between localhost:<port> - addr:<port>
-  public ClientSocket(UDPDirectConnection socket, InetSocketAddress socketAddr) throws SocketException {
+    // create socket between localhost:<port> - addr:<port>
+    public ClientSocket(UDPDirectConnection socket, InetSocketAddress socketAddr)
+	    throws SocketException {
 	this.mSocket = socket;
 	this.mSocketAddr = socketAddr;
-  }
+    }
 
-  public void send(ByteBuffer out) throws IOException {
+    public void send(ByteBuffer out) throws IOException {
 
 	mSocket.send(mSocketAddr, out);
-  }
+    }
+
+    public String toString() {
+	return getDestinationAddress() + ":" + getDestinationPort();
+    }
 }
