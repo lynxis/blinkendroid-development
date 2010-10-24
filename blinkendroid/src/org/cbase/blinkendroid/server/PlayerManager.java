@@ -45,6 +45,7 @@ public class PlayerManager implements ConnectionListener {
     private AtomicInteger arrowColorIndex = new AtomicInteger(new Random().nextInt(ARROW_COLORS.length));
     // private long serverPlayer = System.currentTimeMillis();
     private TCPVideoServer videoServer;
+    private int runningMediaType = BlinkendroidProtocol.OPTION_PLAY_TYPE_IMAGE;
 
     public TCPVideoServer getVideoServer() {
 	return videoServer;
@@ -127,7 +128,7 @@ public class PlayerManager implements ConnectionListener {
 	logger.info("added Client at pos " + playerClient.x + ":" + playerClient.y);
 	mMatrixClients[playerClient.y][playerClient.x] = playerClient;
 
-	playerClient.getBlinkenProtocol().play(startTime, BlinkendroidProtocol.OPTION_PLAY_TYPE_IMAGE);
+	playerClient.getBlinkenProtocol().play(startTime, runningMediaType);
 	arrow(playerClient);
 
 	if (!found) {
@@ -147,6 +148,7 @@ public class PlayerManager implements ConnectionListener {
     }
 
     private void arrow(final PlayerClient pClient) {
+	// TODO remove in final for puzzle
 	arrow(pClient, 0, 1, 0);
 	arrow(pClient, -1, 1, 45);
 	arrow(pClient, -1, 0, 90);
@@ -253,8 +255,10 @@ public class PlayerManager implements ConnectionListener {
 
     public void switchMovie(BLMHeader blmHeader) {
 	if (videoServer == null) {
+	    logger.error("videoserver is null");
 	    return;
 	} else {
+	    runningMediaType = BlinkendroidProtocol.OPTION_PLAY_TYPE_MOVIE;
 	    filename = blmHeader.filename;
 	    videoServer.setVideoName(filename);
 	    logger.info("switch to movie " + blmHeader.title);
@@ -274,6 +278,7 @@ public class PlayerManager implements ConnectionListener {
 	if (videoServer == null) {
 	    return;
 	} else {
+	    runningMediaType = BlinkendroidProtocol.OPTION_PLAY_TYPE_IMAGE;
 	    filename = imageHeader.filename;
 	    videoServer.setImageName(filename);
 	    logger.info("switch to image " + imageHeader.title);
