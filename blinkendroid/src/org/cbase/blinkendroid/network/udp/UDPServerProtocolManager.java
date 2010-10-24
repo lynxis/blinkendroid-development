@@ -74,12 +74,10 @@ public class UDPServerProtocolManager extends UDPAbstractBlinkendroidProtocol im
 
 	ByteBuffer in = ByteBuffer.wrap(packet.getData());
 	int proto = in.getInt();
-	System.out.println("server recieve " + proto);
 
 	CommandHandler handler = handlers.get(proto);
 	if (null != handler) {
 	    handler.handle(from, in);
-	    System.out.println("recieve proto " + proto + " handler " + handler.getClass().toString());
 	} else {
 	    if (mPlayerManager != null) {
 		mPlayerManager.handle(this, from, proto, in);

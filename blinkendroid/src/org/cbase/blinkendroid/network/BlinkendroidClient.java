@@ -29,8 +29,6 @@ import org.cbase.blinkendroid.network.udp.UDPClientProtocolManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import android.util.Log;
-
 public class BlinkendroidClient extends Thread {
 
     private static final Logger logger = LoggerFactory.getLogger(BlinkendroidClient.class);
@@ -52,7 +50,6 @@ public class BlinkendroidClient extends Thread {
 	logger.debug("trying to connect to server: " + socketAddress);
 	try {
 	    socket = new DatagramSocket(BlinkendroidApp.BROADCAST_CLIENT_PORT);
-	    System.out.printf("UDP SOCKET CREATED");
 	    socket.setReuseAddress(true);
 	    long time = System.currentTimeMillis();
 	    protocol = new UDPClientProtocolManager(socket, socketAddress);
@@ -66,7 +63,7 @@ public class BlinkendroidClient extends Thread {
 	    logger.info("connected " + (System.currentTimeMillis() - time));
 
 	} catch (final IOException x) {
-	    logger.error( "connection failed");
+	    logger.error("connection failed");
 	    x.printStackTrace();
 	    listener.connectionFailed(x.getClass().getName() + ": " + x.getMessage());
 	}

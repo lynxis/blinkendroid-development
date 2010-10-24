@@ -74,7 +74,7 @@ public class TCPVideoServer extends Thread {
 	interrupt();
 	logger.debug(" VideoServer shutdown interrupted");
 	// try {
-	// join();
+	// TODO join();
 	// } catch (InterruptedException e) {
 	// System.out.println(getMyName() + " ReceiverThread join failed");
 	// e.printStackTrace();

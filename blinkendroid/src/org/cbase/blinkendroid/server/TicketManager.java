@@ -10,11 +10,9 @@ import java.util.Set;
 import org.cbase.blinkendroid.BlinkendroidApp;
 import org.cbase.blinkendroid.network.ConnectionListener;
 import org.cbase.blinkendroid.network.broadcast.IPeerHandler;
-import org.cbase.blinkendroid.network.tcp.BlinkendroidDataServerProtocol;
 import org.cbase.blinkendroid.network.udp.ClientSocket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 
 public class TicketManager implements IPeerHandler, ConnectionListener {
 
@@ -32,7 +30,7 @@ public class TicketManager implements IPeerHandler, ConnectionListener {
 	    socket = new DatagramSocket(BlinkendroidApp.BROADCAST_ANNOUCEMENT_SERVER_TICKET_PORT);
 	    socket.setReuseAddress(true);
 	} catch (SocketException e) {
-	    System.out.println("new DatagramSocket(Constants.BROADCAST_ANNOUCEMENT_SERVER_TICKET_PORT) failed "
+	    logger.error("new DatagramSocket(Constants.BROADCAST_ANNOUCEMENT_SERVER_TICKET_PORT) failed "
 		    + e.getMessage());
 	}
     }
@@ -44,23 +42,23 @@ public class TicketManager implements IPeerHandler, ConnectionListener {
 	    try {
 		InetSocketAddress socketAddr = new InetSocketAddress(ip,
 			BlinkendroidApp.BROADCAST_ANNOUCEMENT_CLIENT_TICKET_PORT);
-		String message = BlinkendroidApp.BROADCAST_PROTOCOL_VERSION + " " + BlinkendroidApp.SERVER_TICKET_COMMAND + " "
-			+ ownerName;
+		String message = BlinkendroidApp.BROADCAST_PROTOCOL_VERSION + " "
+			+ BlinkendroidApp.SERVER_TICKET_COMMAND + " " + ownerName;
 		final byte[] messageBytes = message.getBytes("UTF-8");
 		final DatagramPacket packet = new DatagramPacket(messageBytes, messageBytes.length, socketAddr);
 		socket.send(packet);
-		logger.debug( "send Ticket for " + name + " " + ip);
 		if (!tickets.contains(ip)) {
 		    clients++;
 		    tickets.add(ip);
+		    logger.debug("send Ticket for " + name + " " + ip);
 		} else {
-		    logger.debug( "reset sent ticket for " + name + " " + ip);
+		    logger.debug("resend sent ticket for " + name + " " + ip);
 		}
 	    } catch (Exception e) {
-		logger.error( "Exception in TicketManager", e);
+		logger.error("Exception in TicketManager", e);
 	    }
 	} else {
-	    logger.debug( "Server is full");
+	    logger.debug("Server is full");
 	}
 	// pech jehabt
     }
@@ -71,7 +69,6 @@ public class TicketManager implements IPeerHandler, ConnectionListener {
 
     public void connectionClosed(ClientSocket clientSocket) {
 	String ip = clientSocket.getDestinationAddress().getHostAddress();
-	System.out.println("TicketManager connectionClosed " + ip);
 	clients--;
 	tickets.remove(ip);
     }
