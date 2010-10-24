@@ -3,6 +3,8 @@ package org.cbase.blinkendroid.serverui;
 import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
@@ -12,6 +14,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
+import javax.swing.JTextField;
 
 import org.cbase.blinkendroid.network.ConnectionListener;
 import org.cbase.blinkendroid.network.udp.ClientSocket;
@@ -31,8 +34,10 @@ public class BlinkendroidFrame extends JFrame implements ImageManagerListener,
     private JButton removeClient = null;
     private JComboBox moviesList = null;
     private JComboBox imagesList = null;
-    private JLabel titleLbl, moviesLbl, imagesLbl;
+    private JLabel titleLbl, moviesLbl, imagesLbl, clientsLbl, ticketsLbl;
     private JList clientsList;
+    private JTextField ticketsTxt;
+    private JButton refreshTickets = null;
 
     public void imagesReady() {
 	JOptionPane.showMessageDialog(this, "Images Ready");
@@ -91,6 +96,10 @@ public class BlinkendroidFrame extends JFrame implements ImageManagerListener,
 	titleLbl = new JLabel("Blinkendroid SwingUI");
 	moviesLbl = new JLabel("Movies:");
 	imagesLbl = new JLabel("Images:");
+	clientsLbl = new JLabel("Clients: ");
+	ticketsLbl = new JLabel("Tickets: ");
+	ticketsTxt = new JTextField("10");
+	refreshTickets = new JButton("set");
 
 	clientsList = new JList(new DefaultListModel());
 
@@ -110,7 +119,9 @@ public class BlinkendroidFrame extends JFrame implements ImageManagerListener,
 	removeClient.setActionCommand(Commands.REMOVE_CLIENT.toString());
 	removeClient.addActionListener(actionListener);
 	
-	this.setSize(350, 370);
+	ticketsTxt.addFocusListener(new TicketFocusListener());
+	
+	this.setSize(350, 400);
 	this.setResizable(false);
 
 	Container jContentPane = getContentPane();
@@ -125,6 +136,12 @@ public class BlinkendroidFrame extends JFrame implements ImageManagerListener,
 	imagesLbl.setLocation(0, 60);
 	imagesLbl.setSize(100, 20);
 
+	clientsLbl.setLocation(0, 90);
+	clientsLbl.setSize(100, 20);
+	
+	ticketsLbl.setLocation(0, 300);
+	ticketsLbl.setSize(100, 20);
+	
 	moviesList.setLocation(120, 30);
 	moviesList.setSize(200, 20);
 
@@ -137,9 +154,19 @@ public class BlinkendroidFrame extends JFrame implements ImageManagerListener,
 	removeClient.setLocation(325, 270);
 	removeClient.setSize(20, 20);
 
-	startStopButton.setLocation(120, 310);
+	ticketsTxt.setLocation(120, 300);
+	ticketsTxt.setSize(100, 30);
+	
+	refreshTickets.setLocation(230, 305);
+	refreshTickets.setSize(60, 20);
+	
+	startStopButton.setLocation(120, 340);
 	startStopButton.setSize(200, 30);
 
+	jContentPane.add(refreshTickets);
+	jContentPane.add(ticketsLbl);
+	jContentPane.add(ticketsTxt);
+	jContentPane.add(clientsLbl);
 	jContentPane.add(titleLbl);
 	jContentPane.add(moviesLbl);
 	jContentPane.add(moviesList);
@@ -155,6 +182,24 @@ public class BlinkendroidFrame extends JFrame implements ImageManagerListener,
 	START_STOP, MOVIES_SELECTION, IMAGES_SELECTION, REMOVE_CLIENT;
     }
 
+    private class TicketFocusListener implements FocusListener {
+	    
+	    public void focusLost(FocusEvent e) {
+		    int maxClients = -1;
+		    
+		    try {
+			maxClients = Integer.parseInt(ticketsTxt.getText());
+		    } catch (NumberFormatException nfe) {
+			JOptionPane.showMessageDialog(BlinkendroidFrame.this, "Invalid amount of tickets, using default");
+		    }
+		    
+		    server.setMaxClients(maxClients);
+	    }
+	    
+	    public void focusGained(FocusEvent e) {
+	    }
+    }
+    
     private class FormActionListener implements ActionListener {
 
 	public void actionPerformed(ActionEvent e) {
@@ -162,10 +207,10 @@ public class BlinkendroidFrame extends JFrame implements ImageManagerListener,
 	    switch (Commands.valueOf(e.getActionCommand())) {
 	    case START_STOP:
 		if (!server.isRunning()) {
-		    ((JButton) e.getSource()).setText("stop Server");
+		    ((JButton) e.getSource()).setText("stop Server");		   		    
 		    server.start();
 		} else {
-		    ((JButton) e.getSource()).setText("start Server");
+		    ((JButton) e.getSource()).setText("start Server");		   
 		    server.start();
 		}
 		break;

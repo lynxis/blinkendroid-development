@@ -25,7 +25,7 @@ public final class BlinkendroidSwingServer implements ConnectionListener {
     private BLMManager blmManager;
     private ImageManager imageManager;
     private BlinkendroidFrame serverUI;
-
+    
     public ImageManager getImageManager() {
 	return imageManager;
     }
@@ -36,6 +36,19 @@ public final class BlinkendroidSwingServer implements ConnectionListener {
 
     public BlinkendroidFrame getUI() {
 	return serverUI;
+    }
+
+    public void setMaxClients(int maxClients) {
+	if(maxClients < 0) {
+	    return;
+	}
+	
+	ticketManager.setMaxClients(maxClients);
+	System.out.println("Max clients changed to " + maxClients);
+    }
+
+    public int getMaxClients() {
+	return ticketManager.getMaxClients();
     }
 
     public void setUI(BlinkendroidFrame serverUI) {
