@@ -31,7 +31,6 @@ import org.cbase.blinkendroid.network.udp.BlinkendroidProtocol;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 public class BlinkendroidDataServerProtocol {
 
     private static final Logger logger = LoggerFactory.getLogger(BlinkendroidDataServerProtocol.class);
@@ -55,14 +54,14 @@ public class BlinkendroidDataServerProtocol {
 	try {
 	    if (null == dataServer.getVideoName()) {
 		writeLong(out, 0);
-		logger.debug( "Play default video ");
+		logger.debug("Play default video ");
 	    } else {
 		File movie = new File(dataServer.getVideoName());
 		if (null != movie && movie.exists()) {
 
 		    try {
 			writeLong(out, movie.length());
-			logger.debug( "try to read file with bytes " + movie.length());
+			logger.debug("try to read file with bytes " + movie.length());
 			InputStream is = new FileInputStream(movie);
 			byte[] buffer = new byte[1024];
 			// commented because: not referenced
@@ -73,13 +72,13 @@ public class BlinkendroidDataServerProtocol {
 			    // allLen += len;
 			}
 			is.close();
-			logger.debug( "send movie bytes " + movie.length());
+			logger.debug("send movie bytes " + movie.length());
 			writeLong(out, movie.length());
 		    } catch (IOException ioe) {
-			logger.error( "sending movie failed", ioe);
+			logger.error("sending movie failed", ioe);
 		    }
 		} else {
-		    logger.error( "movie not found" + dataServer.getVideoName());
+		    logger.error("movie not found" + dataServer.getVideoName());
 		}
 	    }
 
@@ -92,14 +91,14 @@ public class BlinkendroidDataServerProtocol {
 	try {
 	    if (null == dataServer.getImageName()) {
 		writeLong(out, 0);
-		logger.debug( "Play default image ");
+		logger.debug("Play default image ");
 	    } else {
 		File image = new File(dataServer.getImageName());
 		if (null != image && image.exists()) {
 
 		    try {
 			writeLong(out, image.length());
-			logger.debug( "try to read file with bytes " + image.length());
+			logger.debug("try to read file with bytes " + image.length());
 			InputStream is = new FileInputStream(image);
 			byte[] buffer = new byte[1024];
 			// commented because: not referenced
@@ -110,13 +109,13 @@ public class BlinkendroidDataServerProtocol {
 			    // allLen += len;
 			}
 			is.close();
-			logger.debug( "send image bytes " + image.length());
+			logger.debug("send image bytes " + image.length());
 			writeLong(out, image.length());
 		    } catch (IOException ioe) {
-			logger.error( "sending movie failed", ioe);
+			logger.error("sending movie failed", ioe);
 		    }
 		} else {
-		    logger.error( "movie not found" + dataServer.getImageName());
+		    logger.error("movie not found" + dataServer.getImageName());
 		}
 	    }
 
@@ -215,42 +214,28 @@ public class BlinkendroidDataServerProtocol {
 		    }
 		}
 	    } catch (SocketException e) {
-		logger.error( "Socket closed", e);
+		logger.error("Socket closed", e);
 	    } catch (IOException e) {
-		logger.error( "InputThread fucked", e);
+		logger.error("InputThread fucked", e);
 		e.printStackTrace();
 	    }
-	    logger.debug( "InputThread ended!!!!!!!");
+	    logger.debug("InputThread ended!!!!!!!");
 
 	}
 
 	// TODO shutdown ? howto do it
-	/*
-	 * @Override public void run() {
-	 * this.setName("SRV VideoReceiverThread"); running = true;
-	 * System.out.println(" InputThread started"); byte[] receiveData;
-	 * DatagramPacket receivePacket; try { while (running) { receiveData =
-	 * new byte[1024]; receivePacket = new DatagramPacket(receiveData,
-	 * receiveData.length); try { m_Socket.receive(receivePacket);
-	 * receive(receivePacket); } catch (InterruptedIOException e) { //
-	 * timeout happened - just a normal case } } } catch (SocketException e)
-	 * { System.out.println(" Socket closed."); } catch (IOException e) {
-	 * System.out.println(" InputThread IOExeception"); e.printStackTrace();
-	 * } }
-	 */
-
 	public void shutdown() {
-	    logger.debug( " ReceiverThread shutdown start");
+	    logger.debug(" ReceiverThread shutdown start");
 	    running = false;
 	    interrupt();
-	    logger.debug( " ReceiverThread shutdown interrupted");
+	    logger.debug(" ReceiverThread shutdown interrupted");
 	    try {
 		join();
 	    } catch (InterruptedException e) {
-		logger.error( "ReceiverThread join failed", e);
+		logger.error("ReceiverThread join failed", e);
 		e.printStackTrace();
 	    }
-	    logger.info( "ReceiverThread shutdown joined & end");
+	    logger.info("ReceiverThread shutdown joined & end");
 	}
     }
 }

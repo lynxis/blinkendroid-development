@@ -94,16 +94,16 @@ public class UDPServerProtocolManager extends UDPAbstractBlinkendroidProtocol im
 	    send(new InetSocketAddress(InetAddress.getAllByName("255.255.255.255")[0],
 		    BlinkendroidApp.BROADCAST_CLIENT_PORT), out);
 	} catch (UnknownHostException e) {
-	    logger.error( "Don't know where to send the broadcast", e);
+	    logger.error("Don't know where to send the broadcast", e);
 	} catch (IOException e) {
-	    logger.error( "IOException", e);
+	    logger.error("IOException", e);
 	}
     }
 
     public void handle(SocketAddress socketAddr, ByteBuffer bybuff) throws IOException {
-	// Why doesn't this method do anything?
+	// TODO impl here when client to server action needed Why doesn't this
+	// method do anything?
 	throw new IOException("This method does nothing else but throwing this Exception.");
-	// System.out.println("handle nothing");
     }
 
     /**
@@ -116,7 +116,7 @@ public class UDPServerProtocolManager extends UDPAbstractBlinkendroidProtocol im
 	@Override
 	public void run() {
 	    this.setName("SRV Send GlobalTimer");
-	    logger.debug( "GlobalTimerThread started");
+	    logger.debug("GlobalTimerThread started");
 	    while (running) {
 		try {
 		    Thread.sleep(1000);
@@ -133,13 +133,13 @@ public class UDPServerProtocolManager extends UDPAbstractBlinkendroidProtocol im
 		sendBroadcast(out);
 		// logger.debug( "GlobalTimerThread Broadcast sent: " + out);
 	    }
-	    logger.debug( "GlobalTimerThread stopped");
+	    logger.debug("GlobalTimerThread stopped");
 	}
 
 	public void shutdown() {
 	    running = false;
 	    interrupt();
-	    logger.debug( "GlobalTimerThread initiating shutdown");
+	    logger.debug("GlobalTimerThread initiating shutdown");
 	}
     }
 

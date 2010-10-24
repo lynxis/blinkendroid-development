@@ -34,7 +34,6 @@ import org.slf4j.LoggerFactory;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.util.Log;
 
 public class BlinkendroidDataClientProtocol {
 
@@ -59,7 +58,7 @@ public class BlinkendroidDataClientProtocol {
 	    long length = readLong(in); // TODO checking racecondition with
 	    // setSoTimeout
 	    if (length == 0) {
-		logger.info( "Play default video ");
+		logger.info("Play default video ");
 	    } else {
 		BBMZParser parser = new BBMZParser();
 		blm = parser.parseBBMZ(in, length);
@@ -68,8 +67,7 @@ public class BlinkendroidDataClientProtocol {
 	    in.close();
 	    socket.close();
 	} catch (Exception e) {
-	    System.out.println("receive movie failed");
-	    e.printStackTrace();
+	    logger.error("receive movie failed", e);
 	}
 	return blm;
     }
@@ -148,7 +146,7 @@ public class BlinkendroidDataClientProtocol {
 	    long length = readLong(in);
 	    // setSoTimeout
 	    if (length == 0) {
-		logger.info( "Play default image ");
+		logger.info("Play default image ");
 	    } else {
 		ByteArrayOutputStream os = new ByteArrayOutputStream();
 		byte inbuf[] = new byte[1];
@@ -162,7 +160,7 @@ public class BlinkendroidDataClientProtocol {
 			    break;
 		    }
 		} catch (Exception e) {
-		    logger.error( "invalid image", e);
+		    logger.error("invalid image", e);
 		}
 		bmp = BitmapFactory.decodeByteArray(os.toByteArray(), 0, os.size());
 		os = null;
@@ -171,7 +169,7 @@ public class BlinkendroidDataClientProtocol {
 	    in.close();
 	    socket.close();
 	} catch (Exception e) {
-	    logger.error( "receiving image failed", e);
+	    logger.error("receiving image failed", e);
 	}
 	return bmp;
     }

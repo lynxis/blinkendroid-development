@@ -7,7 +7,6 @@ import java.nio.ByteBuffer;
 
 import org.cbase.blinkendroid.network.BlinkendroidListener;
 import org.cbase.blinkendroid.network.tcp.BlinkendroidDataClientProtocol;
-import org.cbase.blinkendroid.network.tcp.BlinkendroidDataServerProtocol;
 import org.cbase.blinkendroid.player.bml.BLM;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,7 +25,7 @@ public class BlinkendroidClientProtocol extends BlinkendroidProtocol implements 
     public void handle(SocketAddress from, ByteBuffer in) throws IOException {
 	int command = in.getInt();
 
-	logger.debug( "received: " + command);
+	logger.debug("received: " + command);
 	if (mListener != null) {
 	    if (command == COMMAND_HEARTBEAT) {
 		mListener.serverTime(in.getLong());
@@ -35,7 +34,7 @@ public class BlinkendroidClientProtocol extends BlinkendroidProtocol implements 
 		final float startY = in.getFloat();
 		final float endX = in.getFloat();
 		final float endY = in.getFloat();
-		System.out.println("clip: " + startX + "," + startY + "," + endX + "," + endY);
+		logger.info("clip: " + startX + "," + startY + "," + endX + "," + endY);
 		mListener.clip(startX, startY, endX, endY);
 	    } else if (command == COMMAND_PLAY) {
 		int dataType = in.getInt();
