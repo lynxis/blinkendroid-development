@@ -74,11 +74,12 @@ public final class BlinkendroidSwingServer implements ConnectionListener {
     public BlinkendroidSwingServer() {
 	super();
 	ticketManager = new TicketManager("BlinkendroidSwingServer");
+	ticketManager.setMaxClients(20);
     }
 
     public void loadMedia() {
 	blmManager = new BLMManager();
-	getBlmManager().readMovies(getUI(), "c:\blinkendroid");
+	getBlmManager().readMovies(getUI(),  "c:"+File.separator+"blinkendroid");
 
 	System.out.println("Setting " + getUI() + "as listener for movies");
 
