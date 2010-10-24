@@ -11,4 +11,9 @@ public class ImageHeader implements Serializable {
     public String title;
     public ImageHeader() {
     }
+    
+    @Override
+    public String toString() {
+	return title;
+    }
 }

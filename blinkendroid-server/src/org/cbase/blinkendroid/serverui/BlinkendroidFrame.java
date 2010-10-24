@@ -39,7 +39,7 @@ public class BlinkendroidFrame extends JFrame implements ImageManagerListener,
 	imgCbModel.removeAllElements();
 	
 	for (ImageHeader imgHead : server.getImageManager().getImageHeader()) {
-	    imagesList.addItem(imgHead.title);
+	    imgCbModel.addElement(imgHead);
 	}
     }
 
@@ -50,8 +50,8 @@ public class BlinkendroidFrame extends JFrame implements ImageManagerListener,
 	DefaultComboBoxModel movCbModel = (DefaultComboBoxModel)moviesList.getModel();
 	movCbModel.removeAllElements();
 	
-	for (BLMHeader imgHead : server.getBlmManager().getBlmHeader()) {
-	    moviesList.addItem(imgHead);
+	for (BLMHeader movHead : server.getBlmManager().getBlmHeader()) {
+	    movCbModel.addElement(movHead);
 	}
     }
 
@@ -150,21 +150,27 @@ public class BlinkendroidFrame extends JFrame implements ImageManagerListener,
 		}
 		break;
 	    case IMAGES_SELECTION:
-		Object selectedImage = ((JComboBox) e.getSource()).getSelectedItem();
-		System.out.println("Selected: "
-			+ selectedImage);
+		Object selectedImage = ((JComboBox) e.getSource()).getModel().getSelectedItem();
+		
+		if(selectedImage == null || !server.isRunning()) {
+		    return;
+		}
 		
 		if(selectedImage instanceof ImageHeader) {
+		    System.out.println("lala" + ((ImageHeader)selectedImage).height);
 		    server.switchImage((ImageHeader)selectedImage);
 		}
 		
 		break;
 	    case MOVIES_SELECTION:
-		Object selectedMovie = ((JComboBox) e.getSource()).getSelectedItem();
-		System.out.println("Selected: "
-			+ selectedMovie);
+		Object selectedMovie = ((JComboBox) e.getSource()).getModel().getSelectedItem();
+		
+		if(selectedMovie == null || !server.isRunning()) {
+		    return;
+		}
 		
 		if(selectedMovie instanceof BLMHeader) {
+		    System.out.println(((BLMHeader)selectedMovie).author);
 		    server.switchMovie((BLMHeader)selectedMovie);
 		}
 		break;
