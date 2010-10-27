@@ -38,7 +38,8 @@ public class ClientSocket {
 	mSocket.send(mSocketAddr, out);
     }
 
-    public String toString() {
+    @Override
+	public String toString() {
 	return getDestinationAddress() + ":" + getDestinationPort();
     }
 }

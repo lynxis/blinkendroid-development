@@ -41,7 +41,8 @@ public class PlayerClient extends ConnectionState {
 	mBlinkenProtocol = new BlinkendroidServerProtocol(playerManager, clientSocket);
     }
 
-    public void handle(SocketAddress socketAddr, ByteBuffer bybuff) throws IOException {
+    @Override
+	public void handle(SocketAddress socketAddr, ByteBuffer bybuff) throws IOException {
 	int pos = bybuff.position();
 	final int iCommand = bybuff.getInt();
 	if (iCommand == BlinkendroidProtocol.COMMAND_LOCATEME) {
