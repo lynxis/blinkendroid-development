@@ -9,7 +9,7 @@
 		android:visibility="gone" />
 
 	<TextView android:id="@+id/login_server_list_empty"
-		android:text="@+string/look_for_servers" android:textSize="24sp"
+		android:text="@+string/waiting_for_ticket" android:textSize="24sp"
 		android:layout_width="fill_parent" android:layout_height="fill_parent"
 		android:gravity="center" />
 </LinearLayout>

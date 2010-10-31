@@ -26,4 +26,5 @@
 <string name="about_url">http://code.google.com/p/blinkendroid</string>
 <string name="download_url">market://details?id=org.cbase.blinkendroid</string>
 <string name="image_hint">Select an Image</string>
+<string name="waiting_for_ticket">Waiting for Ticket...</string>
 </resources>
