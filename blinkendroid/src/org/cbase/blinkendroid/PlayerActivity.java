@@ -113,7 +113,7 @@ public class PlayerActivity extends Activity implements BlinkendroidListener, Ru
 
 	// forcing the screen brightness to max out while playing
 	if (isAllowedToChangeBrightness()) {
-	    logger.debug("Maxing out the brightness");
+	    logger.info("Maxing out the brightness");
 	    WindowManager.LayoutParams lp = getWindow().getAttributes();
 	    lp.screenBrightness = 1.0f;
 	    getWindow().setAttributes(lp);
@@ -193,7 +193,7 @@ public class PlayerActivity extends Activity implements BlinkendroidListener, Ru
     }
 
     public void serverTime(final long serverTime) {
-	logger.debug("*** time " + serverTime);
+	logger.info("*** time " + serverTime);
 	final long timeDelta = System.nanoTime() / 1000000 - serverTime;
 	runOnUiThread(new Runnable() {
 
@@ -206,7 +206,7 @@ public class PlayerActivity extends Activity implements BlinkendroidListener, Ru
     }
 
     public void playBLM(final long startTime, final BLM movie) {
-	logger.debug("*** play " + startTime);
+	logger.info("*** play " + startTime);
 	runOnUiThread(new Runnable() {
 
 	    public void run() {
@@ -232,7 +232,7 @@ public class PlayerActivity extends Activity implements BlinkendroidListener, Ru
     }
 
     public void clip(final float startX, final float startY, final float endX, final float endY) {
-	logger.debug("*** clip " + startX + "," + startY + "," + endX + "," + endY);
+	logger.info("*** clip " + startX + "," + startY + "," + endX + "," + endY);
 	runOnUiThread(new Runnable() {
 
 	    public void run() {
@@ -246,7 +246,7 @@ public class PlayerActivity extends Activity implements BlinkendroidListener, Ru
     }
 
     public void arrow(final long duration, final float angle, final int color) {
-	logger.debug("*** arrow " + angle + " " + duration);
+	logger.info("*** arrow " + angle + " " + duration);
 	runOnUiThread(new Runnable() {
 
 	    public void run() {
@@ -260,7 +260,7 @@ public class PlayerActivity extends Activity implements BlinkendroidListener, Ru
     }
 
     public void connectionOpened(final ClientSocket clientSocket) {
-	logger.debug("*** connectionOpened " + clientSocket.getDestinationAddress().toString());
+	logger.info("*** connectionOpened " + clientSocket.getDestinationAddress().toString());
 	runOnUiThread(new Runnable() {
 
 	    public void run() {
@@ -270,7 +270,7 @@ public class PlayerActivity extends Activity implements BlinkendroidListener, Ru
     }
 
     public void connectionClosed(final ClientSocket clientSocket) {
-	logger.debug("*** connectionClosed " + clientSocket.getDestinationAddress().toString());
+	logger.info("*** connectionClosed " + clientSocket.getDestinationAddress().toString());
 	runOnUiThread(new Runnable() {
 
 	    public void run() {

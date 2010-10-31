@@ -74,7 +74,7 @@ public class ReceiverThread extends Thread {
 	    socket = new DatagramSocket(port);
 	    socket.setReuseAddress(true);
 	    socket.setBroadcast(true);
-	    logger.debug("Receiver thread started.");
+	    logger.info("Receiver thread started.");
 	    while (running) {
 
 		final byte[] buf = new byte[512];
@@ -98,7 +98,7 @@ public class ReceiverThread extends Thread {
 		notifyHandlers(protocolVersion, name, address.getHostAddress());
 	    }
 	    socket.close();
-	    logger.debug("ReceiverThread: shutdown complete");
+	    logger.info("ReceiverThread: shutdown complete");
 	} catch (final IOException x) {
 	    logger.error("problem receiving", x);
 	}
@@ -115,7 +115,7 @@ public class ReceiverThread extends Thread {
     }
 
     public void shutdown() {
-	logger.debug("ReceiverThread: initiating shutdown");
+	logger.info("ReceiverThread: initiating shutdown");
 	running = false;
 	handlers.clear();
 	if (null != socket)

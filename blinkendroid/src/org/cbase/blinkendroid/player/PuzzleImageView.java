@@ -62,7 +62,7 @@ public class PuzzleImageView extends View {
 	    Rect srcRect = new Rect(absStartX, absStartY, absEndX, absEndY);
 	    Rect dstRect = new Rect(absImgStartX, absImgStartY, absImgEndX, absImgEndY);
 
-	    logger.debug("*** clip " + absStartX + "," + absStartY + "," + absEndX + "," + absEndY);
+	    logger.info("*** clip " + absStartX + "," + absStartY + "," + absEndX + "," + absEndY);
 
 	    canvas.drawBitmap(image, srcRect, dstRect, null);
 	}

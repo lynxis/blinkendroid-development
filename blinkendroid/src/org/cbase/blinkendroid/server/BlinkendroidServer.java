@@ -106,4 +106,8 @@ public class BlinkendroidServer {
     public void switchImage(ImageHeader imageHeader) {
 	playerManager.switchImage(imageHeader);
     }
+
+    public void clip() {
+	playerManager.clip(true);
+    }
 }

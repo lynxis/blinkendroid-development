@@ -43,12 +43,12 @@ public class BLMManager {
 	    public void run() {
 		File blinkendroidDir = new File(dir);
 		if (!blinkendroidDir.exists()) {
-		    logger.debug("/blinkendroid does not exist");
+		    logger.info("/blinkendroid does not exist");
 		    return;
 		}
 		File[] files = blinkendroidDir.listFiles();
 		if (null != files) {
-		    logger.debug("found files " + files.length);
+		    logger.info("found files " + files.length);
 		    for (int i = 0; i < files.length; i++) {
 			if (!files[i].getName().endsWith(".info"))
 			    continue;

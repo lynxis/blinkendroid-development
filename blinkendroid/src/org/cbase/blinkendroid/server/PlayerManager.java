@@ -170,7 +170,7 @@ public class PlayerManager implements ConnectionListener, BlinkendroidServerList
 	}
     }
 
-    private void clip(boolean clipAll) {
+    public void clip(boolean clipAll) {
 	// clipping fuer alle berechnen
 	// Log.i(Constants.LOG_TAG, "clip maxX "+i+":"+j);
 	float startY = 0;
@@ -370,7 +370,7 @@ public class PlayerManager implements ConnectionListener, BlinkendroidServerList
 	} else { // no client found
 	    if (proto == BlinkendroidApp.PROTOCOL_CONNECTION) {
 		int data = protoData.getInt();
-		logger.debug("Playermanager data " + data);
+		logger.info("Playermanager data " + data);
 		if (ConnectionState.Command.SYN.ordinal() == data) {
 		    // new connection
 		    try {
@@ -412,13 +412,13 @@ public class PlayerManager implements ConnectionListener, BlinkendroidServerList
 		    break;
 		checkTimeouts();
 	    }
-	    logger.debug("TimeouterThread stopped");
+	    logger.info("TimeouterThread stopped");
 	}
 
 	public void shutdown() {
 	    running = false;
 	    interrupt();
-	    logger.debug("TimeouterThread initiating shutdown");
+	    logger.info("TimeouterThread initiating shutdown");
 	}
     }
 

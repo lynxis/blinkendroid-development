@@ -36,7 +36,7 @@ public class DataServer extends Thread {
 	    acceptLoop();
 
 	    serverSocket.close();
-	    logger.debug("VideoThread ended!!!!!!! ");
+	    logger.info("VideoThread ended!!!!!!! ");
 
 	} catch (IOException e) {
 	    logger.error("VideoThread fuckup", e);
@@ -69,17 +69,17 @@ public class DataServer extends Thread {
     }
 
     public void shutdown() {
-	logger.debug(" VideoServer shutdown start");
+	logger.info(" VideoServer shutdown start");
 	running = false;
 	interrupt();
-	logger.debug(" VideoServer shutdown interrupted");
+	logger.info(" VideoServer shutdown interrupted");
 	// try {
 	// TODO join();
 	// } catch (InterruptedException e) {
 	// System.out.println(getMyName() + " ReceiverThread join failed");
 	// e.printStackTrace();
 	// }
-	logger.debug(" ReceiverThread shutdown end");
+	logger.info(" ReceiverThread shutdown end");
     }
 
     public String getVideoName() {

@@ -60,7 +60,7 @@ public class BlinkendroidServerProtocol extends BlinkendroidProtocol implements 
 	    out.putFloat(endX);
 	    out.putFloat(endY);
 	    send(out);
-	    logger.debug("clip flushed ");
+	    logger.info("clip flushed ");
 	} catch (IOException e) {
 	    logger.error("clip failed ", e);
 	}
@@ -76,7 +76,7 @@ public class BlinkendroidServerProtocol extends BlinkendroidProtocol implements 
     public void handle(SocketAddress from, ByteBuffer in) throws IOException {
 	int command = in.getInt();
 
-	logger.debug("received: " + command);
+	logger.info("received: " + command);
 	if (mListener != null) {
 	    if (command == COMMAND_LOCATEME) {
 		mListener.locateMe(from);

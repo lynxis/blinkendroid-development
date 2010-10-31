@@ -55,10 +55,10 @@ public class TicketManager implements IPeerHandler, ConnectionListener {
 		    waitingQueue.remove(ip);
 		    if (clientQueueListener != null) {
 			clientQueueListener.clientNoLongerWaiting(ip);
-			logger.debug("send Ticket for " + name + " " + ip);
+			logger.info("send Ticket for " + name + " " + ip);
 		    }
 		} else {
-		    logger.debug("resend sent ticket for " + name + " " + ip);
+		    logger.info("resend sent ticket for " + name + " " + ip);
 		}
 	    } catch (Exception e) {
 		logger.error("Exception in TicketManager", e);
@@ -70,7 +70,7 @@ public class TicketManager implements IPeerHandler, ConnectionListener {
 		    clientQueueListener.clientWaiting(ip);
 		}
 	    }
-	    logger.debug("Server is full, adding to queue");
+	    logger.info("Server is full, adding to queue");
 	}
 	// pech jehabt
     }

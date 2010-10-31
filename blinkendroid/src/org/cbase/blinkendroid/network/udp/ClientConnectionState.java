@@ -44,7 +44,7 @@ public class ClientConnectionState extends ConnectionState implements CommandHan
 	@Override
 	public void run() {
 	    this.setName("CLI Heartbeat");
-	    logger.debug("ClientConnectionState started");
+	    logger.info("ClientConnectionState started");
 	    while (running) {
 		try {
 		    Thread.sleep(1000);
@@ -56,14 +56,14 @@ public class ClientConnectionState extends ConnectionState implements CommandHan
 		sendHeartbeat();
 		checkTimeout(5);
 	    }
-	    logger.debug("ClientConnectionState stopped");
+	    logger.info("ClientConnectionState stopped");
 	}
 
 	public void shutdown() {
 	    running = false;
 	    interrupt();
 	    // TODO where is the join???
-	    logger.debug("ClientConnectionState initiating shutdown");
+	    logger.info("ClientConnectionState initiating shutdown");
 	}
     }
 

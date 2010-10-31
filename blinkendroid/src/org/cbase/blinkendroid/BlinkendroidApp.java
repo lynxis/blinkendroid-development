@@ -80,7 +80,7 @@ public class BlinkendroidApp extends Application {
 	} else if (!doWant && wakeLock.isHeld()) {
 	    wakeLock.release();
 	}
-	logger.debug("WakeLock is " + wakeLock.isHeld());
+	logger.info("WakeLock is " + wakeLock.isHeld());
     }
 
 }

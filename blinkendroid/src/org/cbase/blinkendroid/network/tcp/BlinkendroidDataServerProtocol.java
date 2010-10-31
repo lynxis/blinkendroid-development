@@ -54,14 +54,14 @@ public class BlinkendroidDataServerProtocol {
 	try {
 	    if (null == dataServer.getVideoName()) {
 		writeLong(out, 0);
-		logger.debug("Play default video ");
+		logger.info("Play default video ");
 	    } else {
 		File movie = new File(dataServer.getVideoName());
 		if (null != movie && movie.exists()) {
 
 		    try {
 			writeLong(out, movie.length());
-			logger.debug("try to read file with bytes " + movie.length());
+			logger.info("try to read file with bytes " + movie.length());
 			InputStream is = new FileInputStream(movie);
 			byte[] buffer = new byte[1024];
 			// commented because: not referenced
@@ -72,7 +72,7 @@ public class BlinkendroidDataServerProtocol {
 			    // allLen += len;
 			}
 			is.close();
-			logger.debug("send movie bytes " + movie.length());
+			logger.info("send movie bytes " + movie.length());
 			writeLong(out, movie.length());
 		    } catch (IOException ioe) {
 			logger.error("sending movie failed", ioe);
@@ -91,14 +91,14 @@ public class BlinkendroidDataServerProtocol {
 	try {
 	    if (null == dataServer.getImageName()) {
 		writeLong(out, 0);
-		logger.debug("Play default image ");
+		logger.info("Play default image ");
 	    } else {
 		File image = new File(dataServer.getImageName());
 		if (null != image && image.exists()) {
 
 		    try {
 			writeLong(out, image.length());
-			logger.debug("try to read file with bytes " + image.length());
+			logger.info("try to read file with bytes " + image.length());
 			InputStream is = new FileInputStream(image);
 			byte[] buffer = new byte[1024];
 			// commented because: not referenced
@@ -109,7 +109,7 @@ public class BlinkendroidDataServerProtocol {
 			    // allLen += len;
 			}
 			is.close();
-			logger.debug("send image bytes " + image.length());
+			logger.info("send image bytes " + image.length());
 			writeLong(out, image.length());
 		    } catch (IOException ioe) {
 			logger.error("sending movie failed", ioe);
@@ -219,15 +219,15 @@ public class BlinkendroidDataServerProtocol {
 		logger.error("InputThread fucked", e);
 		e.printStackTrace();
 	    }
-	    logger.debug("ReceiverThread ended!!!!!!!");
+	    logger.info("ReceiverThread ended!!!!!!!");
 	}
 
 	// TODO shutdown ? howto do it
 	public void shutdown() {
-	    logger.debug(" ReceiverThread shutdown start");
+	    logger.info(" ReceiverThread shutdown start");
 	    running = false;
 	    interrupt();
-	    logger.debug(" ReceiverThread shutdown interrupted");
+	    logger.info(" ReceiverThread shutdown interrupted");
 	    try {
 		join();
 	    } catch (InterruptedException e) {

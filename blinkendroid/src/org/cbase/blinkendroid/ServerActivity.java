@@ -240,7 +240,7 @@ public class ServerActivity extends Activity implements ConnectionListener, BLMM
     }
 
     public void connectionOpened(final ClientSocket clientSocket) {
-	logger.debug("ServerActivity connectionOpened " + clientSocket.getDestinationAddress().toString());
+	logger.info("ServerActivity connectionOpened " + clientSocket.getDestinationAddress().toString());
 	runOnUiThread(new Runnable() {
 
 	    public void run() {
@@ -251,7 +251,7 @@ public class ServerActivity extends Activity implements ConnectionListener, BLMM
     }
 
     public void connectionClosed(final ClientSocket clientSocket) {
-	logger.debug("ServerActivity connectionClosed " + clientSocket.getDestinationAddress().toString());
+	logger.info("ServerActivity connectionClosed " + clientSocket.getDestinationAddress().toString());
 	runOnUiThread(new Runnable() {
 
 	    public void run() {
@@ -268,7 +268,7 @@ public class ServerActivity extends Activity implements ConnectionListener, BLMM
      * blinkendroid.network.udp.ClientSocket)
      */
     public void clientWaiting(final String ip) {
-	logger.debug("ServerActivity clientWaiting " + ip);
+	logger.info("ServerActivity clientWaiting " + ip);
 	runOnUiThread(new Runnable() {
 
 	    public void run() {
@@ -286,7 +286,7 @@ public class ServerActivity extends Activity implements ConnectionListener, BLMM
      * cbase.blinkendroid.network.udp.ClientSocket)
      */
     public void clientNoLongerWaiting(final String ip) {
-	logger.debug("ServerActivity clientNoLongerWaiting " + ip);
+	logger.info("ServerActivity clientNoLongerWaiting " + ip);
 	runOnUiThread(new Runnable() {
 
 	    public void run() {
@@ -321,7 +321,7 @@ public class ServerActivity extends Activity implements ConnectionListener, BLMM
 			if (null == header.title) {
 			    title = header.filename.substring(20) + "(" + header.width + "*" + header.height + ")";
 			}
-			logger.debug("added " + title);
+			logger.info("added " + title);
 			movieAdapter.add(title);
 		    }
 		}
@@ -343,7 +343,7 @@ public class ServerActivity extends Activity implements ConnectionListener, BLMM
 			if (null == header.title) {
 			    title = header.filename.substring(20) + "(" + header.width + "*" + header.height + ")";
 			}
-			logger.debug("added " + title);
+			logger.info("added " + title);
 			imageAdapter.add(title);
 		    }
 		}

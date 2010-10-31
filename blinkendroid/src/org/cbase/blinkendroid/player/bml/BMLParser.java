@@ -73,7 +73,7 @@ public class BMLParser {
 		}
 		eventType = parser.next();
 	    }
-	    logger.debug("parsed BML with rows" + blm.frames.size());
+	    logger.info("parsed BML with rows" + blm.frames.size());
 	    return blm;
 	} catch (Exception x) {
 	    throw new RuntimeException(x);

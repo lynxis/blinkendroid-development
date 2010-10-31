@@ -47,7 +47,7 @@ public class BlinkendroidClient extends Thread {
 
     @Override
     public synchronized void start() {
-	logger.debug("trying to connect to server: " + socketAddress);
+	logger.info("trying to connect to server: " + socketAddress);
 	try {
 	    socket = new DatagramSocket(BlinkendroidApp.BROADCAST_CLIENT_PORT);
 	    socket.setReuseAddress(true);
@@ -79,7 +79,7 @@ public class BlinkendroidClient extends Thread {
 	    if (!socket.isClosed())
 		socket.close();
 	}
-	logger.debug("client shutdown completed");
+	logger.info("client shutdown completed");
     }
 
     public void locateMe() {

@@ -45,7 +45,7 @@ public class BBMZParser {
 	try {
 	    ObjectInputStream objIn = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()));
 	    Object receivedObject = objIn.readObject();
-	    logger.debug( "decompression and parsing time :" + (System.currentTimeMillis() - time));
+	    logger.info( "decompression and parsing time :" + (System.currentTimeMillis() - time));
 	    baos = null;
 	    if (receivedObject instanceof BLM) {
 		return (BLM) receivedObject;
@@ -72,7 +72,7 @@ public class BBMZParser {
 		fos.write(inbuf, 0, n);
 		length += n;
 	    }
-	    logger.debug( "BBMZParser read bytes " + length);
+	    logger.info( "BBMZParser read bytes " + length);
 	    // zis.close();
 	    // fis = null;
 	    // fos.close();

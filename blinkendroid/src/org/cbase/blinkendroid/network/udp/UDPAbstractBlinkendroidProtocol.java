@@ -55,7 +55,7 @@ public class UDPAbstractBlinkendroidProtocol implements UDPDirectConnection {
 	    if (!server)// TODO ugly hack, server needs to long
 		in.close();
 	    mSocket.close();
-	    logger.debug(getMyName() + " BlinkendroidProtocol: Socket closed.");
+	    logger.info(getMyName() + " BlinkendroidProtocol: Socket closed.");
 	} catch (IOException e) {
 	    logger.error(getMyName() + " BlinkendroidProtocol: closed failed ");
 	}
@@ -66,7 +66,7 @@ public class UDPAbstractBlinkendroidProtocol implements UDPDirectConnection {
 	    receiverThread.shutdown();
 	}
 	handlers.clear();
-	logger.debug(getMyName() + " Protocol shutdown.");
+	logger.info(getMyName() + " Protocol shutdown.");
 	// close();
     }
 
@@ -77,7 +77,7 @@ public class UDPAbstractBlinkendroidProtocol implements UDPDirectConnection {
 	ByteBuffer in = ByteBuffer.wrap(packet.getData());
 	int proto = in.getInt();
 	int pos = in.position();
-	logger.debug("BlinkendroidClient received Protocol: " + proto);
+	logger.info("BlinkendroidClient received Protocol: " + proto);
 	if (proto == BlinkendroidApp.PROTOCOL_HEARTBEAT) {
 	    for (CommandHandler h : handlers.values()) {
 		// Log.d(Constants.LOG_TAG,
@@ -108,7 +108,7 @@ public class UDPAbstractBlinkendroidProtocol implements UDPDirectConnection {
 	public void run() {
 	    this.setName("--- ReceiverThread");
 	    running = true;
-	    logger.debug("InputThread started");
+	    logger.info("InputThread started");
 	    byte[] receiveData;
 	    DatagramPacket receivePacket;
 	    try {
@@ -116,7 +116,7 @@ public class UDPAbstractBlinkendroidProtocol implements UDPDirectConnection {
 		while (running) {
 		    receiveData = new byte[1024];
 		    receivePacket = new DatagramPacket(receiveData, receiveData.length);
-		    // logger.debug( this.getName() + " received " +
+		    // logger.info( this.getName() + " received " +
 		    // receivePacket.toString());
 		    try {
 			mSocket.receive(receivePacket);
@@ -135,16 +135,16 @@ public class UDPAbstractBlinkendroidProtocol implements UDPDirectConnection {
 	}
 
 	public void shutdown() {
-	    logger.debug(getMyName() + " ReceiverThread shutdown start");
+	    logger.info(getMyName() + " ReceiverThread shutdown start");
 	    running = false;
 	    interrupt();
-	    logger.debug(getMyName() + " ReceiverThread shutdown interrupted");
+	    logger.info(getMyName() + " ReceiverThread shutdown interrupted");
 	    try {
 		join();
 	    } catch (InterruptedException e) {
 		logger.error(getMyName() + " ReceiverThread join failed", e);
 	    }
-	    logger.debug(getMyName() + " ReceiverThread shutdown joined & end");
+	    logger.info(getMyName() + " ReceiverThread shutdown joined & end");
 	}
     }
 

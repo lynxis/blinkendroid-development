@@ -57,7 +57,7 @@ public class SenderThread extends Thread {
 	    socket = new DatagramSocket(BlinkendroidApp.BROADCAST_ANNOUCEMENT_CLIENT_PORT);
 	    socket.setReuseAddress(true);
 	    socket.setBroadcast(true);
-	    logger.debug( "Sender thread started.");
+	    logger.info( "Sender thread started.");
 	    // TODO have to figure out whether
 	    // getAllByName("255.255.255.255")[0]; or
 	    // getByName("255.255.255.255"); is more useful.
@@ -68,10 +68,10 @@ public class SenderThread extends Thread {
 		final byte[] messageBytes = message.getBytes("UTF-8");
 		final DatagramPacket initPacket = new DatagramPacket(messageBytes, messageBytes.length, group,
 			BlinkendroidApp.BROADCAST_ANNOUCEMENT_SERVER_PORT);
-		logger.debug( "Broadcasting Packet");
+		logger.info( "Broadcasting Packet");
 		socket.send(initPacket);
 
-		logger.debug( "Broadcasting: '" + message + "'");
+		logger.info( "Broadcasting: '" + message + "'");
 		try {
 		    Thread.sleep(5000);
 		} catch (final InterruptedException x) {
@@ -87,7 +87,7 @@ public class SenderThread extends Thread {
     }
 
     public void shutdown() {
-	logger.debug( "SenderThread: initiating shutdown");
+	logger.info( "SenderThread: initiating shutdown");
 	running = false;
 
 	if (socket != null) {

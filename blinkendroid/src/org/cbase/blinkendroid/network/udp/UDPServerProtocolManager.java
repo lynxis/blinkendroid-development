@@ -106,7 +106,7 @@ public class UDPServerProtocolManager extends UDPAbstractBlinkendroidProtocol im
 	@Override
 	public void run() {
 	    this.setName("SRV Send GlobalTimer");
-	    logger.debug("GlobalTimerThread started");
+	    logger.info("GlobalTimerThread started");
 	    while (running) {
 		try {
 		    Thread.sleep(1000);
@@ -121,15 +121,15 @@ public class UDPServerProtocolManager extends UDPAbstractBlinkendroidProtocol im
 		out.putInt(Command.HEARTBEAT.ordinal());
 		out.putLong(System.currentTimeMillis());
 		sendBroadcast(out);
-		// logger.debug( "GlobalTimerThread Broadcast sent: " + out);
+		// logger.info( "GlobalTimerThread Broadcast sent: " + out);
 	    }
-	    logger.debug("GlobalTimerThread stopped");
+	    logger.info("GlobalTimerThread stopped");
 	}
 
 	public void shutdown() {
 	    running = false;
 	    interrupt();
-	    logger.debug("GlobalTimerThread initiating shutdown");
+	    logger.info("GlobalTimerThread initiating shutdown");
 	}
     }
 

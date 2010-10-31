@@ -34,7 +34,7 @@ public class PlayerClient extends ConnectionState {
 
     public PlayerClient(PlayerManager playerManager, ClientSocket clientSocket) {
 	super(clientSocket, playerManager);
-	logger.debug("new PlayerClient");
+	logger.info("new PlayerClient");
 	this.playerManager = playerManager;
 	this.mclientSocket = clientSocket;
 	// this.registerHandler(BlinkendroidApp.PROTOCOL_CONNECTION, this);
