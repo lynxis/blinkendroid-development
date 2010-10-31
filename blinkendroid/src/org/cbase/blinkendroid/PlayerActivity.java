@@ -44,12 +44,14 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.telephony.TelephonyManager;
+import android.view.GestureDetector;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.GestureDetector.OnGestureListener;
 import android.view.View.OnTouchListener;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -57,7 +59,7 @@ import android.widget.Toast;
 /**
  * @author Andreas Schildbach
  */
-public class PlayerActivity extends Activity implements BlinkendroidListener, Runnable {
+public class PlayerActivity extends Activity implements BlinkendroidListener, Runnable, OnGestureListener {
 
     private static final Logger logger = LoggerFactory.getLogger(PlayerActivity.class);
 
@@ -74,6 +76,7 @@ public class PlayerActivity extends Activity implements BlinkendroidListener, Ru
     private float arrowScale = 0f;
     private final Handler handler = new Handler();
     private BlinkendroidApp app;
+    private GestureDetector gestureDetector;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,6 +99,7 @@ public class PlayerActivity extends Activity implements BlinkendroidListener, Ru
 	arrowView.setOnTouchListener(new OnTouchListener() {
 
 	    public boolean onTouch(View v, MotionEvent event) {
+		gestureDetector.onTouchEvent(event);
 		ownerView.setVisibility(View.VISIBLE);
 		handler.postDelayed(new Runnable() {
 
@@ -117,6 +121,8 @@ public class PlayerActivity extends Activity implements BlinkendroidListener, Ru
 	    lp.screenBrightness = 1.0f;
 	    getWindow().setAttributes(lp);
 	}
+
+	gestureDetector = new GestureDetector(this);
     }
 
     /**
@@ -353,5 +359,30 @@ public class PlayerActivity extends Activity implements BlinkendroidListener, Ru
 		view.invalidate();
 	    }
 	});
+    }
+
+    public boolean onDown(MotionEvent e) {
+	return true;
+    }
+
+    public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+	blinkendroidClient.locateMe();
+	return true;
+    }
+
+    public void onLongPress(MotionEvent e) {
+	return;
+    }
+
+    public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+	return true;
+    }
+
+    public void onShowPress(MotionEvent e) {
+	return;
+    }
+
+    public boolean onSingleTapUp(MotionEvent e) {
+	return true;
     }
 }

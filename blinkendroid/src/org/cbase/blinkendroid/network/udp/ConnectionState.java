@@ -40,6 +40,11 @@ public class ConnectionState implements CommandHandler {
      * This thread sends the global time to connected devices.
      */
     class DirectTimerThread extends Thread {
+	String name;
+
+	public DirectTimerThread(String name) {
+	    this.name = name;
+	}
 
 	volatile private boolean running = true;
 
@@ -56,7 +61,7 @@ public class ConnectionState implements CommandHandler {
 		if (!running) // fast exit
 		    break;
 
-		logger.info("DirectTimerThread running for " + m_connId);
+		logger.info("DirectTimerThread " + name);
 		ByteBuffer out = ByteBuffer.allocate(128);
 		out.putInt(BlinkendroidApp.PROTOCOL_HEARTBEAT);
 		out.putInt(ConnectionState.Command.HEARTBEAT.ordinal());
@@ -207,7 +212,7 @@ public class ConnectionState implements CommandHandler {
     protected void receivedDirectHeartbeatRequest() {
 	logger.info("receivedDirectHeartbeatRequest " + m_connId);
 	if (directTimerThread == null) {
-	    directTimerThread = new DirectTimerThread();
+	    directTimerThread = new DirectTimerThread(toString());
 	    directTimerThread.start();
 	}
     }

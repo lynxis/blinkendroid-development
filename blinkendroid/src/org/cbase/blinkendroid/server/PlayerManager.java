@@ -7,8 +7,6 @@ import java.net.SocketException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import org.cbase.blinkendroid.BlinkendroidApp;
 import org.cbase.blinkendroid.network.BlinkendroidServerListener;
@@ -42,8 +40,6 @@ public class PlayerManager implements ConnectionListener, BlinkendroidServerList
     private boolean running = true;
     private String filename = null;
     private TimeouterThread timeouter = new TimeouterThread();
-    private AtomicInteger arrowColorIndex = new AtomicInteger(new Random().nextInt(ARROW_COLORS.length));
-    // private long serverPlayer = System.currentTimeMillis();
     private DataServer videoServer;
     private int runningMediaType = BlinkendroidProtocol.OPTION_PLAY_TYPE_IMAGE;
 
@@ -161,7 +157,7 @@ public class PlayerManager implements ConnectionListener, BlinkendroidServerList
 
     private void arrow(final PlayerClient pClient, final int dx, final int dy, final int deg) {
 
-	final int color = ARROW_COLORS[arrowColorIndex.getAndIncrement() % ARROW_COLORS.length];
+	final int color = ARROW_COLORS[(pClient.x + 1) * (pClient.y + 1) % ARROW_COLORS.length];
 
 	if (pClient.y + dy >= 0 && pClient.x + dx >= 0 && null != mMatrixClients[pClient.y + dy][pClient.x + dx]) {
 	    mMatrixClients[pClient.y + dy][pClient.x + dx].getBlinkenProtocol().arrow(deg, color);
