@@ -14,6 +14,7 @@ public class PuzzleImageView extends ClippableView {
     private static final Logger logger = LoggerFactory.getLogger(PuzzleImageView.class);
 
     private Bitmap image = null;
+
     public PuzzleImageView(Context context, AttributeSet attrs) {
 	super(context, attrs);
     }
@@ -48,8 +49,6 @@ public class PuzzleImageView extends ClippableView {
 
 	    Rect srcRect = new Rect(absStartX, absStartY, absEndX, absEndY);
 	    Rect dstRect = new Rect(absImgStartX, absImgStartY, absImgEndX, absImgEndY);
-
-	    logger.info("*** clip " + absStartX + "," + absStartY + "," + absEndX + "," + absEndY);
 
 	    canvas.drawBitmap(image, srcRect, dstRect, null);
 	}

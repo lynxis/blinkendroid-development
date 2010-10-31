@@ -213,7 +213,7 @@ public class PlayerActivity extends Activity implements BlinkendroidListener, Ru
     }
 
     public void serverTime(final long serverTime) {
-	logger.info("*** time " + serverTime);
+	logger.debug("*** time " + serverTime);
 	final long timeDelta = System.nanoTime() / 1000000 - serverTime;
 	runOnUiThread(new Runnable() {
 

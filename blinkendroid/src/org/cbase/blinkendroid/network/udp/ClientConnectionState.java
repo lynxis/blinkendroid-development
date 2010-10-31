@@ -94,7 +94,7 @@ public class ClientConnectionState extends ConnectionState implements CommandHan
     }
 
     protected void sendHeartbeat() {
-	logger.info("sendHeartbeat");
+	logger.debug("sendHeartbeat");
 	ByteBuffer out = ByteBuffer.allocate(1024);
 	out.putInt(Command.HEARTBEAT.ordinal());
 	out.putInt(m_connId);

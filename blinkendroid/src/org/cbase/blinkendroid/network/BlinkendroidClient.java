@@ -61,7 +61,7 @@ public class BlinkendroidClient extends Thread {
 
 	    blinkenProto = new BlinkendroidClientProtocol(listener, serverSocket);
 	    protocol.registerHandler(BlinkendroidApp.PROTOCOL_PLAYER, blinkenProto);
-	    logger.info("connected " + (System.currentTimeMillis() - time));
+	    logger.info("connected");
 
 	} catch (final IOException x) {
 	    logger.error("connection failed");
