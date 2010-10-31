@@ -145,4 +145,10 @@ public final class BlinkendroidSwingServer implements ConnectionListener {
 		
 	}
 
+	public void clip() {
+		if (null != blinkendroidServer) {
+			blinkendroidServer.clip();
+		}
+	}
+
 }

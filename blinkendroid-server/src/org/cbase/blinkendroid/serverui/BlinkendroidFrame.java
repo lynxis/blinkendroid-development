@@ -31,6 +31,7 @@ public class BlinkendroidFrame extends JFrame implements ImageManagerListener,
 
     // Controls
     private JButton startStopButton = null;
+    private JButton clipButton = null;
     private JButton removeClient = null;
     private JComboBox moviesList = null;
     private JComboBox imagesList = null;
@@ -115,13 +116,17 @@ public class BlinkendroidFrame extends JFrame implements ImageManagerListener,
 	startStopButton.setActionCommand(Commands.START_STOP.toString());
 	startStopButton.addActionListener(actionListener);
 
+	clipButton = new JButton("clip");
+	clipButton.setActionCommand(Commands.CLIP.toString());
+	clipButton.addActionListener(actionListener);
+	
 	removeClient = new JButton("-");
 	removeClient.setActionCommand(Commands.REMOVE_CLIENT.toString());
 	removeClient.addActionListener(actionListener);
 	
 	ticketsTxt.addFocusListener(new TicketFocusListener());
 	
-	this.setSize(350, 400);
+	this.setSize(350, 500);
 	this.setResizable(false);
 
 	Container jContentPane = getContentPane();
@@ -162,6 +167,9 @@ public class BlinkendroidFrame extends JFrame implements ImageManagerListener,
 	
 	startStopButton.setLocation(120, 340);
 	startStopButton.setSize(200, 30);
+	
+	clipButton.setLocation(120, 380);
+	clipButton.setSize(200, 30);
 
 	jContentPane.add(refreshTickets);
 	jContentPane.add(ticketsLbl);
@@ -174,12 +182,13 @@ public class BlinkendroidFrame extends JFrame implements ImageManagerListener,
 	jContentPane.add(imagesList);
 	jContentPane.add(clientsList);
 	jContentPane.add(startStopButton);
+	jContentPane.add(clipButton);
 	jContentPane.add(removeClient);
 
     }
 
     private enum Commands {
-	START_STOP, MOVIES_SELECTION, IMAGES_SELECTION, REMOVE_CLIENT;
+	START_STOP, MOVIES_SELECTION, IMAGES_SELECTION, REMOVE_CLIENT, CLIP;
     }
 
     private class TicketFocusListener implements FocusListener {
@@ -256,11 +265,9 @@ public class BlinkendroidFrame extends JFrame implements ImageManagerListener,
 		if(selectedClient == null || !(selectedClient instanceof ClientSocket)) {
 		    return;
 		}
-		
-		ClientSocket clientSock = (ClientSocket)selectedClient; 
-		
-		// TODO:
-		// server.closeConnection(clientSock);
+		break;
+	    case CLIP:
+	    	server.clip();
 	    }
 
 	}
