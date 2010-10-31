@@ -8,22 +8,18 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.util.AttributeSet;
-import android.view.View;
 
-public class PuzzleImageView extends View {
+public class PuzzleImageView extends ClippableView {
 
     private static final Logger logger = LoggerFactory.getLogger(PuzzleImageView.class);
 
     private Bitmap image = null;
-    private float startX = 0f, startY = 0f, endX = 1f, endY = 1f;
-
     public PuzzleImageView(Context context, AttributeSet attrs) {
 	super(context, attrs);
     }
 
     public PuzzleImageView(Context context) {
 	super(context);
-	// setClipping(0.33f, 0.33f, 0.66f, 0.66f);
     }
 
     public void setImage(Bitmap image) {
@@ -35,15 +31,6 @@ public class PuzzleImageView extends View {
 
     public Bitmap getImage() {
 	return image;
-    }
-
-    public void setClipping(float startX, float startY, float endX, float endY) {
-	this.startX = startX;
-	this.startY = startY;
-	this.endX = endX;
-	this.endY = endY;
-
-	postInvalidate();
     }
 
     @Override
