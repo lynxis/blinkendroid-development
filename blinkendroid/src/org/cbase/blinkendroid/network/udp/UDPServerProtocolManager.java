@@ -109,7 +109,7 @@ public class UDPServerProtocolManager extends UDPAbstractBlinkendroidProtocol im
 	    logger.info("GlobalTimerThread started");
 	    while (running) {
 		try {
-		    Thread.sleep(1000);
+		    Thread.sleep(BlinkendroidApp.HEARTBEAT_RATE);
 		} catch (InterruptedException e) {
 		    // swallow
 		}

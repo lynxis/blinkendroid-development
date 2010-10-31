@@ -3,6 +3,7 @@ package org.cbase.blinkendroid.network.udp;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
+import org.cbase.blinkendroid.BlinkendroidApp;
 import org.cbase.blinkendroid.network.ConnectionListener;
 import org.cbase.blinkendroid.network.udp.UDPServerProtocolManager.GlobalTimerThread;
 import org.slf4j.Logger;
@@ -119,14 +120,14 @@ public class ClientConnectionState extends ConnectionState implements CommandHan
 	    logger.info("ClientConnectionState started");
 	    while (running) {
 		try {
-		    Thread.sleep(1000);
+		    Thread.sleep(BlinkendroidApp.HEARTBEAT_RATE);
 		} catch (InterruptedException e) {
 		    // swallow
 		}
 		if (!running) // fast exit
 		    break;
 		sendHeartbeat();
-		checkTimeout(10);
+		checkTimeout(BlinkendroidApp.CONNECT_TIMEOUT);
 	    }
 	    logger.info("ClientConnectionState stopped");
 	}

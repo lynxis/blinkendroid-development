@@ -349,7 +349,7 @@ public class PlayerManager implements ConnectionListener, BlinkendroidServerList
 
     public void checkTimeouts() {
 	for (PlayerClient player : mClients) {
-	    player.checkTimeout(10);
+	    player.checkTimeout(BlinkendroidApp.CONNECT_TIMEOUT);
 	}
     }
 
@@ -404,7 +404,7 @@ public class PlayerManager implements ConnectionListener, BlinkendroidServerList
 	    logger.info("TimeouterThread started");
 	    while (running) {
 		try {
-		    Thread.sleep(3000);
+		    Thread.sleep(BlinkendroidApp.CONNECT_TIMEOUT * 1000 / 2);
 		} catch (InterruptedException e) {
 		    // swallow
 		}

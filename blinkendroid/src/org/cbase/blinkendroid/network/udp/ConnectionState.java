@@ -49,7 +49,7 @@ public class ConnectionState implements CommandHandler {
 	    logger.info("DirectTimerThread started");
 	    while (running) {
 		try {
-		    Thread.sleep(1000);
+		    Thread.sleep(BlinkendroidApp.HEARTBEAT_RATE);
 		} catch (InterruptedException e) {
 		    // swallow
 		}
