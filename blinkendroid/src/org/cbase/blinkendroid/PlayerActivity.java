@@ -26,6 +26,7 @@ import org.cbase.blinkendroid.network.BlinkendroidClient;
 import org.cbase.blinkendroid.network.BlinkendroidListener;
 import org.cbase.blinkendroid.network.udp.ClientSocket;
 import org.cbase.blinkendroid.player.ArrowView;
+import org.cbase.blinkendroid.player.ClippableView;
 import org.cbase.blinkendroid.player.PlayerView;
 import org.cbase.blinkendroid.player.PuzzleImageView;
 import org.cbase.blinkendroid.player.bml.BBMZParser;
@@ -256,9 +257,9 @@ public class PlayerActivity extends Activity implements BlinkendroidListener, Ru
 
 	    public void run() {
 		if (view instanceof PlayerView) {
-		    ((PlayerView) view).setClipping(startX, startY, endX, endY);
+		    ((ClippableView) view).setClipping(startX, startY, endX, endY);
 		} else if (view instanceof PuzzleImageView) {
-		    ((PuzzleImageView) view).setClipping(startX, startY, endX, endY);
+		    ((ClippableView) view).setClipping(startX, startY, endX, endY);
 		}
 	    }
 	});
