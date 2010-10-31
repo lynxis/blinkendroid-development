@@ -225,6 +225,7 @@ public class ConnectionState implements CommandHandler {
 	logger.info("receivedDirectHeartbeatCancel " + m_connId);
 	if (directTimerThread != null) {
 	    directTimerThread.shutdown();
+	    directTimerThread = null;
 	}
     }
 

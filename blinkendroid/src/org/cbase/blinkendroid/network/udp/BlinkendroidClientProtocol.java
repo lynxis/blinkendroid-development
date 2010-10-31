@@ -36,7 +36,7 @@ public class BlinkendroidClientProtocol extends BlinkendroidProtocol implements 
 	}
     }
 
-    public void handle(SocketAddress from, ByteBuffer in) throws IOException {
+    public void handle(final SocketAddress from, ByteBuffer in) throws IOException {
 	int command = in.getInt();
 
 	// logger.info("received: " + command);
@@ -57,13 +57,23 @@ public class BlinkendroidClientProtocol extends BlinkendroidProtocol implements 
 		switch (dataType) {
 		case OPTION_PLAY_TYPE_MOVIE:
 		    final long startTime = in.getLong();
-		    BLM blm = BlinkendroidDataClientProtocol.receiveMovie((InetSocketAddress) from);
-		    mListener.playBLM(startTime, blm);
+		    Thread t = new Thread() {
+			public void run() {
+			    BLM blm = BlinkendroidDataClientProtocol.receiveMovie((InetSocketAddress) from);
+			    mListener.playBLM(startTime, blm);
+			}
+		    };
+		    t.start();
 		    break;
 		case OPTION_PLAY_TYPE_IMAGE:
-		    final long startTime2 = in.getLong();
-		    Bitmap bmp = BlinkendroidDataClientProtocol.receiveImage((InetSocketAddress) from);
-		    mListener.showImage(bmp);
+		    in.getLong();// we dont need startime for the image
+		    Thread t2 = new Thread() {
+			public void run() {
+			    Bitmap bmp = BlinkendroidDataClientProtocol.receiveImage((InetSocketAddress) from);
+			    mListener.showImage(bmp);
+			}
+		    };
+		    t2.start();
 		    break;
 		default:
 		    break;

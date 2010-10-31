@@ -66,7 +66,7 @@ public class UDPAbstractBlinkendroidProtocol implements UDPDirectConnection {
 	ByteBuffer in = ByteBuffer.wrap(packet.getData());
 	int proto = in.getInt();
 	int pos = in.position();
-	// logger.info("BlinkendroidClient received Protocol: " + proto);
+	logger.info("BlinkendroidClient received Protocol: " + proto);
 	if (proto == BlinkendroidApp.PROTOCOL_HEARTBEAT) {
 	    for (CommandHandler h : handlers.values()) {
 		h.handle(socketAddress, in);
@@ -102,7 +102,7 @@ public class UDPAbstractBlinkendroidProtocol implements UDPDirectConnection {
 		while (running) {
 		    receiveData = new byte[1024];
 		    receivePacket = new DatagramPacket(receiveData, receiveData.length);
-		    // logger.info( this.getName() + " received " +
+		    // logger.info(this.getName() + " received " +
 		    // receivePacket.toString());
 		    try {
 			mSocket.receive(receivePacket);

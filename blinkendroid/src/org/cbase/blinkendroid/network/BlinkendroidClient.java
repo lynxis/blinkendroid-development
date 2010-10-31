@@ -51,7 +51,6 @@ public class BlinkendroidClient extends Thread {
 	try {
 	    socket = new DatagramSocket(BlinkendroidApp.BROADCAST_CLIENT_PORT);
 	    socket.setReuseAddress(true);
-	    long time = System.currentTimeMillis();
 	    protocol = new UDPClientProtocolManager(socket, socketAddress);
 
 	    ClientSocket serverSocket = new ClientSocket(protocol, socketAddress);

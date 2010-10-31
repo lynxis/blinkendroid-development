@@ -71,14 +71,19 @@ public class DataServer extends Thread {
     public void shutdown() {
 	logger.info(" VideoServer shutdown start");
 	running = false;
+	try {
+	    serverSocket.close();
+	} catch (IOException e) {
+	    logger.error("VideoServer shutdown serversocket close failed", e);
+	}
 	interrupt();
 	logger.info(" VideoServer shutdown interrupted");
 	// TODO fix this hanging join
-	// try {
-	// join();
-	// } catch (InterruptedException e) {
-	// logger.error(" ReceiverThread shutdownjoin failed");
-	// }
+	try {
+	    join();
+	} catch (InterruptedException e) {
+	    logger.error(" ReceiverThread shutdownjoin failed");
+	}
 	logger.info(" ReceiverThread shutdown end");
     }
 
