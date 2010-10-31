@@ -6,6 +6,7 @@
 	<string name="instruction_text">Hi there, if you want to learn about blinkendroid visit the homepage.</string>
 	<string name="owner_hint">Hint: Setting an owner name in the preferences helps identifying your phone in the matrix.</string>
 	<string name="set_owner_title">Owner Name</string>
+	<string name="set_owner_warning">You have to set an owner name!</string>
 	<string name="set_owner_positive">Ok</string>
 	<string name="about">About</string>
 	<string name="ticket_size">Tickets</string>
