@@ -59,6 +59,10 @@ public class BlinkendroidApp extends Application {
     public static final int PROTOCOL_PLAYER = 42;
     public static final int PROTOCOL_HEARTBEAT = 23;
     public static final int PROTOCOL_CLIENT = 24;
+
+    public static final int INTERACTIVE_MODE = 6;
+    public static final int NON_INTERACTIVE_MODE = 5;
+    
     private String downloadUrl;
     private String aboutUrl;
 
