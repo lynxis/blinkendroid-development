@@ -56,6 +56,19 @@ public class UDPServerProtocolManager extends UDPAbstractBlinkendroidProtocol im
 	globalTimerThread.start();
     }
 
+    public void stopTimerThread() {
+	if (globalTimerThread != null) {
+	    globalTimerThread.shutdown();
+	    // TODO where is the join?
+	}
+    }
+
+    public boolean isGlobalTimerThreadRunning() {
+	if (null == globalTimerThread)
+	    return false;
+	return globalTimerThread.running;
+    }
+
     @Override
     public void shutdown() {
 	// TODO where is the join?
@@ -100,7 +113,6 @@ public class UDPServerProtocolManager extends UDPAbstractBlinkendroidProtocol im
      * This thread sends the global time to connected devices.
      */
     class GlobalTimerThread extends Thread {
-	public static final byte GLOBALTIMER = 68;
 	volatile private boolean running = true;
 
 	@Override
@@ -119,7 +131,7 @@ public class UDPServerProtocolManager extends UDPAbstractBlinkendroidProtocol im
 		ByteBuffer out = ByteBuffer.allocate(128);
 		out.putInt(BlinkendroidApp.PROTOCOL_HEARTBEAT);
 		out.putInt(Command.HEARTBEAT.ordinal());
-		out.put(GLOBALTIMER);
+		out.putInt(BlinkendroidApp.GLOBALTIMER);
 		out.putLong(System.currentTimeMillis());
 		sendBroadcast(out);
 		// logger.info( "GlobalTimerThread Broadcast sent: " + out);

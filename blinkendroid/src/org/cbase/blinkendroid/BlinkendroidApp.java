@@ -52,6 +52,9 @@ public class BlinkendroidApp extends Application {
     public static final int SHOW_OWNER_DURATION = 1500;
     public static final int BROADCAST_PROTOCOL_VERSION = 4;
 
+    public static final int DIRECTTIMER = 68;
+    public static final int GLOBALTIMER = 71;
+
     public static final int PROTOCOL_CONNECTION = 1;
     public static final int PROTOCOL_PLAYER = 42;
     public static final int PROTOCOL_HEARTBEAT = 23;

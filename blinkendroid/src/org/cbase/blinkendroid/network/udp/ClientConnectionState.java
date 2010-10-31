@@ -5,7 +5,6 @@ import java.nio.ByteBuffer;
 
 import org.cbase.blinkendroid.BlinkendroidApp;
 import org.cbase.blinkendroid.network.ConnectionListener;
-import org.cbase.blinkendroid.network.udp.UDPServerProtocolManager.GlobalTimerThread;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,7 +13,7 @@ public class ClientConnectionState extends ConnectionState implements CommandHan
     private ClientConnectionHeartbeat mHeartbeater;
 
     private int directTimerThreadRequestCounter = 3;
-    private byte timerStyle = GlobalTimerThread.GLOBALTIMER;
+    private int timerStyle = BlinkendroidApp.GLOBALTIMER;
 
     private static final Logger logger = LoggerFactory.getLogger(ClientConnectionState.class);
 
@@ -42,12 +41,12 @@ public class ClientConnectionState extends ConnectionState implements CommandHan
 	mHeartbeater.shutdown();
     }
 
-    protected void receivedHeartbeat(byte timerStyle) {
+    protected void receivedHeartbeat(int ts) {
 	m_LastSeen = System.currentTimeMillis();
 	// check timerStyle
-	if (this.timerStyle == DirectTimerThread.DIRECTTIMER && timerStyle == GlobalTimerThread.GLOBALTIMER) {
+	if (this.timerStyle == BlinkendroidApp.DIRECTTIMER && ts == BlinkendroidApp.GLOBALTIMER) {
 	    sendDirectHeartbeatCancel();
-	    this.timerStyle = GlobalTimerThread.GLOBALTIMER;
+	    this.timerStyle = BlinkendroidApp.GLOBALTIMER;
 	}
     }
 
@@ -61,7 +60,7 @@ public class ClientConnectionState extends ConnectionState implements CommandHan
 	    // request 3 times directHeartBeat
 	    if (directTimerThreadRequestCounter > 0) {
 		sendDirectHeartbeatRequest();
-		timerStyle = DirectTimerThread.DIRECTTIMER;
+		timerStyle = BlinkendroidApp.DIRECTTIMER;
 		directTimerThreadRequestCounter--;
 		// reset last_seen
 		m_LastSeen = System.currentTimeMillis();
@@ -98,8 +97,8 @@ public class ClientConnectionState extends ConnectionState implements CommandHan
 	logger.info("sendHeartbeat");
 	ByteBuffer out = ByteBuffer.allocate(1024);
 	out.putInt(Command.HEARTBEAT.ordinal());
-	out.put(timerStyle);
 	out.putInt(m_connId);
+	out.putInt(timerStyle);
 	try {
 	    send(out);
 	} catch (IOException e) {

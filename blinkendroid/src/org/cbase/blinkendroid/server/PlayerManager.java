@@ -193,6 +193,17 @@ public class PlayerManager implements ConnectionListener, BlinkendroidServerList
         }
     }
 
+    public void singleclip() {
+	for (int i = 0; i < maxY; i++) {
+	    for (int j = 0; j < maxX; j++) {
+		if (mMatrixClients[i][j] != null) {
+		    PlayerClient playerClient = mMatrixClients[i][j];
+		    playerClient.getBlinkenProtocol().clip((float) 0.0, (float) 0.0, (float) 1.0, (float) 1.0);
+		}
+	    }
+	}
+    }
+
     public synchronized void shutdown() {
         running = false;
         logger.info("PlayerManager.shutdown() start");

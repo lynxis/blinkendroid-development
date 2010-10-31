@@ -43,6 +43,7 @@ public class BlinkendroidServer {
     private List<ConnectionListener> connectionListeners;
     // TODO muss der Server wissen wer der PlayerManager ist ?
     private UDPServerProtocolManager mServerProto;
+
     private DataServer videoSocket;
 
     public BlinkendroidServer(int port) {
@@ -109,5 +110,16 @@ public class BlinkendroidServer {
 
     public void clip() {
 	playerManager.clip(true);
+    }
+
+    public void singleclip() {
+	playerManager.singleclip();
+    }
+
+    public void toggleTimeThread() {
+	if (mServerProto.isGlobalTimerThreadRunning())
+	    mServerProto.stopTimerThread();
+	else
+	    mServerProto.startTimerThread();
     }
 }
