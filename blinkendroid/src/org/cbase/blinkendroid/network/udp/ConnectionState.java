@@ -80,7 +80,11 @@ public class ConnectionState implements CommandHandler {
 	public void shutdown() {
 	    running = false;
 	    interrupt();
-	    // TODO schtief join
+	    try {
+		join();
+	    } catch (InterruptedException e) {
+		logger.error(" DirectTimerThread shutdown join failed");
+	    }
 	    logger.info("DirectTimerThread initiating shutdown");
 	}
     }

@@ -92,7 +92,6 @@ public class PlayerManager implements ConnectionListener, BlinkendroidServerList
 	if (startTime == 0)
 	    startTime = System.currentTimeMillis();
 
-	// TODO finde freien Platz in der Matrix
 	boolean found = false;
 	for (int i = 0; i < maxY; i++) {
 	    for (int j = 0; j < maxY; j++) {
@@ -144,7 +143,6 @@ public class PlayerManager implements ConnectionListener, BlinkendroidServerList
     }
 
     public void arrow(final PlayerClient pClient) {
-	// TODO remove in final for puzzle
 	arrow(pClient, 0, 1, 0);
 	arrow(pClient, -1, 1, 45);
 	arrow(pClient, -1, 0, 90);
@@ -336,8 +334,6 @@ public class PlayerManager implements ConnectionListener, BlinkendroidServerList
     }
 
     public void connectionClosed(ClientSocket clientSocket) {
-	// TODO Auto-generated method stub
-	// TODO remove Client
 	// search for the client
 	// remove it
 	PlayerClient pClient = getPlayerClientByClientSocket(clientSocket);
@@ -350,8 +346,6 @@ public class PlayerManager implements ConnectionListener, BlinkendroidServerList
     }
 
     public void connectionOpened(ClientSocket clientSocket) {
-	// TODO Auto-generated method stub
-	// TODO addClient
 	addClientToMatrix(clientSocket);
 	connectionListenerManager.connectionOpened(clientSocket);
     }

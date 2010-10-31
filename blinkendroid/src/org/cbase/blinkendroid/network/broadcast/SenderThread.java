@@ -58,9 +58,6 @@ public class SenderThread extends Thread {
 	    socket.setReuseAddress(true);
 	    socket.setBroadcast(true);
 	    logger.info("Sender thread started.");
-	    // TODO have to figure out whether
-	    // getAllByName("255.255.255.255")[0]; or
-	    // getByName("255.255.255.255"); is more useful.
 	    group = InetAddress.getAllByName("255.255.255.255")[0];
 	    logger.info("Server ip: " + group.toString());
 

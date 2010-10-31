@@ -1,7 +1,5 @@
 package org.cbase.blinkendroid.network.udp;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.InterruptedIOException;
 import java.net.DatagramPacket;
@@ -23,8 +21,6 @@ public class UDPAbstractBlinkendroidProtocol implements UDPDirectConnection {
 
     private static final Logger logger = LoggerFactory.getLogger(UDPAbstractBlinkendroidProtocol.class);
 
-    protected BufferedOutputStream out;
-    protected BufferedInputStream in;
     protected DatagramSocket mSocket;
     protected ReceiverThread receiverThread;
     protected final HashMap<Integer, CommandHandler> handlers = new HashMap<Integer, CommandHandler>();
@@ -50,15 +46,8 @@ public class UDPAbstractBlinkendroidProtocol implements UDPDirectConnection {
     }
 
     public void close() {
-	try {
-	    out.close();
-	    if (!server)// TODO ugly hack, server needs to long
-		in.close();
-	    mSocket.close();
-	    logger.info(getMyName() + " BlinkendroidProtocol: Socket closed.");
-	} catch (IOException e) {
-	    logger.error(getMyName() + " BlinkendroidProtocol: closed failed ");
-	}
+	mSocket.close();
+	logger.info(getMyName() + " BlinkendroidProtocol: Socket closed.");
     }
 
     public void shutdown() {
@@ -67,7 +56,7 @@ public class UDPAbstractBlinkendroidProtocol implements UDPDirectConnection {
 	}
 	handlers.clear();
 	logger.info(getMyName() + " Protocol shutdown.");
-	// close();
+	close();
     }
 
     protected void receive(DatagramPacket packet) throws IOException {

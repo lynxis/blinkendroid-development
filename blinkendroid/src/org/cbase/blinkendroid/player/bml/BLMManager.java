@@ -85,9 +85,4 @@ public class BLMManager {
 	    return blmHeader.get(pos);
 	return null;
     }
-
-    // public String getFilename(int arg2) {
-    // // TODO This method does nothing, do we need it?
-    // return null;
-    // }
 }

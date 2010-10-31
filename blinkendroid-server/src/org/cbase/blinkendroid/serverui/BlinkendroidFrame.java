@@ -31,7 +31,9 @@ public class BlinkendroidFrame extends JFrame implements ImageManagerListener,
 
     // Controls
     private JButton startStopButton = null;
+    private JButton singleclipButton = null;
     private JButton clipButton = null;
+    private JButton globalTimerButton = null;
     private JButton removeClient = null;
     private JComboBox moviesList = null;
     private JComboBox imagesList = null;
@@ -120,6 +122,14 @@ public class BlinkendroidFrame extends JFrame implements ImageManagerListener,
 	clipButton.setActionCommand(Commands.CLIP.toString());
 	clipButton.addActionListener(actionListener);
 	
+	singleclipButton = new JButton("1clip");
+	singleclipButton.setActionCommand(Commands.SINGLECLIP.toString());
+	singleclipButton.addActionListener(actionListener);
+	
+	globalTimerButton = new JButton("GTimer");
+	globalTimerButton.setActionCommand(Commands.GLOBALTIMER.toString());
+	globalTimerButton.addActionListener(actionListener);
+	
 	removeClient = new JButton("-");
 	removeClient.setActionCommand(Commands.REMOVE_CLIENT.toString());
 	removeClient.addActionListener(actionListener);
@@ -168,9 +178,15 @@ public class BlinkendroidFrame extends JFrame implements ImageManagerListener,
 	startStopButton.setLocation(120, 340);
 	startStopButton.setSize(200, 30);
 	
-	clipButton.setLocation(120, 380);
-	clipButton.setSize(200, 30);
-
+	clipButton.setLocation(20, 380);
+	clipButton.setSize(80, 30);
+	
+	singleclipButton.setLocation(110, 380);
+	singleclipButton.setSize(80, 30);
+	
+	globalTimerButton.setLocation(200, 380);
+	globalTimerButton.setSize(80, 30);
+	
 	jContentPane.add(refreshTickets);
 	jContentPane.add(ticketsLbl);
 	jContentPane.add(ticketsTxt);
@@ -183,12 +199,14 @@ public class BlinkendroidFrame extends JFrame implements ImageManagerListener,
 	jContentPane.add(clientsList);
 	jContentPane.add(startStopButton);
 	jContentPane.add(clipButton);
+	jContentPane.add(singleclipButton);
+	jContentPane.add(globalTimerButton);
 	jContentPane.add(removeClient);
 
     }
 
     private enum Commands {
-	START_STOP, MOVIES_SELECTION, IMAGES_SELECTION, REMOVE_CLIENT, CLIP;
+	START_STOP, MOVIES_SELECTION, IMAGES_SELECTION, REMOVE_CLIENT, CLIP, SINGLECLIP, GLOBALTIMER;
     }
 
     private class TicketFocusListener implements FocusListener {
@@ -268,6 +286,12 @@ public class BlinkendroidFrame extends JFrame implements ImageManagerListener,
 		break;
 	    case CLIP:
 	    	server.clip();
+			break;
+	    case SINGLECLIP:
+	    	server.singleclip();
+			break;
+	    case GLOBALTIMER:
+	    	server.globalTimer();
 	    }
 
 	}

@@ -134,7 +134,11 @@ public class ClientConnectionState extends ConnectionState implements CommandHan
 	public void shutdown() {
 	    running = false;
 	    interrupt();
-	    // TODO where is the join???
+	    try {
+		join();
+	    } catch (InterruptedException e) {
+		logger.error(" ClientConnectionHeartbeat shutdown join failed");
+	    }
 	    logger.info("ClientConnectionState initiating shutdown");
 	}
     }

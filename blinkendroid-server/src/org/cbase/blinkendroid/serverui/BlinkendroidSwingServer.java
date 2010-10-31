@@ -86,7 +86,8 @@ public final class BlinkendroidSwingServer implements ConnectionListener {
 
     public BlinkendroidSwingServer() {
 	super();
-	ticketManager = new TicketManager("BlinkendroidSwingServer");
+	ticketManager = new TicketManager();
+	ticketManager.setServerName("BlinkendroidSwingServer");
 	ticketManager.setMaxClients(20);
     }
 
@@ -149,6 +150,16 @@ public final class BlinkendroidSwingServer implements ConnectionListener {
 		if (null != blinkendroidServer) {
 			blinkendroidServer.clip();
 		}
+	}
+
+	public void singleclip() {
+		if (null != blinkendroidServer) {
+			blinkendroidServer.singleclip();
+		}
+	}
+
+	public void globalTimer() {
+			blinkendroidServer.toggleTimeThread();
 	}
 
 }

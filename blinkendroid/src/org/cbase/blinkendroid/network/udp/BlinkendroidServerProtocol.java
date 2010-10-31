@@ -29,7 +29,7 @@ public class BlinkendroidServerProtocol extends BlinkendroidProtocol implements 
 	try {
 	    out.putInt(COMMAND_PLAY);
 	    out.putInt(dataType);
-	    out.putLong(startTime); // TODO we need only one start
+	    out.putLong(startTime);
 	    send(out);
 	} catch (IOException e) {
 	    e.printStackTrace();

@@ -222,7 +222,6 @@ public class BlinkendroidDataServerProtocol {
 	    logger.info("ReceiverThread ended!!!!!!!");
 	}
 
-	// TODO shutdown ? howto do it
 	public void shutdown() {
 	    logger.info(" ReceiverThread shutdown start");
 	    running = false;

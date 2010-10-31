@@ -50,7 +50,6 @@ public class UDPServerProtocolManager extends UDPAbstractBlinkendroidProtocol im
     public void startTimerThread() {
 	if (globalTimerThread != null) {
 	    globalTimerThread.shutdown();
-	    // TODO where is the join?
 	}
 	globalTimerThread = new GlobalTimerThread();
 	globalTimerThread.start();
@@ -59,7 +58,6 @@ public class UDPServerProtocolManager extends UDPAbstractBlinkendroidProtocol im
     public void stopTimerThread() {
 	if (globalTimerThread != null) {
 	    globalTimerThread.shutdown();
-	    // TODO where is the join?
 	}
     }
 
@@ -71,7 +69,6 @@ public class UDPServerProtocolManager extends UDPAbstractBlinkendroidProtocol im
 
     @Override
     public void shutdown() {
-	// TODO where is the join?
 	if (null != globalTimerThread)
 	    globalTimerThread.shutdown();
 	super.shutdown();
@@ -140,9 +137,15 @@ public class UDPServerProtocolManager extends UDPAbstractBlinkendroidProtocol im
 	}
 
 	public void shutdown() {
+	    logger.info("GlobalTimerThread initiating shutdown");
 	    running = false;
 	    interrupt();
-	    logger.info("GlobalTimerThread initiating shutdown");
+	    try {
+		join();
+	    } catch (InterruptedException e) {
+		logger.error(" GlobalTimerThread shutdownjoin failed");
+	    }
+	    logger.info("GlobalTimerThread shutdown completed");
 	}
     }
 
