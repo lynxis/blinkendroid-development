@@ -19,6 +19,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
@@ -74,7 +76,7 @@ public class ServerActivity extends Activity implements ConnectionListener, BLMM
 	String ownerName = PreferenceManager.getDefaultSharedPreferences(this).getString("owner", null);
 	if (ownerName == null)
 	    ownerName = System.currentTimeMillis() + "";
-	ticketManager = new TicketManager(ownerName);
+	ticketManager = new TicketManager();
 	ticketManager.setClientQueueListener(this);
 
 	movieAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item);
@@ -103,7 +105,24 @@ public class ServerActivity extends Activity implements ConnectionListener, BLMM
 
 	    public void onClick(final View v) {
 		if (serverSwitchButton.isChecked()) {
-
+		    // do not allow blinkendroid
+		    if (serverNameView.getText().length() == 0
+			    || serverNameView.getText().toString().equalsIgnoreCase("blinkendroid")
+			    || serverNameView.getText().toString().startsWith("blinkendroid")) {
+			AlertDialog.Builder builder = new AlertDialog.Builder(ServerActivity.this);
+			builder.setMessage("Please set a Server Name").setCancelable(false).setNegativeButton("OK",
+				new DialogInterface.OnClickListener() {
+				    public void onClick(DialogInterface dialog, int id) {
+					dialog.cancel();
+				    }
+				});
+			builder.create();
+			builder.show();
+			serverSwitchButton.setChecked(false);
+			return;
+		    }
+		    // test for already existing name
+		    ticketManager.setServerName(serverNameView.getText().toString());
 		    // start recieverthread
 		    receiverThread = new ReceiverThread(BlinkendroidApp.BROADCAST_ANNOUCEMENT_SERVER_PORT,
 			    BlinkendroidApp.CLIENT_BROADCAST_COMMAND);
@@ -168,8 +187,7 @@ public class ServerActivity extends Activity implements ConnectionListener, BLMM
 	ticketSizeAdapter = new ArrayAdapter<Integer>(this, android.R.layout.simple_spinner_item);
 	ticketSizeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
-	// TODO change to int i = 20; i <= 200; i += 20 for productive version
-	for (int i = 1; i <= 200; i++) {
+	for (int i = 1; i <= 200; i += i + 10) {
 	    ticketSizeAdapter.add(i);
 	}
 

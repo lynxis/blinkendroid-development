@@ -22,12 +22,13 @@ public class TicketManager implements IPeerHandler, ConnectionListener {
     int clients = 0;
     private Set<String> tickets = new HashSet<String>();
     private Set<String> waitingQueue = new HashSet<String>();
-    private String ownerName;
+    private String serverName;
+
     DatagramSocket socket = null;
     private ClientQueueListener clientQueueListener = null;
 
-    public TicketManager(String ownerName) {
-	this.ownerName = ownerName;
+    public TicketManager() {
+	this.serverName = serverName;
 	try {
 	    socket = new DatagramSocket(BlinkendroidApp.BROADCAST_ANNOUCEMENT_SERVER_TICKET_PORT);
 	    socket.setReuseAddress(true);
@@ -45,7 +46,7 @@ public class TicketManager implements IPeerHandler, ConnectionListener {
 		InetSocketAddress socketAddr = new InetSocketAddress(ip,
 			BlinkendroidApp.BROADCAST_ANNOUCEMENT_CLIENT_TICKET_PORT);
 		String message = BlinkendroidApp.BROADCAST_PROTOCOL_VERSION + " "
-			+ BlinkendroidApp.SERVER_TICKET_COMMAND + " " + ownerName;
+			+ BlinkendroidApp.SERVER_TICKET_COMMAND + " " + serverName;
 		final byte[] messageBytes = message.getBytes("UTF-8");
 		final DatagramPacket packet = new DatagramPacket(messageBytes, messageBytes.length, socketAddr);
 		socket.send(packet);
@@ -117,4 +118,9 @@ public class TicketManager implements IPeerHandler, ConnectionListener {
     public void setMaxClients(int maxClients) {
 	this.maxClients = maxClients;
     }
+
+    public void setServerName(String serverName) {
+	this.serverName = serverName;
+    }
+
 }
