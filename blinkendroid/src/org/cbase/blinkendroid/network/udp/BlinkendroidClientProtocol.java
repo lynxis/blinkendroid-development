@@ -43,7 +43,7 @@ public class BlinkendroidClientProtocol extends BlinkendroidProtocol implements 
 	if (mListener != null) {
 	    if (command == COMMAND_HEARTBEAT) {
 		// read byte
-		in.get();
+		in.getInt();// timerstyl
 		mListener.serverTime(in.getLong());
 	    } else if (command == COMMAND_CLIP) {
 		final float startX = in.getFloat();
