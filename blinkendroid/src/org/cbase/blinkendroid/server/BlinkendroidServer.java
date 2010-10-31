@@ -89,10 +89,14 @@ public class BlinkendroidServer {
     }
 
     public void shutdown() {
-	videoSocket.shutdown();
-	playerManager.shutdown();
-	mServerProto.shutdown();
-	serverSocket.close();
+	if (null != videoSocket)
+	    videoSocket.shutdown();
+	if (null != playerManager)
+	    playerManager.shutdown();
+	if (null != mServerProto)
+	    mServerProto.shutdown();
+	if (null != serverSocket)
+	    serverSocket.close();
     }
 
     public boolean isRunning() {

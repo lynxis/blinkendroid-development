@@ -123,7 +123,7 @@ public class PlayerActivity extends Activity implements BlinkendroidListener, Ru
 	    getWindow().setAttributes(lp);
 	}
 
-	gestureDetector = new GestureDetector(this);
+	gestureDetector = new GestureDetector(this, this);
     }
 
     /**
@@ -363,27 +363,32 @@ public class PlayerActivity extends Activity implements BlinkendroidListener, Ru
     }
 
     public boolean onDown(MotionEvent e) {
+	logger.info("onDown");
 	return true;
     }
 
     public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-	blinkendroidClient.locateMe();
+	logger.info("onFling");
 	return true;
     }
 
     public void onLongPress(MotionEvent e) {
+	logger.info("onLongPress");
 	return;
     }
 
     public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+	logger.info("onScroll");
 	return true;
     }
 
     public void onShowPress(MotionEvent e) {
+	logger.info("onShowPress");
 	return;
     }
 
     public boolean onSingleTapUp(MotionEvent e) {
+	logger.info("onSingleTapUp");
 	return true;
     }
 }

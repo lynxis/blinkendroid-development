@@ -39,7 +39,7 @@ public class BlinkendroidClientProtocol extends BlinkendroidProtocol implements 
     public void handle(SocketAddress from, ByteBuffer in) throws IOException {
 	int command = in.getInt();
 
-	logger.info("received: " + command);
+	// logger.info("received: " + command);
 	if (mListener != null) {
 	    if (command == COMMAND_HEARTBEAT) {
 		// read byte

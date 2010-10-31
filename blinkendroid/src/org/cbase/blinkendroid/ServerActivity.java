@@ -242,7 +242,7 @@ public class ServerActivity extends Activity implements ConnectionListener, BLMM
 
     @Override
     protected void onDestroy() {
-
+	logger.info("ServerActivity onDestroy ");
 	if (receiverThread != null) {
 	    receiverThread.shutdown();
 	    receiverThread = null;
