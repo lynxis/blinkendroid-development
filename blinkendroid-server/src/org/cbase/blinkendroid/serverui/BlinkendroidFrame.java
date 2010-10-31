@@ -42,7 +42,7 @@ public class BlinkendroidFrame extends JFrame implements ImageManagerListener,
     private JTextField ticketsTxt;
     private JButton refreshTickets = null;
 
-    public void imagesReady() {
+    public synchronized void imagesReady() {
 	JOptionPane.showMessageDialog(this, "Images Ready");
 
 	DefaultComboBoxModel imgCbModel = (DefaultComboBoxModel) imagesList
@@ -54,7 +54,7 @@ public class BlinkendroidFrame extends JFrame implements ImageManagerListener,
 	}
     }
 
-    public void moviesReady() {
+    public synchronized void moviesReady() {
 	JOptionPane.showMessageDialog(this, "Movies Ready");
 
 	DefaultComboBoxModel movCbModel = (DefaultComboBoxModel) moviesList
@@ -66,12 +66,12 @@ public class BlinkendroidFrame extends JFrame implements ImageManagerListener,
 	}
     }
 
-    public void connectionClosed(ClientSocket clientSocket) {
-	DefaultListModel listModel = (DefaultListModel) clientsList.getModel();
-	listModel.removeElement(clientSocket);
+    public synchronized void connectionClosed(ClientSocket clientSocket) {	
+        DefaultListModel listModel = (DefaultListModel) clientsList.getModel();       
+        listModel.removeElement(clientSocket);
     }
 
-    public void connectionOpened(ClientSocket clientSocket) {
+    public synchronized void connectionOpened(ClientSocket clientSocket) {
 	DefaultListModel listModel = (DefaultListModel) clientsList.getModel();
 	listModel.addElement(clientSocket);
     }
@@ -286,12 +286,13 @@ public class BlinkendroidFrame extends JFrame implements ImageManagerListener,
 		break;
 	    case CLIP:
 	    	server.clip();
-			break;
+		break;
 	    case SINGLECLIP:
 	    	server.singleclip();
-			break;
+		break;
 	    case GLOBALTIMER:
 	    	server.globalTimer();
+	    	break;
 	    }
 
 	}

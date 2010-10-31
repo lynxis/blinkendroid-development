@@ -118,7 +118,14 @@ public class LoginActivity extends Activity implements Runnable {
         super.onResume();
 
         // remove old server entries
-        serverList.clear();
+        runOnUiThread(new Runnable() {
+
+	    @Override
+	    public void run() {		
+		serverList.clear();
+		serverListAdapter.notifyDataSetChanged();
+	    }
+	});
 
         // send Broadcast
         String ownerName = PreferenceManager.getDefaultSharedPreferences(this).getString(PREFS_KEY_OWNER, null);
@@ -182,18 +189,26 @@ public class LoginActivity extends Activity implements Runnable {
 
     public void run() {
 
-        //remove timed-out servers
-        for (final Iterator<ListEntry> i = serverList.iterator();
-                i.hasNext();) {
-            final ListEntry entry = i.next();
-            if (entry.lastFound + BlinkendroidApp.BROADCAST_IDLE_THRESHOLD
-                    < System.currentTimeMillis()) {
-                i.remove();
-                serverListAdapter.notifyDataSetChanged();
-            }
-        }
+	// remove timed-out servers
+	runOnUiThread(new Runnable() {
+	    
+	    public void run() {
+		
+		for (final Iterator<ListEntry> i = serverList.iterator(); i
+			.hasNext();) {
+		    final ListEntry entry = i.next();
+		    if (entry.lastFound
+			    + BlinkendroidApp.BROADCAST_IDLE_THRESHOLD < System
+			    .currentTimeMillis()) {
+			i.remove();
+			serverListAdapter.notifyDataSetChanged();
+		    }		
+		}
+	    }
+	    
+	});
 
-        handler.postDelayed(this, 1000);
+	handler.postDelayed(this, 1000);
     }
 
     @Override
