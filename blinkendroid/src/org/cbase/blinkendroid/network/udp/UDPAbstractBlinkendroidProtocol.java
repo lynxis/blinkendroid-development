@@ -80,9 +80,6 @@ public class UDPAbstractBlinkendroidProtocol implements UDPDirectConnection {
 	logger.info("BlinkendroidClient received Protocol: " + proto);
 	if (proto == BlinkendroidApp.PROTOCOL_HEARTBEAT) {
 	    for (CommandHandler h : handlers.values()) {
-		// Log.d(Constants.LOG_TAG,
-		// "BlinkendroidClient get protocl heartrbeat for handler"
-		// + h.getClass().getName());
 		h.handle(socketAddress, in);
 		in.position(pos);
 	    }

@@ -1,7 +1,6 @@
 package org.cbase.blinkendroid.network.udp;
 
 import java.io.IOException;
-import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.nio.ByteBuffer;
 
@@ -22,7 +21,7 @@ public class ConnectionState implements CommandHandler {
     private static final Logger logger = LoggerFactory.getLogger(ConnectionState.class);
 
     public static enum Command {
-	SYN, ACK, SYNACK, RESET, HEARTBEAT, REQUEST_DIRECT_HEARTBEAT
+	SYN, ACK, SYNACK, RESET, HEARTBEAT, REQUEST_DIRECT_HEARTBEAT, CANCEL_DIRECT_HEARTBEAT
     }
 
     public static enum Connstate {
@@ -30,19 +29,18 @@ public class ConnectionState implements CommandHandler {
     }
 
     public Connstate m_state;
-    private int m_connId;
-    private InetSocketAddress m_SocketAddr;
+    protected int m_connId;
+    // private InetSocketAddress m_SocketAddr;
     private ConnectionListener m_Listener;
-    private long m_LastSeen;
+    protected long m_LastSeen;
     private ClientSocket mClientSocket;
     private DirectTimerThread directTimerThread;
-    private int directTimerThreadRequestCounter = 3;
 
     /**
      * This thread sends the global time to connected devices.
      */
     class DirectTimerThread extends Thread {
-
+	public static final byte DIRECTTIMER = 68;
 	volatile private boolean running = true;
 
 	@Override
@@ -62,6 +60,7 @@ public class ConnectionState implements CommandHandler {
 		ByteBuffer out = ByteBuffer.allocate(128);
 		out.putInt(BlinkendroidApp.PROTOCOL_HEARTBEAT);
 		out.putInt(ConnectionState.Command.HEARTBEAT.ordinal());
+		out.put(DIRECTTIMER);
 		out.putLong(System.currentTimeMillis());
 		try {
 		    // ConnectionState.this.send(out); this adds protocol 1
@@ -76,6 +75,7 @@ public class ConnectionState implements CommandHandler {
 	public void shutdown() {
 	    running = false;
 	    interrupt();
+	    // TODO schtief join
 	    logger.info("DirectTimerThread initiating shutdown");
 	}
     }
@@ -117,7 +117,7 @@ public class ConnectionState implements CommandHandler {
 
 	// heartbeat is also a special case, because it does not need a connId
 	if (command == Command.HEARTBEAT) {
-	    receivedHeartbeat();
+	    receivedHeartbeat(bybuff.get());
 	    return;
 	}
 
@@ -137,6 +137,9 @@ public class ConnectionState implements CommandHandler {
 	    break;
 	case REQUEST_DIRECT_HEARTBEAT:
 	    receivedDirectHeartbeatRequest();
+	    break;
+	case CANCEL_DIRECT_HEARTBEAT:
+	    receivedDirectHeartbeatCancel();
 	}
     }
 
@@ -209,7 +212,14 @@ public class ConnectionState implements CommandHandler {
 	}
     }
 
-    protected void receivedHeartbeat() {
+    protected void receivedDirectHeartbeatCancel() {
+	logger.info("receivedDirectHeartbeatCancel " + m_connId);
+	if (directTimerThread != null) {
+	    directTimerThread.shutdown();
+	}
+    }
+
+    protected void receivedHeartbeat(byte timerStyle) {
 	m_LastSeen = System.currentTimeMillis();
     }
 
@@ -265,30 +275,6 @@ public class ConnectionState implements CommandHandler {
 	stateChange(Connstate.NONE);
     }
 
-    protected void sendDirectHeartbeatRequest() {
-	logger.info("sendDirectHeartbeatRequest");
-	ByteBuffer out = ByteBuffer.allocate(1024);
-	out.putInt(Command.REQUEST_DIRECT_HEARTBEAT.ordinal());
-	out.putInt(m_connId);
-	try {
-	    send(out);
-	} catch (IOException e) {
-	    logger.error("requestDirectHeartbeat failed", e);
-	}
-    }
-
-    protected void sendHeartbeat() {
-	logger.info("sendHeartbeat");
-	ByteBuffer out = ByteBuffer.allocate(1024);
-	out.putInt(Command.HEARTBEAT.ordinal());
-	out.putInt(m_connId);
-	try {
-	    send(out);
-	} catch (IOException e) {
-	    logger.error("sendHeartbeat failed", e);
-	}
-    }
-
     /**
      * 
      * @param timeout
@@ -300,15 +286,8 @@ public class ConnectionState implements CommandHandler {
 	}
 	long time = System.currentTimeMillis();
 	if (m_LastSeen + timeout * 1000 < time) {
-	    logger.info("Timeout %s\n", this.getClass().getName());
-	    // request 3 times directHeartBeat
-	    if (directTimerThreadRequestCounter > 0) {
-		sendDirectHeartbeatRequest();
-		directTimerThreadRequestCounter--;
-		// reset last_seen
-		m_LastSeen = System.currentTimeMillis();
-	    } else
-		sendReset();
+	    logger.info("Client Timeout\n");
+	    sendReset();
 	}
     }
 

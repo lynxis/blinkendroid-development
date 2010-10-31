@@ -100,7 +100,7 @@ public class UDPServerProtocolManager extends UDPAbstractBlinkendroidProtocol im
      * This thread sends the global time to connected devices.
      */
     class GlobalTimerThread extends Thread {
-
+	public static final byte GLOBALTIMER = 68;
 	volatile private boolean running = true;
 
 	@Override
@@ -119,6 +119,7 @@ public class UDPServerProtocolManager extends UDPAbstractBlinkendroidProtocol im
 		ByteBuffer out = ByteBuffer.allocate(128);
 		out.putInt(BlinkendroidApp.PROTOCOL_HEARTBEAT);
 		out.putInt(Command.HEARTBEAT.ordinal());
+		out.put(GLOBALTIMER);
 		out.putLong(System.currentTimeMillis());
 		sendBroadcast(out);
 		// logger.info( "GlobalTimerThread Broadcast sent: " + out);

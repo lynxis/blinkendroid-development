@@ -1,12 +1,19 @@
 package org.cbase.blinkendroid.network.udp;
 
+import java.io.IOException;
+import java.nio.ByteBuffer;
+
 import org.cbase.blinkendroid.network.ConnectionListener;
+import org.cbase.blinkendroid.network.udp.UDPServerProtocolManager.GlobalTimerThread;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ClientConnectionState extends ConnectionState implements CommandHandler {
 
     private ClientConnectionHeartbeat mHeartbeater;
+
+    private int directTimerThreadRequestCounter = 3;
+    private byte timerStyle = GlobalTimerThread.GLOBALTIMER;
 
     private static final Logger logger = LoggerFactory.getLogger(ClientConnectionState.class);
 
@@ -34,6 +41,71 @@ public class ClientConnectionState extends ConnectionState implements CommandHan
 	mHeartbeater.shutdown();
     }
 
+    protected void receivedHeartbeat(byte timerStyle) {
+	m_LastSeen = System.currentTimeMillis();
+	// check timerStyle
+	if (this.timerStyle == DirectTimerThread.DIRECTTIMER && timerStyle == GlobalTimerThread.GLOBALTIMER) {
+	    sendDirectHeartbeatCancel();
+	    this.timerStyle = GlobalTimerThread.GLOBALTIMER;
+	}
+    }
+
+    public void checkTimeout(int timeout) {
+	if (m_state != Connstate.ESTABLISHED) {
+	    return;
+	}
+	long time = System.currentTimeMillis();
+	if (m_LastSeen + timeout * 1000 < time) {
+	    logger.info("Server Timeout\n");
+	    // request 3 times directHeartBeat
+	    if (directTimerThreadRequestCounter > 0) {
+		sendDirectHeartbeatRequest();
+		timerStyle = DirectTimerThread.DIRECTTIMER;
+		directTimerThreadRequestCounter--;
+		// reset last_seen
+		m_LastSeen = System.currentTimeMillis();
+	    } else
+		sendReset();
+	}
+    }
+
+    protected void sendDirectHeartbeatRequest() {
+	logger.info("sendDirectHeartbeatRequest");
+	ByteBuffer out = ByteBuffer.allocate(1024);
+	out.putInt(Command.REQUEST_DIRECT_HEARTBEAT.ordinal());
+	out.putInt(m_connId);
+	try {
+	    send(out);
+	} catch (IOException e) {
+	    logger.error("requestDirectHeartbeat failed", e);
+	}
+    }
+
+    protected void sendDirectHeartbeatCancel() {
+	logger.info("sendDirectHeartbeatCancel");
+	ByteBuffer out = ByteBuffer.allocate(1024);
+	out.putInt(Command.CANCEL_DIRECT_HEARTBEAT.ordinal());
+	out.putInt(m_connId);
+	try {
+	    send(out);
+	} catch (IOException e) {
+	    logger.error("sendDirectHeartbeatCancel failed", e);
+	}
+    }
+
+    protected void sendHeartbeat() {
+	logger.info("sendHeartbeat");
+	ByteBuffer out = ByteBuffer.allocate(1024);
+	out.putInt(Command.HEARTBEAT.ordinal());
+	out.put(timerStyle);
+	out.putInt(m_connId);
+	try {
+	    send(out);
+	} catch (IOException e) {
+	    logger.error("sendHeartbeat failed", e);
+	}
+    }
+
     /**
      * This thread sends heartbeat to the server
      */
@@ -54,7 +126,7 @@ public class ClientConnectionState extends ConnectionState implements CommandHan
 		if (!running) // fast exit
 		    break;
 		sendHeartbeat();
-		checkTimeout(5);
+		checkTimeout(10);
 	    }
 	    logger.info("ClientConnectionState stopped");
 	}

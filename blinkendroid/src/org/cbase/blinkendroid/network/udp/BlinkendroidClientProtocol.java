@@ -42,6 +42,8 @@ public class BlinkendroidClientProtocol extends BlinkendroidProtocol implements 
 	logger.info("received: " + command);
 	if (mListener != null) {
 	    if (command == COMMAND_HEARTBEAT) {
+		// read byte
+		in.get();
 		mListener.serverTime(in.getLong());
 	    } else if (command == COMMAND_CLIP) {
 		final float startX = in.getFloat();
