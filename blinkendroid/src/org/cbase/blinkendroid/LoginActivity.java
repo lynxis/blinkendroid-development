@@ -117,15 +117,9 @@ public class LoginActivity extends Activity implements Runnable {
 
         super.onResume();
 
-        // remove old server entries
-        runOnUiThread(new Runnable() {
-
-	    @Override
-	    public void run() {		
-		serverList.clear();
-		serverListAdapter.notifyDataSetChanged();
-	    }
-	});
+        // remove old server entries	
+	serverList.clear();
+	serverListAdapter.notifyDataSetChanged();
 
         // send Broadcast
         String ownerName = PreferenceManager.getDefaultSharedPreferences(this).getString(PREFS_KEY_OWNER, null);
