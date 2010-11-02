@@ -34,8 +34,8 @@ public class WhackaMole extends Thread {
 	    do {
 
 		int moleDuration = random.nextInt((int) (5000 - moleCounter * 100));
-		if (moleDuration < 300)
-		    moleDuration = 300;
+		if (moleDuration < 500)
+		    moleDuration = 500;
 
 		try {
 		    // sleep random time but a little less if moleCounter is
