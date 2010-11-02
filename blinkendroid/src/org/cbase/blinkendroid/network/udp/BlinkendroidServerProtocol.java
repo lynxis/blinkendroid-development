@@ -79,6 +79,10 @@ public class BlinkendroidServerProtocol extends BlinkendroidProtocol implements 
 	if (mListener != null) {
 	    if (command == COMMAND_LOCATEME) {
 		mListener.locateMe(from);
+	    } else if (command == COMMAND_HITMOLE) {
+		mListener.hitMole(from);
+	    } else if (command == COMMAND_MISSEDMOLE) {
+		mListener.missedMole(from);
 	    }
 	}
     }

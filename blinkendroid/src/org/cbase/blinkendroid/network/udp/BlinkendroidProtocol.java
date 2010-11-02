@@ -10,6 +10,8 @@ public abstract class BlinkendroidProtocol {
     public static final Integer COMMAND_MOLE = 61;
     // Commands from client server
     public static final Integer COMMAND_LOCATEME = 109;
+    public static final Integer COMMAND_HITMOLE = 110;
+    public static final Integer COMMAND_MISSEDMOLE = 111;
 
     public static final int OPTION_PLAY_TYPE_MOVIE = 1;
     public static final int OPTION_PLAY_TYPE_IMAGE = 2;

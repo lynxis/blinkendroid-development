@@ -32,7 +32,7 @@ public class BlinkendroidClientProtocol extends BlinkendroidProtocol implements 
 	    send(out);
 	} catch (IOException e) {
 	    e.printStackTrace();
-	    logger.error("play failed", e);
+	    logger.error("locateMe failed", e);
 	}
     }
 
@@ -96,5 +96,27 @@ public class BlinkendroidClientProtocol extends BlinkendroidProtocol implements 
 	out.putInt(BlinkendroidApp.PROTOCOL_CLIENT); /* protocol header */
 	out.put(command.array(), 0, command.position());
 	serverSocket.send(out);
+    }
+
+    public void hitMole(int moleDuration) {
+	ByteBuffer out = ByteBuffer.allocate(1024);
+	try {
+	    out.putInt(COMMAND_HITMOLE);
+	    send(out);
+	} catch (IOException e) {
+	    e.printStackTrace();
+	    logger.error("locateMe failed", e);
+	}
+    }
+
+    public void missedMole(int moleDuration) {
+	ByteBuffer out = ByteBuffer.allocate(1024);
+	try {
+	    out.putInt(COMMAND_MISSEDMOLE);
+	    send(out);
+	} catch (IOException e) {
+	    e.printStackTrace();
+	    logger.error("locateMe failed", e);
+	}
     }
 }

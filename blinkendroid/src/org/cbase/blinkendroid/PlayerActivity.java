@@ -79,76 +79,91 @@ public class PlayerActivity extends Activity implements BlinkendroidListener, Ru
     private String owner;
 
     private boolean mole = false;
-    private int molePoints;
+    private int moleCounter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+	super.onCreate(savedInstanceState);
 
-        app = (BlinkendroidApp) getApplication();
+	app = (BlinkendroidApp) getApplication();
 
-        app.wantWakeLock(true);
+	app.wantWakeLock(true);
 
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
+	requestWindowFeature(Window.FEATURE_NO_TITLE);
 
-        setContentView(R.layout.player_content);
-        playerView = (PlayerView) findViewById(R.id.player_image);
-        playerView.setVisibility(View.GONE);
-        imageView = (PuzzleImageView) findViewById(R.id.player_puzzle_image);
-        imageView.setVisibility(View.VISIBLE);
+	setContentView(R.layout.player_content);
+	playerView = (PlayerView) findViewById(R.id.player_image);
+	playerView.setVisibility(View.GONE);
+	imageView = (PuzzleImageView) findViewById(R.id.player_puzzle_image);
+	imageView.setVisibility(View.VISIBLE);
 
-        moleView = (ImageView) findViewById(R.id.player_mole);
+	moleView = (ImageView) findViewById(R.id.player_mole);
 
-        arrowView = (ArrowView) findViewById(R.id.player_arrow);
-        ownerView = (TextView) findViewById(R.id.player_owner);
+	arrowView = (ArrowView) findViewById(R.id.player_arrow);
+	ownerView = (TextView) findViewById(R.id.player_owner);
 
-        owner = getPhoneIdentifier();
+	owner = getPhoneIdentifier();
 
-        arrowView.setOnTouchListener(new OnTouchListener() {
+	arrowView.setOnTouchListener(new OnTouchListener() {
 
-            public boolean onTouch(View v, MotionEvent event) {
-                ownerView.setText(owner);
-                ownerView.setVisibility(View.VISIBLE);
-                handler.postDelayed(new Runnable() {
+	    public boolean onTouch(View v, MotionEvent event) {
+		ownerView.setText(owner);
+		ownerView.setVisibility(View.VISIBLE);
+		handler.postDelayed(new Runnable() {
 
-                    public void run() {
-                        ownerView.setVisibility(View.GONE);
-                    }
-                }, BlinkendroidApp.SHOW_OWNER_DURATION);
-                return true;
-            }
-        });
+		    public void run() {
+			ownerView.setVisibility(View.GONE);
+		    }
+		}, BlinkendroidApp.SHOW_OWNER_DURATION);
+		return true;
+	    }
+	});
 
-        moleView.setOnTouchListener(new OnTouchListener() {
+	moleView.setOnTouchListener(new OnTouchListener() {
 
-            public boolean onTouch(View v, MotionEvent event) {
-                if (mole) {
-                    // hide mole
-                    moleView.setVisibility(View.INVISIBLE);
-                    mole = false;
-                    // show points
-                    ownerView.setText("++" + molePoints);
-                    ownerView.invalidate();
-                    ownerView.setVisibility(View.VISIBLE);
-                    handler.postDelayed(new Runnable() {
+	    public boolean onTouch(View v, MotionEvent event) {
+		if (mole) {
+		    // hide mole
+		    moleView.setVisibility(View.INVISIBLE);
+		    mole = false;
+		    // show points
+		    ownerView.setText("+" + (2000 - moleCounter));
+		    ownerView.invalidate();
+		    ownerView.setVisibility(View.VISIBLE);
+		    handler.postDelayed(new Runnable() {
 
-                        public void run() {
-                            ownerView.setVisibility(View.INVISIBLE);
-                        }
-                    }, BlinkendroidApp.SHOW_OWNER_DURATION);
-                    return true;
-                } else {
-                    return false;
-                }
-            }
-        });
-        // forcing the screen brightness to max out while playing
-        if (isAllowedToChangeBrightness()) {
-            logger.info("Maxing out the brightness");
-            WindowManager.LayoutParams lp = getWindow().getAttributes();
-            lp.screenBrightness = 1.0f;
-            getWindow().setAttributes(lp);
-        }
+			public void run() {
+			    ownerView.setVisibility(View.GONE);
+			}
+		    }, BlinkendroidApp.SHOW_OWNER_DURATION);
+		    // send hitmole to server
+		    blinkendroidClient.hitMole(moleCounter);
+		    return true;
+		} else {
+		    // send missed mole to server
+		    blinkendroidClient.missedMole(moleCounter);
+		    // show points
+		    ownerView.setText("-" + (2000 - moleCounter));
+		    ownerView.invalidate();
+		    ownerView.setVisibility(View.VISIBLE);
+		    handler.postDelayed(new Runnable() {
+
+			public void run() {
+			    ownerView.setVisibility(View.GONE);
+			}
+		    }, BlinkendroidApp.SHOW_OWNER_DURATION);
+
+		    return true;
+		}
+	    }
+	});
+	// forcing the screen brightness to max out while playing
+	if (isAllowedToChangeBrightness()) {
+	    logger.info("Maxing out the brightness");
+	    WindowManager.LayoutParams lp = getWindow().getAttributes();
+	    lp.screenBrightness = 1.0f;
+	    getWindow().setAttributes(lp);
+	}
     }
 
     /**
@@ -158,248 +173,250 @@ public class PlayerActivity extends Activity implements BlinkendroidListener, Ru
      * @return owner name or phone number
      */
     private String getPhoneIdentifier() {
-        String ownerName = PreferenceManager.getDefaultSharedPreferences(this).getString("owner", null);
+	String ownerName = PreferenceManager.getDefaultSharedPreferences(this).getString("owner", null);
 
-        if (ownerName == null || ownerName.trim().length() == 0) {
-            TelephonyManager tm = (TelephonyManager) this.getSystemService(Context.TELEPHONY_SERVICE);
-            ownerName = tm.getLine1Number();
-        }
+	if (ownerName == null || ownerName.trim().length() == 0) {
+	    TelephonyManager tm = (TelephonyManager) this.getSystemService(Context.TELEPHONY_SERVICE);
+	    ownerName = tm.getLine1Number();
+	}
 
-        return ownerName;
+	return ownerName;
     }
 
     private boolean isAllowedToChangeBrightness() {
-        return PreferenceManager.getDefaultSharedPreferences(this).getBoolean("brightness", true);
+	return PreferenceManager.getDefaultSharedPreferences(this).getBoolean("brightness", true);
     }
 
     @Override
     protected void onResume() {
 
-        super.onResume();
-        String addr = getIntent().getStringExtra(INTENT_EXTRA_IP);
-        if (addr == null) {
-            addr = "127.0.0.1";
-        }
-        int port = getIntent().getIntExtra(INTENT_EXTRA_PORT, BlinkendroidApp.BROADCAST_SERVER_PORT);
-        InetSocketAddress socketAddr = new InetSocketAddress(addr, port);
-        blinkendroidClient = new BlinkendroidClient(socketAddr, this);
-        /*
-         * blinkendroidClient = new BlinkendroidClient( new
-         * InetSocketAddress(getIntent().getStringExtra( INTENT_EXTRA_IP),
-         * getIntent().getIntExtra( INTENT_EXTRA_PORT,
-         * Constants.BROADCAST_SERVER_PORT)), this);
-         */
-        blinkendroidClient.start();
+	super.onResume();
+	String addr = getIntent().getStringExtra(INTENT_EXTRA_IP);
+	if (addr == null) {
+	    addr = "127.0.0.1";
+	}
+	int port = getIntent().getIntExtra(INTENT_EXTRA_PORT, BlinkendroidApp.BROADCAST_SERVER_PORT);
+	InetSocketAddress socketAddr = new InetSocketAddress(addr, port);
+	blinkendroidClient = new BlinkendroidClient(socketAddr, this);
+	/*
+	 * blinkendroidClient = new BlinkendroidClient( new
+	 * InetSocketAddress(getIntent().getStringExtra( INTENT_EXTRA_IP),
+	 * getIntent().getIntExtra( INTENT_EXTRA_PORT,
+	 * Constants.BROADCAST_SERVER_PORT)), this);
+	 */
+	blinkendroidClient.start();
 
-        /*
-         * if (playing) playerView.startPlaying();
-         * 
-         * if (!arrowDurations.isEmpty()) handler.post(this);
-         */
+	/*
+	 * if (playing) playerView.startPlaying();
+	 * 
+	 * if (!arrowDurations.isEmpty()) handler.post(this);
+	 */
     }
 
     @Override
     protected void onPause() {
 
-        handler.removeCallbacks(this);
+	handler.removeCallbacks(this);
 
-        if (view instanceof PlayerView) {
-            ((PlayerView) view).stopPlaying();
-        }
+	if (view instanceof PlayerView) {
+	    ((PlayerView) view).stopPlaying();
+	}
 
-        app.wantWakeLock(false);
+	app.wantWakeLock(false);
 
-        if (blinkendroidClient != null) {
-            blinkendroidClient.shutdown();
-            blinkendroidClient = null;
-        }
+	if (blinkendroidClient != null) {
+	    blinkendroidClient.shutdown();
+	    blinkendroidClient = null;
+	}
 
-        super.onPause();
+	super.onPause();
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.player_options, menu);
-        return true;
+	getMenuInflater().inflate(R.menu.player_options, menu);
+	return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-        case R.id.player_options_locate_me:
-            blinkendroidClient.locateMe();
-            System.out.println("Locating client");
-            break;
+	switch (item.getItemId()) {
+	case R.id.player_options_locate_me:
+	    blinkendroidClient.locateMe();
+	    System.out.println("Locating client");
+	    break;
 
-        default:
-            break;
-        }
-        return super.onOptionsItemSelected(item);
+	default:
+	    break;
+	}
+	return super.onOptionsItemSelected(item);
     }
 
     public void serverTime(final long serverTime) {
-        logger.debug("*** time " + serverTime);
-        final long timeDelta = System.nanoTime() / 1000000 - serverTime;
-        runOnUiThread(new Runnable() {
+	logger.debug("*** time " + serverTime);
+	final long timeDelta = System.nanoTime() / 1000000 - serverTime;
+	runOnUiThread(new Runnable() {
 
-            public void run() {
-                if (view instanceof PlayerView) {
-                    ((PlayerView) view).setTimeDelta(timeDelta);
-                }
-            }
-        });
+	    public void run() {
+		if (view instanceof PlayerView) {
+		    ((PlayerView) view).setTimeDelta(timeDelta);
+		}
+	    }
+	});
     }
 
     public void playBLM(final long startTime, final BLM movie) {
-        logger.info("*** play " + startTime);
-        runOnUiThread(new Runnable() {
+	logger.info("*** play " + startTime);
+	runOnUiThread(new Runnable() {
 
-            public void run() {
-                try {
+	    public void run() {
+		try {
 
-                    blm = movie;
-                    if (blm == null) {
-                        blm = new BBMZParser().parseBBMZ(getResources().openRawResource(R.raw.blinkendroid1), 14345);
-                    }
+		    blm = movie;
+		    if (blm == null) {
+			blm = new BBMZParser().parseBBMZ(getResources().openRawResource(R.raw.blinkendroid1), 14345);
+		    }
 
-                    playerView.setBLM(blm);
-                    playerView.setStartTime(startTime);
-                    playerView.startPlaying();
-                    imageView.setVisibility(View.GONE);
-                    playerView.setVisibility(View.VISIBLE);
-                    view = playerView;
-                    view.invalidate();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
+		    playerView.setBLM(blm);
+		    playerView.setStartTime(startTime);
+		    playerView.startPlaying();
+		    imageView.setVisibility(View.GONE);
+		    playerView.setVisibility(View.VISIBLE);
+		    view = playerView;
+		    view.invalidate();
+		} catch (Exception e) {
+		    e.printStackTrace();
+		}
+	    }
+	});
     }
 
     public void clip(final float startX, final float startY, final float endX, final float endY) {
-        logger.info("*** clip " + startX + "," + startY + "," + endX + "," + endY);
-        runOnUiThread(new Runnable() {
+	logger.info("*** clip " + startX + "," + startY + "," + endX + "," + endY);
+	runOnUiThread(new Runnable() {
 
-            public void run() {
-                if (null != playerView)
-                    playerView.setClipping(startX, startY, endX, endY);
-                if (null != imageView)
-                    imageView.setClipping(startX, startY, endX, endY);
-            }
-        });
+	    public void run() {
+		if (null != playerView)
+		    playerView.setClipping(startX, startY, endX, endY);
+		if (null != imageView)
+		    imageView.setClipping(startX, startY, endX, endY);
+	    }
+	});
     }
 
     public void arrow(final long duration, final float angle, final int color) {
-        logger.info("*** arrow " + angle + " " + duration);
-        runOnUiThread(new Runnable() {
+	logger.info("*** arrow " + angle + " " + duration);
+	runOnUiThread(new Runnable() {
 
-            public void run() {
-                final int id = arrowView.addArrow(angle, color);
-                boolean startPost = arrowDurations.isEmpty();
-                arrowDurations.put(id, System.currentTimeMillis() + duration);
-                if (startPost)
-                    handler.post(PlayerActivity.this);
-            }
-        });
+	    public void run() {
+		final int id = arrowView.addArrow(angle, color);
+		boolean startPost = arrowDurations.isEmpty();
+		arrowDurations.put(id, System.currentTimeMillis() + duration);
+		if (startPost)
+		    handler.post(PlayerActivity.this);
+	    }
+	});
     }
 
     public void connectionOpened(final ClientSocket clientSocket) {
-        logger.info("*** connectionOpened " + clientSocket.getDestinationAddress().toString());
-        runOnUiThread(new Runnable() {
+	logger.info("*** connectionOpened " + clientSocket.getDestinationAddress().toString());
+	runOnUiThread(new Runnable() {
 
-            public void run() {
-                Toast.makeText(PlayerActivity.this, "connected", Toast.LENGTH_SHORT).show();
-            }
-        });
+	    public void run() {
+		Toast.makeText(PlayerActivity.this, "connected", Toast.LENGTH_SHORT).show();
+	    }
+	});
     }
 
     public void connectionClosed(final ClientSocket clientSocket) {
-        logger.info("*** connectionClosed " + clientSocket.getDestinationAddress().toString());
-        runOnUiThread(new Runnable() {
+	logger.info("*** connectionClosed " + clientSocket.getDestinationAddress().toString());
+	runOnUiThread(new Runnable() {
 
-            public void run() {
-                Toast.makeText(PlayerActivity.this, getString(R.string.connection_closed), Toast.LENGTH_LONG).show();
-                if (view instanceof PlayerView) {
-                    ((PlayerView) view).stopPlaying();
-                }
-                ownerView.setVisibility(View.VISIBLE);
-            }
-        });
+	    public void run() {
+		Toast.makeText(PlayerActivity.this, getString(R.string.connection_closed), Toast.LENGTH_LONG).show();
+		if (view instanceof PlayerView) {
+		    ((PlayerView) view).stopPlaying();
+		}
+		ownerView.setVisibility(View.VISIBLE);
+	    }
+	});
     }
 
     public void connectionFailed(final String message) {
-        runOnUiThread(new Runnable() {
+	runOnUiThread(new Runnable() {
 
-            public void run() {
-                logger.warn(getString(R.string.connection_failed) + ": " + message);
-                if (view instanceof PlayerView) {
-                    ((PlayerView) view).stopPlaying();
-                }
-                ownerView.setVisibility(View.VISIBLE);
-                new AlertDialog.Builder(PlayerActivity.this).setIcon(android.R.drawable.ic_dialog_alert)
-                        .setTitle("Cannot connect to server").setMessage(message)
-                        .setOnCancelListener(new OnCancelListener() {
+	    public void run() {
+		logger.warn(getString(R.string.connection_failed) + ": " + message);
+		if (view instanceof PlayerView) {
+		    ((PlayerView) view).stopPlaying();
+		}
+		ownerView.setVisibility(View.VISIBLE);
+		new AlertDialog.Builder(PlayerActivity.this).setIcon(android.R.drawable.ic_dialog_alert).setTitle(
+			"Cannot connect to server").setMessage(message).setOnCancelListener(new OnCancelListener() {
 
-                            public void onCancel(DialogInterface dialog) {
-                                finish();
-                            }
-                        }).create().show();
-            }
-        });
+		    public void onCancel(DialogInterface dialog) {
+			finish();
+		    }
+		}).create().show();
+	    }
+	});
     }
 
     public void run() {
 
-        arrowScale += 0.5f;
-        if (arrowScale >= 2 * Math.PI)
-            arrowScale -= 2 * Math.PI;
-        final float scale = 0.5f + (float) Math.sin(arrowScale) / 20;
-        arrowView.setScale(scale);
+	arrowScale += 0.5f;
+	if (arrowScale >= 2 * Math.PI)
+	    arrowScale -= 2 * Math.PI;
+	final float scale = 0.5f + (float) Math.sin(arrowScale) / 20;
+	arrowView.setScale(scale);
 
-        for (final Iterator<Map.Entry<Integer, Long>> i = arrowDurations.entrySet().iterator(); i.hasNext();) {
-            final Map.Entry<Integer, Long> entry = i.next();
+	for (final Iterator<Map.Entry<Integer, Long>> i = arrowDurations.entrySet().iterator(); i.hasNext();) {
+	    final Map.Entry<Integer, Long> entry = i.next();
 
-            if (System.currentTimeMillis() > entry.getValue()) {
-                arrowView.removeArrow(entry.getKey());
-                i.remove();
-            }
-        }
+	    if (System.currentTimeMillis() > entry.getValue()) {
+		arrowView.removeArrow(entry.getKey());
+		i.remove();
+	    }
+	}
 
-        if (!arrowDurations.isEmpty())
-            handler.postDelayed(this, 20);
+	if (!arrowDurations.isEmpty())
+	    handler.postDelayed(this, 20);
     }
 
     public void showImage(final Bitmap bmp) {
 
-        runOnUiThread(new Runnable() {
+	runOnUiThread(new Runnable() {
 
-            public void run() {
-                Bitmap image = bmp;
-                if (image == null) {
-                    image = BitmapFactory.decodeStream(getResources().openRawResource(R.drawable.world));
-                }
-                imageView.setImage(image);
-                imageView.setVisibility(View.VISIBLE);
-                playerView.setVisibility(View.GONE);
-                view = imageView;
-                view.invalidate();
-            }
-        });
+	    public void run() {
+		Bitmap image = bmp;
+		if (image == null) {
+		    image = BitmapFactory.decodeStream(getResources().openRawResource(R.drawable.world));
+		}
+		imageView.setImage(image);
+		imageView.setVisibility(View.VISIBLE);
+		playerView.setVisibility(View.GONE);
+		view = imageView;
+		view.invalidate();
+	    }
+	});
     }
 
-    public void mole(final int type, final int moleCounter) {
+    public void mole(final int type, final int duration) {
 	runOnUiThread(new Runnable() {
 	    public void run() {
+		if (mole)
+		    return;
+
 		moleView.setImageResource(R.drawable.android1 + (type % 5));
 		moleView.setVisibility(View.VISIBLE);
 		mole = true;
-		molePoints = moleCounter;
+		moleCounter = duration;
 		handler.postDelayed(new Runnable() {
 		    public void run() {
 			moleView.setVisibility(View.GONE);
 			mole = false;
 		    }
-		}, BlinkendroidApp.SHOW_OWNER_DURATION);
+		}, duration);
 	    };
 	});
     }
