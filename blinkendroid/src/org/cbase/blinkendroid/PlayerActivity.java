@@ -387,18 +387,18 @@ public class PlayerActivity extends Activity implements BlinkendroidListener, Ru
 
 	runOnUiThread(new Runnable() {
 
-	    public void run() {
-		Bitmap image = bmp;
-		if (image == null) {
-		    image = BitmapFactory.decodeStream(getResources().openRawResource(R.drawable.world));
-		}
-		imageView.setImage(image);
-		imageView.setVisibility(View.VISIBLE);
-		playerView.setVisibility(View.GONE);
-		view = imageView;
-		view.invalidate();
-	    }
-	});
+            public void run() {
+                Bitmap image = bmp;
+                if (image == null) {
+                    image = BitmapFactory.decodeStream(getResources().openRawResource(R.drawable.blinkendroid_gingerbread));
+                }
+                imageView.setImage(image);
+                imageView.setVisibility(View.VISIBLE);
+                playerView.setVisibility(View.GONE);
+                view = imageView;
+                view.invalidate();
+            }
+        });
     }
 
     public void mole(final int type, final int duration) {
