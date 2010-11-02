@@ -32,10 +32,12 @@ public class WhackaMole extends Thread {
 	int style;
 	try {
 	    do {
-		// sleep random time but a little less if moleCounter is high		
-		int sleepTime = (int)(10000-moleCounter*0.5);
+		
+		int moleDuration = (int)(10000-moleCounter*0.5);
+								
 		try {
-		Thread.sleep(sleepTime * random.nextInt(1));
+		    // sleep random time but a little less if moleCounter is high		   		   
+		    Thread.sleep(random.nextInt(10000) + 500);
 		} catch (InterruptedException ie) {
 		    logger.error("WhackaMole interrupt fucked up", ie);
 		}
@@ -44,7 +46,7 @@ public class WhackaMole extends Thread {
 		y = random.nextFloat();
 		// set different style
 		style = random.nextInt(10);
-		playerManager.mole(x, y, style, moleCounter);
+		playerManager.mole(x, y, style, moleCounter, moleDuration);
 		moleCounter++;
 	    } while (running);
 	} catch (Exception e) {
