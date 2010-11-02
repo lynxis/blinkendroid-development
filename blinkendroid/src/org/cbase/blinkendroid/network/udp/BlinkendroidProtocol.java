@@ -7,7 +7,7 @@ public abstract class BlinkendroidProtocol {
     public static final Integer COMMAND_PLAY = 11;
     public static final Integer COMMAND_INIT = 77;
     public static final Integer COMMAND_HEARTBEAT = ConnectionState.Command.HEARTBEAT.ordinal();
-
+    public static final Integer COMMAND_MOLE = 61;
     // Commands from client server
     public static final Integer COMMAND_LOCATEME = 109;
 

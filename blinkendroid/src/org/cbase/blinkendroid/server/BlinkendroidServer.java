@@ -32,7 +32,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class BlinkendroidServer {
-    // TODO schtief warum hier kein thread in server ui?
 
     private static final Logger logger = LoggerFactory.getLogger(BlinkendroidServer.class);
 
@@ -41,7 +40,8 @@ public class BlinkendroidServer {
     private int port = -1;
     private PlayerManager playerManager;
     private List<ConnectionListener> connectionListeners;
-    // TODO muss der Server wissen wer der PlayerManager ist ?
+    private WhackaMole whackAmole;
+
     private UDPServerProtocolManager mServerProto;
 
     private DataServer videoSocket;
@@ -73,7 +73,6 @@ public class BlinkendroidServer {
 	    mServerProto.setPlayerManager(playerManager);
 
 	    // mServerProto.registerHandler(proto, playerManager);
-
 	    for (ConnectionListener connectionListener : connectionListeners) {
 		mServerProto.addConnectionListener(connectionListener);
 	    }
@@ -89,6 +88,8 @@ public class BlinkendroidServer {
     }
 
     public void shutdown() {
+	if (null != whackAmole)
+	    whackAmole.shutdown();
 	if (null != videoSocket)
 	    videoSocket.shutdown();
 	if (null != playerManager)
@@ -124,5 +125,14 @@ public class BlinkendroidServer {
 	    mServerProto.stopTimerThread();
 	else
 	    mServerProto.startTimerThread();
+    }
+
+    public void toggleWhackaMole() {
+	if (null != whackAmole && whackAmole.isRunning())
+	    whackAmole.shutdown();
+	else {
+	    whackAmole = new WhackaMole(playerManager);
+	    whackAmole.start();
+	}
     }
 }

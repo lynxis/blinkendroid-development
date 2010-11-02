@@ -83,6 +83,10 @@ public class BlinkendroidClientProtocol extends BlinkendroidProtocol implements 
 		final int degrees = in.getInt();
 		final int color = in.getInt();
 		mListener.arrow(4000, degrees, color);
+	    } else if (command == COMMAND_MOLE) {
+		final int type = in.getInt();
+		final int moleCounter = in.getInt();
+		mListener.mole(type, moleCounter);
 	    }
 	}
     }

@@ -25,7 +25,6 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.nio.ByteBuffer;
 
-import org.cbase.blinkendroid.network.broadcast.SenderThread;
 import org.cbase.blinkendroid.network.udp.BlinkendroidProtocol;
 import org.cbase.blinkendroid.player.bml.BBMZParser;
 import org.cbase.blinkendroid.player.bml.BLM;
@@ -37,7 +36,7 @@ import android.graphics.BitmapFactory;
 
 public class BlinkendroidDataClientProtocol {
 
-    private static final Logger logger = LoggerFactory.getLogger(SenderThread.class);
+    private static final Logger logger = LoggerFactory.getLogger(BlinkendroidDataClientProtocol.class);
     public static final Integer PROTOCOL_PLAYER = 42;
     public static final Integer COMMAND_PLAYER_TIME = 23;
     public static final Integer COMMAND_CLIP = 17;
@@ -46,13 +45,14 @@ public class BlinkendroidDataClientProtocol {
 
     public static BLM receiveMovie(InetSocketAddress socketAddress) {
 	BLM blm = null;
-
+	Socket socket = new Socket();
+	BufferedOutputStream out = null;
+	BufferedInputStream in = null;
 	try {
-	    Socket socket = new Socket();
 	    socket.connect(socketAddress);
 	    // socket.setSoTimeout(1000);
-	    BufferedOutputStream out = new BufferedOutputStream(socket.getOutputStream());
-	    BufferedInputStream in = new BufferedInputStream(socket.getInputStream());
+	    out = new BufferedOutputStream(socket.getOutputStream());
+	    in = new BufferedInputStream(socket.getInputStream());
 	    writeInt(out, BlinkendroidProtocol.OPTION_PLAY_TYPE_MOVIE);
 	    out.flush();
 	    long length = readLong(in); // TODO checking racecondition with
@@ -63,84 +63,82 @@ public class BlinkendroidDataClientProtocol {
 		BBMZParser parser = new BBMZParser();
 		blm = parser.parseBBMZ(in, length);
 	    }
-	    out.close();
-	    in.close();
-	    socket.close();
 	} catch (Exception e) {
 	    logger.error("receive movie failed", e);
+	} finally {
+	    if (out != null) {
+		try {
+		    out.close();
+		} catch (IOException e) {
+		    logger.error(" out.close() failed", e);
+		}
+		out = null;
+	    }
+	    if (in != null) {
+		try {
+		    in.close();
+		} catch (IOException e) {
+		    logger.error(" in.close() failed", e);
+		}
+		in = null;
+	    }
+	    try {
+		socket.close();
+	    } catch (IOException e) {
+		logger.error(" socket.close() failed", e);
+	    }
 	}
 	return blm;
     }
 
     protected static long readLong(BufferedInputStream in) throws IOException {
 	byte[] buffer = new byte[8];
-	// try {
 	in.read(buffer);
-	// } catch (IOException e) {
-	// Log.e(Constants.LOG_TAG,"readLong failed ",e);
-	// }
 	return ByteBuffer.wrap(buffer).getLong();
     }
 
     protected static int readInt(BufferedInputStream in) throws IOException {
 	byte[] buffer = new byte[4];
-	// try {
 	in.read(buffer);
-	// } catch (IOException e) {
-	// Log.e(Constants.LOG_TAG,"readLong failed ",e);
-	// }
 	return ByteBuffer.wrap(buffer).getInt();
     }
 
     protected float readFloat(BufferedInputStream in) throws IOException {
 	byte[] buffer = new byte[16];
-	// try {
 	in.read(buffer);
-	// } catch (IOException e) {
-	// Log.e(Constants.LOG_TAG,"readLong failed ",e);
-	// }
 	return ByteBuffer.wrap(buffer).getFloat();
     }
 
     protected static void writeInt(BufferedOutputStream out, int i) throws IOException {
 	byte[] buffer = new byte[4];
 	ByteBuffer.wrap(buffer).putInt(i);
-	// try {
 	out.write(buffer);
-	// } catch (IOException e) {
-	// Log.e(Constants.LOG_TAG,"writeInt failed ",e);
-	// }
     }
 
     protected static void writeFloat(BufferedOutputStream out, float f) throws IOException {
 	byte[] buffer = new byte[16];
 	ByteBuffer.wrap(buffer).putFloat(f);
-	// try {
 	out.write(buffer);
-	// } catch (IOException e) {
-	// Log.e(Constants.LOG_TAG,"writeFloat failed ",e);
-	// }
     }
 
     protected static void writeLong(BufferedOutputStream out, long l) throws IOException {
 	byte[] buffer = new byte[8];
 	ByteBuffer.wrap(buffer).putLong(l);
-	// try {
 	out.write(buffer);
-	// } catch (IOException e) {
-	// Log.e(Constants.LOG_TAG,"writeLong failed ",e);
-	// }
     }
 
     public static Bitmap receiveImage(InetSocketAddress socketAddress) {
 	Bitmap bmp = null;
 
+	Socket socket = new Socket();
+	BufferedOutputStream out = null;
+	BufferedInputStream in = null;
 	try {
-	    Socket socket = new Socket();
+	    socket = new Socket();
 	    socket.connect(socketAddress);
 	    // socket.setSoTimeout(1000);
-	    BufferedOutputStream out = new BufferedOutputStream(socket.getOutputStream());
-	    BufferedInputStream in = new BufferedInputStream(socket.getInputStream());
+	    out = new BufferedOutputStream(socket.getOutputStream());
+	    in = new BufferedInputStream(socket.getInputStream());
 	    writeInt(out, BlinkendroidProtocol.OPTION_PLAY_TYPE_IMAGE);
 	    out.flush();
 	    long length = readLong(in);
@@ -163,13 +161,33 @@ public class BlinkendroidDataClientProtocol {
 		    logger.error("invalid image", e);
 		}
 		bmp = BitmapFactory.decodeByteArray(os.toByteArray(), 0, os.size());
+		os.close();
 		os = null;
 	    }
-	    out.close();
-	    in.close();
-	    socket.close();
 	} catch (Exception e) {
 	    logger.error("receiving image failed", e);
+	} finally {
+	    if (out != null) {
+		try {
+		    out.close();
+		} catch (IOException e) {
+		    logger.error(" out.close() failed", e);
+		}
+		out = null;
+	    }
+	    if (in != null) {
+		try {
+		    in.close();
+		} catch (IOException e) {
+		    logger.error(" in.close() failed", e);
+		}
+		in = null;
+	    }
+	    try {
+		socket.close();
+	    } catch (IOException e) {
+		logger.error(" socket.close() failed", e);
+	    }
 	}
 	return bmp;
     }

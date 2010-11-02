@@ -44,22 +44,21 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.telephony.TelephonyManager;
-import android.view.GestureDetector;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.GestureDetector.OnGestureListener;
 import android.view.View.OnTouchListener;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 /**
  * @author Andreas Schildbach
  */
-public class PlayerActivity extends Activity implements BlinkendroidListener, Runnable, OnGestureListener {
+public class PlayerActivity extends Activity implements BlinkendroidListener, Runnable {
 
     private static final Logger logger = LoggerFactory.getLogger(PlayerActivity.class);
 
@@ -70,13 +69,17 @@ public class PlayerActivity extends Activity implements BlinkendroidListener, Ru
     private PuzzleImageView imageView;
     private ArrowView arrowView;
     private TextView ownerView;
+    private ImageView moleView;
     private BlinkendroidClient blinkendroidClient;
     private BLM blm;
     private Map<Integer, Long> arrowDurations = new HashMap<Integer, Long>();
     private float arrowScale = 0f;
     private final Handler handler = new Handler();
     private BlinkendroidApp app;
-    private GestureDetector gestureDetector;
+    private String owner;
+
+    private boolean mole = false;
+    private int molePoints;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,25 +97,44 @@ public class PlayerActivity extends Activity implements BlinkendroidListener, Ru
 	imageView = (PuzzleImageView) findViewById(R.id.player_puzzle_image);
 	imageView.setVisibility(View.VISIBLE);
 
+	moleView = (ImageView) findViewById(R.id.player_mole);
+
 	arrowView = (ArrowView) findViewById(R.id.player_arrow);
 	ownerView = (TextView) findViewById(R.id.player_owner);
+
+	owner = getPhoneIdentifier();
+
 	arrowView.setOnTouchListener(new OnTouchListener() {
 
 	    public boolean onTouch(View v, MotionEvent event) {
-		gestureDetector.onTouchEvent(event);
-		ownerView.setVisibility(View.VISIBLE);
-		handler.postDelayed(new Runnable() {
+		if (mole) {
+		    // hide mole
+		    moleView.setVisibility(View.INVISIBLE);
+		    mole = false;
+		    // show points
+		    ownerView.setText("++" + molePoints);
+		    ownerView.invalidate();
+		    ownerView.setVisibility(View.VISIBLE);
+		    handler.postDelayed(new Runnable() {
 
-		    public void run() {
-			ownerView.setVisibility(View.INVISIBLE);
-		    }
-		}, BlinkendroidApp.SHOW_OWNER_DURATION);
-		return false;
+			public void run() {
+			    ownerView.setVisibility(View.INVISIBLE);
+			}
+		    }, BlinkendroidApp.SHOW_OWNER_DURATION);
+		    return true;
+		} else {
+		    ownerView.setText(owner);
+		    ownerView.setVisibility(View.VISIBLE);
+		    handler.postDelayed(new Runnable() {
+
+			public void run() {
+			    ownerView.setVisibility(View.INVISIBLE);
+			}
+		    }, BlinkendroidApp.SHOW_OWNER_DURATION);
+		    return true;
+		}
 	    }
 	});
-
-	String owner = getPhoneIdentifier();
-	ownerView.setText(owner);
 
 	// forcing the screen brightness to max out while playing
 	if (isAllowedToChangeBrightness()) {
@@ -121,8 +143,6 @@ public class PlayerActivity extends Activity implements BlinkendroidListener, Ru
 	    lp.screenBrightness = 1.0f;
 	    getWindow().setAttributes(lp);
 	}
-
-	gestureDetector = new GestureDetector(this, this);
     }
 
     /**
@@ -360,33 +380,20 @@ public class PlayerActivity extends Activity implements BlinkendroidListener, Ru
 	});
     }
 
-    public boolean onDown(MotionEvent e) {
-	logger.info("onDown");
-	return true;
-    }
-
-    public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-	logger.info("onFling");
-	return true;
-    }
-
-    public void onLongPress(MotionEvent e) {
-	logger.info("onLongPress");
-	return;
-    }
-
-    public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-	logger.info("onScroll");
-	return true;
-    }
-
-    public void onShowPress(MotionEvent e) {
-	logger.info("onShowPress");
-	return;
-    }
-
-    public boolean onSingleTapUp(MotionEvent e) {
-	logger.info("onSingleTapUp");
-	return true;
+    public void mole(final int type, final int moleCounter) {
+	runOnUiThread(new Runnable() {
+	    public void run() {
+		moleView.setImageResource(R.drawable.icon);
+		moleView.setVisibility(View.VISIBLE);
+		mole = true;
+		molePoints = moleCounter;
+		handler.postDelayed(new Runnable() {
+		    public void run() {
+			moleView.setVisibility(View.INVISIBLE);
+			mole = false;
+		    }
+		}, BlinkendroidApp.SHOW_OWNER_DURATION);
+	    };
+	});
     }
 }

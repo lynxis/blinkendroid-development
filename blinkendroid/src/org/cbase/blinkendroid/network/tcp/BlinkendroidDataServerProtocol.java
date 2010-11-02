@@ -58,11 +58,11 @@ public class BlinkendroidDataServerProtocol {
 	    } else {
 		File movie = new File(dataServer.getVideoName());
 		if (null != movie && movie.exists()) {
-
+		    InputStream is = new FileInputStream(movie);
 		    try {
 			writeLong(out, movie.length());
 			logger.info("try to read file with bytes " + movie.length());
-			InputStream is = new FileInputStream(movie);
+
 			byte[] buffer = new byte[1024];
 			// commented because: not referenced
 			// int allLen = 0;
@@ -71,19 +71,27 @@ public class BlinkendroidDataServerProtocol {
 			    out.write(buffer, 0, len);
 			    // allLen += len;
 			}
-			is.close();
 			logger.info("send movie bytes " + movie.length());
 			writeLong(out, movie.length());
 		    } catch (IOException ioe) {
 			logger.error("sending movie failed", ioe);
+		    } finally {
+			is.close();
+			is = null;
 		    }
 		} else {
 		    logger.error("movie not found" + dataServer.getVideoName());
 		}
 	    }
-
-	    out.flush();
 	} catch (IOException e) {
+	    logger.error("sendMovie failed", e);
+	} finally {
+	    try {
+		out.flush();
+		out.close();
+	    } catch (IOException e) {
+		logger.error("sendMovie out.flush out.close failed", e);
+	    }
 	}
     }
 
@@ -95,11 +103,11 @@ public class BlinkendroidDataServerProtocol {
 	    } else {
 		File image = new File(dataServer.getImageName());
 		if (null != image && image.exists()) {
-
+		    InputStream is = new FileInputStream(image);
 		    try {
 			writeLong(out, image.length());
 			logger.info("try to read file with bytes " + image.length());
-			InputStream is = new FileInputStream(image);
+
 			byte[] buffer = new byte[1024];
 			// commented because: not referenced
 			// int allLen = 0;
@@ -108,80 +116,65 @@ public class BlinkendroidDataServerProtocol {
 			    out.write(buffer, 0, len);
 			    // allLen += len;
 			}
-			is.close();
+
 			logger.info("send image bytes " + image.length());
 			writeLong(out, image.length());
 		    } catch (IOException ioe) {
 			logger.error("sending movie failed", ioe);
+		    } finally {
+			is.close();
+			is = null;
 		    }
 		} else {
 		    logger.error("movie not found" + dataServer.getImageName());
 		}
 	    }
-
-	    out.flush();
 	} catch (IOException e) {
+	    logger.error("sendImage failed", e);
+	} finally {
+	    try {
+		out.flush();
+		out.close();
+	    } catch (IOException e) {
+		logger.error("sendImage out.flush out.close failed", e);
+	    }
 	}
     }
 
     protected long readLong(BufferedInputStream in) throws IOException {
 	byte[] buffer = new byte[8];
-	// try {
 	in.read(buffer);
-	// } catch (IOException e) {
-	// Log.e(Constants.LOG_TAG,"readLong failed ",e);
-	// }
 	return ByteBuffer.wrap(buffer).getLong();
     }
 
     protected int readInt(BufferedInputStream in) throws IOException {
 	byte[] buffer = new byte[4];
-	// try {
 	in.read(buffer);
-	// } catch (IOException e) {
-	// Log.e(Constants.LOG_TAG,"readLong failed ",e);
-	// }
 	return ByteBuffer.wrap(buffer).getInt();
     }
 
     protected float readFloat(BufferedInputStream in) throws IOException {
 	byte[] buffer = new byte[16];
-	// try {
 	in.read(buffer);
-	// } catch (IOException e) {
-	// Log.e(Constants.LOG_TAG,"readLong failed ",e);
-	// }
 	return ByteBuffer.wrap(buffer).getFloat();
     }
 
     protected void writeInt(BufferedOutputStream out, int i) throws IOException {
 	byte[] buffer = new byte[4];
 	ByteBuffer.wrap(buffer).putInt(i);
-	// try {
 	out.write(buffer);
-	// } catch (IOException e) {
-	// Log.e(Constants.LOG_TAG,"writeInt failed ",e);
-	// }
     }
 
     protected void writeFloat(BufferedOutputStream out, float f) throws IOException {
 	byte[] buffer = new byte[16];
 	ByteBuffer.wrap(buffer).putFloat(f);
-	// try {
 	out.write(buffer);
-	// } catch (IOException e) {
-	// Log.e(Constants.LOG_TAG,"writeFloat failed ",e);
-	// }
     }
 
     protected void writeLong(BufferedOutputStream out, long l) throws IOException {
 	byte[] buffer = new byte[8];
 	ByteBuffer.wrap(buffer).putLong(l);
-	// try {
 	out.write(buffer);
-	// } catch (IOException e) {
-	// Log.e(Constants.LOG_TAG,"writeLong failed ",e);
-	// }
     }
 
     // Inner classes:
@@ -198,26 +191,29 @@ public class BlinkendroidDataServerProtocol {
 	    int requiredCommand = 0; // we need a to send it
 	    try {
 		byte[] buffer = new byte[64];
-		while (running && in.read(buffer) != -1) {
-		    if (!running) { // fast exit
-			break;
-		    }
+		if (in.read(buffer) != -1) {
+		    // if (!running) { // fast exit
+		    // break;
+		    // }
 		    requiredCommand = ByteBuffer.wrap(buffer).getInt();
 		    if (requiredCommand == BlinkendroidProtocol.OPTION_PLAY_TYPE_MOVIE) {
 			sendMovie();
-		    }
-		    if (requiredCommand == BlinkendroidProtocol.OPTION_PLAY_TYPE_IMAGE) {
+		    } else if (requiredCommand == BlinkendroidProtocol.OPTION_PLAY_TYPE_IMAGE) {
 			sendImage();
-		    } else {
-			running = false;
-			socket.close();
 		    }
 		}
 	    } catch (SocketException e) {
 		logger.error("Socket closed", e);
 	    } catch (IOException e) {
-		logger.error("InputThread fucked", e);
-		e.printStackTrace();
+		logger.error("ReceiverThread fucked", e);
+	    } finally {
+		running = false;
+		try {
+		    in.close();
+		    socket.close();
+		} catch (IOException e) {
+		    logger.error("ReceiverThread in.close socket.close failed", e);
+		}
 	    }
 	    logger.info("ReceiverThread ended!!!!!!!");
 	}
@@ -230,8 +226,7 @@ public class BlinkendroidDataServerProtocol {
 	    try {
 		join();
 	    } catch (InterruptedException e) {
-		logger.error("ReceiverThread join failed", e);
-		e.printStackTrace();
+		// swallow, this is expected when being interrupted
 	    }
 	    logger.info("ReceiverThread shutdown joined & end");
 	}

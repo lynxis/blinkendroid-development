@@ -15,7 +15,6 @@ import org.slf4j.LoggerFactory;
 public class BBMZParser {
     private static final Logger logger = LoggerFactory.getLogger(BBMZParser.class);
 
-
     public BLM parseBBMZ(ByteBuffer input, long length) {
 	return parseBBMZ(new ByteArrayInputStream(input.array()), length);
     }
@@ -25,7 +24,7 @@ public class BBMZParser {
 
 	ByteArrayOutputStream os = new ByteArrayOutputStream();
 	byte inbuf[] = new byte[1];
-	//what is n?
+	// what is n?
 	int n;
 	try {
 	    while ((n = openRawResource.read(inbuf, 0, 1)) != -1) {
@@ -35,25 +34,31 @@ public class BBMZParser {
 		    break;
 	    }
 	} catch (Exception e) {
-	    logger.error( "invalid bbmz", e);
+	    logger.error("invalid bbmz", e);
 	}
 
 	ByteArrayOutputStream baos = new ByteArrayOutputStream();
 	System.gc();
 	uncompress(new ByteArrayInputStream(os.toByteArray()), baos);
+	try {
+	    os.close();
+	} catch (IOException e1) {
+	    logger.error("parseBBMZ os.close()", e1);
+	}
 	os = null;
 	try {
 	    ObjectInputStream objIn = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()));
 	    Object receivedObject = objIn.readObject();
-	    logger.info( "decompression and parsing time :" + (System.currentTimeMillis() - time));
+	    logger.info("decompression and parsing time :" + (System.currentTimeMillis() - time));
+	    baos.close();
 	    baos = null;
 	    if (receivedObject instanceof BLM) {
 		return (BLM) receivedObject;
 	    } else {
-		logger.error( "invalid bbmz");
+		logger.error("invalid bbmz");
 	    }
 	} catch (Exception e) {
-	    logger.error( "invalid bbmz", e);
+	    logger.error("invalid bbmz", e);
 	}
 	baos = null;
 	return null;
@@ -66,19 +71,19 @@ public class BBMZParser {
 	    final int BUFSIZ = 4096;
 	    byte inbuf[] = new byte[BUFSIZ];
 	    int length = 0;
-	    //what is n?
+	    // what is n?
 	    int n;
 	    while ((n = zis.read(inbuf, 0, BUFSIZ)) != -1) {
 		fos.write(inbuf, 0, n);
 		length += n;
 	    }
-	    logger.info( "BBMZParser read bytes " + length);
+	    logger.info("BBMZParser read bytes " + length);
 	    // zis.close();
 	    // fis = null;
 	    // fos.close();
 	    // fos = null;
 	} catch (IOException e) {
-	    logger.error( "invalid bbmz", e);
+	    logger.error("invalid bbmz", e);
 	} finally {
 	    try {
 		// if (fis != null)

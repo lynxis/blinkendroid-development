@@ -6,6 +6,7 @@ import java.net.SocketAddress;
 import java.net.SocketException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.cbase.blinkendroid.BlinkendroidApp;
@@ -27,8 +28,8 @@ public class PlayerManager implements ConnectionListener, BlinkendroidServerList
 
     private static final Logger logger = LoggerFactory.getLogger(PlayerManager.class);
 
-    private PlayerClient[][] mMatrixClients = new PlayerClient[20][20];
-    private List<PlayerClient> mClients = new ArrayList<PlayerClient>();
+    private PlayerClient[][] mMatrixClients = new PlayerClient[30][30];
+    private List<PlayerClient> mClients = Collections.synchronizedList(new ArrayList<PlayerClient>());
     private ConnectionListener connectionListenerManager;
     /*
      * mMatrixClient are active Clients in the matrix mClients are all Clients
@@ -61,13 +62,7 @@ public class PlayerManager implements ConnectionListener, BlinkendroidServerList
     }
 
     public synchronized PlayerClient addClient(ClientSocket clientSocket) {
-	PlayerClient client = null;
-	for (PlayerClient pPlayerClient : mClients) {
-	    if (pPlayerClient.getClientSocketAddress().equals(clientSocket)) {
-		client = pPlayerClient;
-		break;
-	    }
-	}
+	PlayerClient client = getPlayerClientByClientSocket(clientSocket);
 	if (client == null) {
 	    client = new PlayerClient(this, clientSocket);
 	    mClients.add(client);
@@ -214,15 +209,6 @@ public class PlayerManager implements ConnectionListener, BlinkendroidServerList
 
     }
 
-    public synchronized void removeClientFromMatrix(ClientSocket clientSocket) {
-	PlayerClient client = getMatrixClientBySocketAddress(clientSocket.getInetSocketAddress());
-	if (client == null) {
-	    return;
-	} else {
-	    removeClientFromMatrix(client);
-	}
-    }
-
     public synchronized void removeClientFromMatrix(PlayerClient playerClient) {
 	if (!running) {
 	    logger.error("PlayerManager not running ignore removeClient");
@@ -301,34 +287,26 @@ public class PlayerManager implements ConnectionListener, BlinkendroidServerList
 	}
     }
 
-    public synchronized PlayerClient getPlayerClientByClientSocket(ClientSocket clientSocket) {
+    public PlayerClient getPlayerClientByClientSocket(ClientSocket clientSocket) {
 	PlayerClient resultPlayer = null;
-	for (PlayerClient clientPlayer : mClients) {// TODO schtief use hashmap
-	    if (clientPlayer.getClientSocketAddress().equals(clientSocket.getInetSocketAddress())) {
-		resultPlayer = clientPlayer;
-		break;
+	synchronized (mClients) {
+	    for (PlayerClient clientPlayer : mClients) {// TODO schtief use
+		// hashmap
+		if (clientPlayer.getClientSocketAddress().equals(clientSocket.getInetSocketAddress())) {
+		    resultPlayer = clientPlayer;
+		    break;
+		}
 	    }
 	}
 	return resultPlayer;
     }
 
-    public synchronized PlayerClient getMatrixClientBySocketAddress(SocketAddress socketAddr) {
-	for (int i = 0; i < maxY; i++) {
-	    for (int j = 0; j < maxX; j++) {
-		if (null != mMatrixClients[i][j]) {
-		    if (mMatrixClients[i][j].getClientSocketAddress().equals(socketAddr)) {
-			return mMatrixClients[i][j];
-		    }
-		}
-	    }
-	}
-	return null;
-    }
-
     public synchronized PlayerClient getPlayerClientBySocketAddress(SocketAddress socketAddr) {
-	for (PlayerClient pClient : mClients) {// TODO schtief use hashmap
-	    if (pClient.getClientSocketAddress().equals(socketAddr))
-		return pClient;
+	synchronized (mClients) {
+	    for (PlayerClient pClient : mClients) {// TODO schtief use hashmap
+		if (pClient.getClientSocketAddress().equals(socketAddr))
+		    return pClient;
+	    }
 	}
 	return null;
     }
@@ -351,8 +329,10 @@ public class PlayerManager implements ConnectionListener, BlinkendroidServerList
     }
 
     public void checkTimeouts() {
-	for (PlayerClient player : mClients) {
-	    player.checkTimeout(BlinkendroidApp.CONNECT_TIMEOUT);
+	synchronized (mClients) {
+	    for (PlayerClient player : mClients) {
+		player.checkTimeout(BlinkendroidApp.CONNECT_TIMEOUT);
+	    }
 	}
     }
 
@@ -419,14 +399,28 @@ public class PlayerManager implements ConnectionListener, BlinkendroidServerList
 	}
 
 	public void shutdown() {
+	    logger.info("TimeouterThread initiating shutdown");
 	    running = false;
 	    interrupt();
-	    logger.info("TimeouterThread initiating shutdown");
+	    try {
+		join();
+	    } catch (final InterruptedException x) {
+		// swallow, this is expected when being interrupted
+	    }
+	    logger.info("TimeouterThread shutdown");
 	}
     }
 
     public void locateMe(SocketAddress clientAddress) {
 	PlayerClient playerClient = getPlayerClientBySocketAddress(clientAddress);
 	arrow(playerClient);
+    }
+
+    public void mole(float x, float y, int style, int moleCounter) {
+	int px = (int) ((maxX - 1) * x);
+	int py = (int) ((maxY - 1) * y);
+	logger.info("mole " + x + ":" + y + " (" + px + ":" + py + ")" + style + "," + moleCounter);
+	mMatrixClients[px][py].getBlinkenProtocol().mole(style, moleCounter);
+
     }
 }

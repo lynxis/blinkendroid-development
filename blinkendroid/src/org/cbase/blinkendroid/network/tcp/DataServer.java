@@ -43,7 +43,6 @@ public class DataServer extends Thread {
 	}
     }
 
-    // TODO do we need this method any longer?
     private void acceptLoop() {
 
 	try {
@@ -78,7 +77,6 @@ public class DataServer extends Thread {
 	}
 	interrupt();
 	logger.info(" VideoServer shutdown interrupted");
-	// TODO fix this hanging join
 	try {
 	    join();
 	} catch (InterruptedException e) {

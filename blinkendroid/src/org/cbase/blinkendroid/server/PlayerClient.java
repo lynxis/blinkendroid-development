@@ -73,5 +73,4 @@ public class PlayerClient extends ConnectionState {
     public String toString() {
 	return x + ":" + y;
     }
-
 }

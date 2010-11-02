@@ -52,7 +52,6 @@ public class BlinkendroidServerProtocol extends BlinkendroidProtocol implements 
 
     public void clip(float startX, float startY, float endX, float endY) {
 	try {
-
 	    ByteBuffer out = ByteBuffer.allocate(1024);
 	    out.putInt(COMMAND_CLIP);
 	    out.putFloat(startX);
@@ -81,6 +80,18 @@ public class BlinkendroidServerProtocol extends BlinkendroidProtocol implements 
 	    if (command == COMMAND_LOCATEME) {
 		mListener.locateMe(from);
 	    }
+	}
+    }
+
+    public void mole(int style, int moleCounter) {
+	try {
+	    ByteBuffer out = ByteBuffer.allocate(1024);
+	    out.putInt(COMMAND_MOLE);
+	    out.putInt(style);
+	    out.putInt(moleCounter);
+	    send(out);
+	} catch (IOException e) {
+	    logger.error("mole failed ", e);
 	}
     }
 }
