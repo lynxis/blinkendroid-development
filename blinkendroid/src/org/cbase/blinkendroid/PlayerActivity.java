@@ -132,7 +132,7 @@ public class PlayerActivity extends Activity implements BlinkendroidListener, Ru
 		    mole = false;
 		    // show points
 		    myPoints += moleCounter;
-		    ownerView.setText(myPoints);
+		    ownerView.setText(Integer.toString(myPoints));
 		    ownerView.invalidate();
 		    ownerView.setVisibility(View.VISIBLE);
 		    handler.postDelayed(new Runnable() {
@@ -413,7 +413,7 @@ public class PlayerActivity extends Activity implements BlinkendroidListener, Ru
 			if (moleCounter != hitMole) {
 			    // show points
 			    myPoints -= moleCounter;
-			    ownerView.setText(myPoints);
+			    ownerView.setText(Integer.toString(myPoints));
 			    ownerView.invalidate();
 			    ownerView.setVisibility(View.VISIBLE);
 			    handler.postDelayed(new Runnable() {
