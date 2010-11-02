@@ -383,7 +383,7 @@ public class PlayerActivity extends Activity implements BlinkendroidListener, Ru
     public void mole(final int type, final int moleCounter) {
 	runOnUiThread(new Runnable() {
 	    public void run() {
-		moleView.setImageResource(R.drawable.icon);
+		moleView.setImageResource(R.drawable.android1 + (type % 5));
 		moleView.setVisibility(View.VISIBLE);
 		mole = true;
 		molePoints = moleCounter;
