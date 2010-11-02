@@ -34,7 +34,11 @@ public class WhackaMole extends Thread {
 	    do {
 		// sleep random time but a little less if moleCounter is high		
 		int sleepTime = (int)(10000-moleCounter*0.5);
+		try {
 		Thread.sleep(sleepTime * random.nextInt(1));
+		} catch (InterruptedException ie) {
+		    logger.error("WhackaMole interrupt fucked up", ie);
+		}
 		// send a mole to x=0.0-1.0 y=0.0-1.0
 		x = random.nextFloat();
 		y = random.nextFloat();
