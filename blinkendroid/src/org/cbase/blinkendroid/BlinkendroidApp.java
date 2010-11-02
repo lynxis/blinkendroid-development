@@ -63,6 +63,8 @@ public class BlinkendroidApp extends Application {
     public static final int INTERACTIVE_MODE = 6;
     public static final int NON_INTERACTIVE_MODE = 5;
     
+    public static final int PICK_FROM_GALLERY = 666;
+    
     private String downloadUrl;
     private String aboutUrl;
 

@@ -32,6 +32,7 @@ import org.slf4j.LoggerFactory;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
@@ -125,7 +126,7 @@ public class LoginActivity extends Activity implements Runnable {
         String ownerName = PreferenceManager.getDefaultSharedPreferences(this).getString(PREFS_KEY_OWNER, null);
         if (ownerName == null) {
             ownerName = System.currentTimeMillis() + "";
-            
+
         }
         senderThread = new SenderThread(ownerName);
         senderThread.start();
@@ -158,19 +159,21 @@ public class LoginActivity extends Activity implements Runnable {
                 runOnUiThread(new Runnable() {
 
                     public void run() {
-                        new AlertDialog.Builder(LoginActivity.this).setIcon(android.R.drawable.ic_dialog_alert).setTitle(getString(R.string.warning)).setMessage(getString(R.string.new_release_text)).setPositiveButton(getString(R.string.check_for_update), new OnClickListener() {
+                        new AlertDialog.Builder(LoginActivity.this).setIcon(android.R.drawable.ic_dialog_alert)
+                                .setTitle(getString(R.string.warning)).setMessage(getString(R.string.new_release_text))
+                                .setPositiveButton(getString(R.string.check_for_update), new OnClickListener() {
 
-                            public void onClick(DialogInterface dialog, int which) {
-                                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(app.getDownloadUrl())));
-                                finish();
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(app.getDownloadUrl())));
+                                        finish();
 
-                            }
-                        }).setNegativeButton(getString(R.string.ignore), new OnClickListener() {
+                                    }
+                                }).setNegativeButton(getString(R.string.ignore), new OnClickListener() {
 
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        }).create().show();
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                    }
+                                }).create().show();
                     }
                 });
 
@@ -230,48 +233,48 @@ public class LoginActivity extends Activity implements Runnable {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
 
-            case R.id.login_options_start_server: {
-                startActivity(new Intent(LoginActivity.this, ServerActivity.class));
-                return true;
-            }
+        case R.id.login_options_start_server: {
+            startActivity(new Intent(LoginActivity.this, ServerActivity.class));
+            return true;
+        }
 
-            case R.id.login_options_connect_to_ip: {
-                final Dialog dialog = new Dialog(this);
-                dialog.setTitle(getString(R.string.enter_server_ip));
-                dialog.setContentView(R.layout.login_connect_to_ip_dialog_content);
-                dialog.show();
-                final EditText ip = (EditText) dialog.findViewById(R.id.login_connect_to_ip_dialog_ip);
-                ip.setText(NetworkUtils.getLocalIpAddress());
-                ip.setOnEditorActionListener(new OnEditorActionListener() {
+        case R.id.login_options_connect_to_ip: {
+            final Dialog dialog = new Dialog(this);
+            dialog.setTitle(getString(R.string.enter_server_ip));
+            dialog.setContentView(R.layout.login_connect_to_ip_dialog_content);
+            dialog.show();
+            final EditText ip = (EditText) dialog.findViewById(R.id.login_connect_to_ip_dialog_ip);
+            ip.setText(NetworkUtils.getLocalIpAddress());
+            ip.setOnEditorActionListener(new OnEditorActionListener() {
 
-                    public boolean onEditorAction(final TextView v, final int actionId, final KeyEvent event) {
-                        dialog.dismiss();
-                        final Intent intent = new Intent(LoginActivity.this, PlayerActivity.class);
-                        intent.putExtra(PlayerActivity.INTENT_EXTRA_IP, ip.getText().toString());
-                        intent.putExtra(PlayerActivity.INTENT_EXTRA_PORT, BlinkendroidApp.BROADCAST_SERVER_PORT);
-                        startActivity(intent);
-                        return true;
-                    }
-                });
-                return true;
-            }
+                public boolean onEditorAction(final TextView v, final int actionId, final KeyEvent event) {
+                    dialog.dismiss();
+                    final Intent intent = new Intent(LoginActivity.this, PlayerActivity.class);
+                    intent.putExtra(PlayerActivity.INTENT_EXTRA_IP, ip.getText().toString());
+                    intent.putExtra(PlayerActivity.INTENT_EXTRA_PORT, BlinkendroidApp.BROADCAST_SERVER_PORT);
+                    startActivity(intent);
+                    return true;
+                }
+            });
+            return true;
+        }
 
-            case R.id.login_options_preferences: {
-                startActivity(new Intent(getBaseContext(), PreferencesActivity.class));
-                return true;
-            }
+        case R.id.login_options_preferences: {
+            startActivity(new Intent(getBaseContext(), PreferencesActivity.class));
+            return true;
+        }
 
-            case R.id.login_options_instructions: {
-                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(app.getAboutUrl())));
-                return true;
-            }
+        case R.id.login_options_instructions: {
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(app.getAboutUrl())));
+            return true;
+        }
 
-            case R.id.login_options_wireless_settings: {
-                final Intent intent = new Intent();
-                intent.setClassName("com.android.settings", "com.android.settings.wifi.WifiSettings");
-                startActivity(intent);
-                return true;
-            }
+        case R.id.login_options_wireless_settings: {
+            final Intent intent = new Intent();
+            intent.setClassName("com.android.settings", "com.android.settings.wifi.WifiSettings");
+            startActivity(intent);
+            return true;
+        }
         }
 
         return false;
@@ -279,12 +282,13 @@ public class LoginActivity extends Activity implements Runnable {
 
     @Override
     protected Dialog onCreateDialog(int id) {
-        LayoutInflater inflater = (LayoutInflater) getSystemService(this.LAYOUT_INFLATER_SERVICE);
+        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         if (id == SETOWNER_DIALOG) {
 
             final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-            final View layout = inflater.inflate(R.layout.setowner_dialog, (ViewGroup) findViewById(R.id.setownerLayout));
+            final View layout = inflater.inflate(R.layout.setowner_dialog,
+                    (ViewGroup) findViewById(R.id.setownerLayout));
 
             final Button okButton = (Button) layout.findViewById(R.id.okButton);
             final EditText ownernameText = (EditText) layout.findViewById(R.id.ownernameText);
@@ -324,11 +328,11 @@ public class LoginActivity extends Activity implements Runnable {
             if (row == null) {
                 row = getLayoutInflater().inflate(android.R.layout.two_line_list_item, null);
 
-                
             }
             final ListEntry entry = serverList.get(position);
 
-            ((TextView) row.findViewById(android.R.id.text1)).setText(entry.name.length() > 0 ? entry.name : "<unnamed>");
+            ((TextView) row.findViewById(android.R.id.text1)).setText(entry.name.length() > 0 ? entry.name
+                    : "<unnamed>");
 
             ((TextView) row.findViewById(android.R.id.text2)).setText(entry.ip);
 
@@ -377,11 +381,9 @@ public class LoginActivity extends Activity implements Runnable {
             if (entry.ip.equals(ip) && entry.name.equals(name)) {
                 return entry;
 
-
             }
-            
+
         }
         return null;
     }
 }
-

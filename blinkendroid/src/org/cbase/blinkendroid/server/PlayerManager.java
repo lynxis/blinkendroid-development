@@ -151,8 +151,9 @@ public class PlayerManager implements ConnectionListener, BlinkendroidServerList
     private void arrow(final PlayerClient pClient, final int dx, final int dy, final int deg) {
 
 	final int color = ARROW_COLORS[(pClient.x + 1) * (pClient.y + 1) % ARROW_COLORS.length];
-
-	if (pClient.y + dy >= 0 && pClient.x + dx >= 0 && null != mMatrixClients[pClient.y + dy][pClient.x + dx]) {
+	
+	if (pClient.y + dy >= 0 && pClient.x + dx >= 0 && 
+	        null != mMatrixClients[pClient.y + dy][pClient.x + dx]) {
 	    mMatrixClients[pClient.y + dy][pClient.x + dx].getBlinkenProtocol().arrow(deg, color);
 	    final int inverseDeg = (deg + 180) % 360;
 	    mMatrixClients[pClient.y][pClient.x].getBlinkenProtocol().arrow(inverseDeg, color);
