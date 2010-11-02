@@ -160,7 +160,11 @@ public class BlinkendroidDataClientProtocol {
 		} catch (Exception e) {
 		    logger.error("invalid image", e);
 		}
-		bmp = BitmapFactory.decodeByteArray(os.toByteArray(), 0, os.size());
+		try {
+		    bmp = BitmapFactory.decodeByteArray(os.toByteArray(), 0, os.size());
+		} catch (OutOfMemoryError oom) {
+		    logger.error("fuck you!!", oom);
+		}
 		os.close();
 		os = null;
 	    }

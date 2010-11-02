@@ -382,8 +382,14 @@ public class PlayerActivity extends Activity implements BlinkendroidListener, Ru
 	    public void run() {
 		Bitmap image = bmp;
 		if (image == null) {
-		    image = BitmapFactory.decodeStream(getResources().openRawResource(
-			    R.drawable.blinkendroid_gingerbread));
+		    try {
+			image = BitmapFactory.decodeStream(getResources().openRawResource(
+				R.drawable.blinkendroid_gingerbread));
+		    } catch (OutOfMemoryError oom) {
+			logger.error("fuck you!!", oom);
+			image = BitmapFactory.decodeStream(getResources().openRawResource(R.drawable.icon));
+		    }
+
 		}
 		imageView.setImage(image);
 		imageView.setVisibility(View.VISIBLE);

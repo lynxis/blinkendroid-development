@@ -59,8 +59,13 @@ public class BlinkendroidClientProtocol extends BlinkendroidProtocol implements 
 		    final long startTime = in.getLong();
 		    Thread t = new Thread() {
 			public void run() {
-			    BLM blm = BlinkendroidDataClientProtocol.receiveMovie((InetSocketAddress) from);
-			    mListener.playBLM(startTime, blm);
+			    try {
+				BLM blm = BlinkendroidDataClientProtocol.receiveMovie((InetSocketAddress) from);
+				mListener.playBLM(startTime, blm);
+			    } catch (OutOfMemoryError oom) {
+				logger.error("fuck you!!", oom);
+				mListener.playBLM(startTime, null);
+			    }
 			}
 		    };
 		    t.start();
