@@ -226,7 +226,7 @@ public class ServerActivity extends Activity implements ConnectionListener, BLMM
         ticketSizeAdapter = new ArrayAdapter<Integer>(this, android.R.layout.simple_spinner_item);
         ticketSizeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
-        for (int i = 1; i <= 200; i += i + 10) {
+        for (int i = 2; i <= 256; i = i * 2) {
             ticketSizeAdapter.add(i);
         }
 
@@ -234,9 +234,9 @@ public class ServerActivity extends Activity implements ConnectionListener, BLMM
 
         ticketSizeSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
 
-            public void onItemSelected(AdapterView<?> arg0, View arg1, int maxClients, long arg3) {
+            public void onItemSelected(AdapterView<?> adapter, View view, int maxClients, long arg3) {
                 if (ticketManager != null) {
-                    ticketManager.setMaxClients(maxClients);
+                    ticketManager.setMaxClients(Integer.parseInt(adapter.getItemAtPosition(maxClients).toString()));
                 }
             }
 
