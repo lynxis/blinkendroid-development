@@ -81,6 +81,7 @@ public class PlayerActivity extends Activity implements BlinkendroidListener, Ru
     private boolean mole = false;
     private int moleCounter;
     private int hitMole;
+    private int myPoints = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -129,7 +130,8 @@ public class PlayerActivity extends Activity implements BlinkendroidListener, Ru
 		    moleView.setVisibility(View.INVISIBLE);
 		    mole = false;
 		    // show points
-		    ownerView.setText("+" + moleCounter);
+		    myPoints += moleCounter;
+		    ownerView.setText("+" + myPoints);
 		    ownerView.invalidate();
 		    ownerView.setVisibility(View.VISIBLE);
 		    handler.postDelayed(new Runnable() {
@@ -409,7 +411,8 @@ public class PlayerActivity extends Activity implements BlinkendroidListener, Ru
 			// if we did not hit the mole show negative
 			if (moleCounter != hitMole) {
 			    // show points
-			    ownerView.setText("-" + moleCounter);
+			    myPoints -= moleCounter;
+			    ownerView.setText("-" + myPoints);
 			    ownerView.invalidate();
 			    ownerView.setVisibility(View.VISIBLE);
 			    handler.postDelayed(new Runnable() {
