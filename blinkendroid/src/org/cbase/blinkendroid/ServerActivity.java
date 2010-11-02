@@ -31,8 +31,6 @@ import android.provider.MediaStore;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
@@ -41,6 +39,8 @@ import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemSelectedListener;
 
 public class ServerActivity extends Activity implements ConnectionListener, BLMManagerListener, ImageManagerListener,
 	ClientQueueListener {
@@ -111,17 +111,16 @@ public class ServerActivity extends Activity implements ConnectionListener, BLMM
 		    blinkendroidServer.toggleWhackaMole();
 	    }
 	});
-     final Button pickImageButton = (Button) findViewById(R.id.pick_image_from_gallery);
-        pickImageButton.setOnClickListener(new OnClickListener() {
+	final Button pickImageButton = (Button) findViewById(R.id.pick_image_from_gallery);
+	pickImageButton.setOnClickListener(new OnClickListener() {
 
-            @Override
-            public void onClick(View v) {
-                Intent galleryIntent = new Intent(Intent.ACTION_PICK,
-                        android.provider.MediaStore.Images.Media.INTERNAL_CONTENT_URI);
-                startActivityForResult(galleryIntent, BlinkendroidApp.PICK_FROM_GALLERY);
+	    public void onClick(View v) {
+		Intent galleryIntent = new Intent(Intent.ACTION_PICK,
+			android.provider.MediaStore.Images.Media.INTERNAL_CONTENT_URI);
+		startActivityForResult(galleryIntent, BlinkendroidApp.PICK_FROM_GALLERY);
 
-            }
-        });
+	    }
+	});
 
 	final ToggleButton serverSwitchButton = (ToggleButton) findViewById(R.id.server_switch);
 	serverSwitchButton.setOnClickListener(new OnClickListener() {
@@ -173,7 +172,7 @@ public class ServerActivity extends Activity implements ConnectionListener, BLMM
 		    moleButton.setEnabled(true);
 		    serverNameView.setEnabled(false);
 		    pickImageButton.setEnabled(true);
-		    
+
 		} else {
 		    receiverThread.shutdown();
 		    receiverThread = null;
@@ -296,35 +295,35 @@ public class ServerActivity extends Activity implements ConnectionListener, BLMM
 
 	super.onDestroy();
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) {
-        super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
+	super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
 
-        switch (requestCode) {
-        case BlinkendroidApp.PICK_FROM_GALLERY:
-            if (resultCode == RESULT_OK) {
-                Uri selectedImage = imageReturnedIntent.getData();
-                String[] filePathColumn = { MediaStore.Images.Media.DATA };
+	switch (requestCode) {
+	case BlinkendroidApp.PICK_FROM_GALLERY:
+	    if (resultCode == RESULT_OK) {
+		Uri selectedImage = imageReturnedIntent.getData();
+		String[] filePathColumn = { MediaStore.Images.Media.DATA };
 
-                Cursor cursor = getContentResolver().query(selectedImage, filePathColumn, null, null, null);
-                cursor.moveToFirst();
+		Cursor cursor = getContentResolver().query(selectedImage, filePathColumn, null, null, null);
+		cursor.moveToFirst();
 
-                int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-                String filePath = cursor.getString(columnIndex);
-                cursor.close();
+		int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+		String filePath = cursor.getString(columnIndex);
+		cursor.close();
 
-                
-                ImageHeader imageHeader = new ImageHeader();
+		ImageHeader imageHeader = new ImageHeader();
 
-                imageHeader.title = filePath;
-                logger.debug(filePath.toString());
-                imageHeader.filename = filePath;
-                imageHeader.height = 0;
-                imageHeader.width = 0;
-                
-                blinkendroidServer.switchImage(imageHeader);
-            }
-        }
+		imageHeader.title = filePath;
+		logger.debug(filePath.toString());
+		imageHeader.filename = filePath;
+		imageHeader.height = 0;
+		imageHeader.width = 0;
+
+		blinkendroidServer.switchImage(imageHeader);
+	    }
+	}
     }
 
     public void connectionOpened(final ClientSocket clientSocket) {
