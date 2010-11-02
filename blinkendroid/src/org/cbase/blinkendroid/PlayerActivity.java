@@ -115,6 +115,7 @@ public class PlayerActivity extends Activity implements BlinkendroidListener, Ru
 
 		    public void run() {
 			ownerView.setVisibility(View.GONE);
+			ownerView.setText(owner);
 		    }
 		}, BlinkendroidApp.SHOW_OWNER_DURATION);
 		return true;
@@ -419,6 +420,7 @@ public class PlayerActivity extends Activity implements BlinkendroidListener, Ru
 
 				public void run() {
 				    ownerView.setVisibility(View.GONE);
+				    ownerView.setText(owner);
 				}
 			    }, BlinkendroidApp.SHOW_OWNER_DURATION);
 			}
