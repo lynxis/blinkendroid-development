@@ -1,6 +1,7 @@
 package org.cbase.blinkendroid.serverui;
 
 import java.awt.Container;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
@@ -89,6 +90,9 @@ public class BlinkendroidFrame extends JFrame implements ImageManagerListener,
 	super();
 	this.server = server;
 	initialize();
+	repaint();
+	pack();
+	setVisible(true);
     }
 
     /**
@@ -144,7 +148,7 @@ public class BlinkendroidFrame extends JFrame implements ImageManagerListener,
 	
 	ticketsTxt.addFocusListener(new TicketFocusListener());
 	
-	this.setSize(350, 500);
+	this.setPreferredSize(new Dimension(350, 500));
 	this.setResizable(false);
 
 	Container jContentPane = getContentPane();
@@ -214,7 +218,6 @@ public class BlinkendroidFrame extends JFrame implements ImageManagerListener,
 	jContentPane.add(globalTimerButton);
 	jContentPane.add(moleButton);
 	jContentPane.add(removeClient);
-
     }
 
     private enum Commands {
