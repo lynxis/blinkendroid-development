@@ -80,6 +80,7 @@ public class PlayerActivity extends Activity implements BlinkendroidListener, Ru
 
     private boolean mole = false;
     private int moleCounter;
+    private int hitMole;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -124,6 +125,7 @@ public class PlayerActivity extends Activity implements BlinkendroidListener, Ru
 	    public boolean onTouch(View v, MotionEvent event) {
 		if (mole) {
 		    // hide mole
+		    hitMole = moleCounter;
 		    moleView.setVisibility(View.INVISIBLE);
 		    mole = false;
 		    // show points
@@ -138,23 +140,10 @@ public class PlayerActivity extends Activity implements BlinkendroidListener, Ru
 		    }, BlinkendroidApp.SHOW_OWNER_DURATION);
 		    // send hitmole to server
 		    // blinkendroidClient.hitMole(moleCounter);
-		    return true;
 		} else {
-		    // send missed mole to server
-		    // blinkendroidClient.missedMole(moleCounter);
-		    // show points
-		    ownerView.setText("-" + moleCounter);
-		    ownerView.invalidate();
-		    ownerView.setVisibility(View.VISIBLE);
-		    handler.postDelayed(new Runnable() {
-
-			public void run() {
-			    ownerView.setVisibility(View.GONE);
-			}
-		    }, BlinkendroidApp.SHOW_OWNER_DURATION);
-
-		    return true;
+		    logger.info("missed the mole dude!");
 		}
+		return true;
 	    }
 	});
 	// forcing the screen brightness to max out while playing
@@ -405,7 +394,7 @@ public class PlayerActivity extends Activity implements BlinkendroidListener, Ru
     public void mole(final int type, final int moleC, final int duration) {
 	runOnUiThread(new Runnable() {
 	    public void run() {
-		if (mole)
+		if (mole || ownerView.getVisibility() == View.VISIBLE)
 		    return;
 
 		moleView.setImageResource(R.drawable.android1 + (type % 5));
@@ -416,6 +405,20 @@ public class PlayerActivity extends Activity implements BlinkendroidListener, Ru
 		    public void run() {
 			moleView.setVisibility(View.GONE);
 			mole = false;
+
+			// if we did not hit the mole show negative
+			if (moleCounter != hitMole) {
+			    // show points
+			    ownerView.setText("-" + moleCounter);
+			    ownerView.invalidate();
+			    ownerView.setVisibility(View.VISIBLE);
+			    handler.postDelayed(new Runnable() {
+
+				public void run() {
+				    ownerView.setVisibility(View.GONE);
+				}
+			    }, BlinkendroidApp.SHOW_OWNER_DURATION);
+			}
 		    }
 		}, duration);
 	    };
