@@ -86,7 +86,8 @@ public class BlinkendroidClientProtocol extends BlinkendroidProtocol implements 
 	    } else if (command == COMMAND_MOLE) {
 		final int type = in.getInt();
 		final int moleCounter = in.getInt();
-		mListener.mole(type, moleCounter);
+		final int duration = in.getInt();
+		mListener.mole(type, moleCounter, duration);
 	    }
 	}
     }

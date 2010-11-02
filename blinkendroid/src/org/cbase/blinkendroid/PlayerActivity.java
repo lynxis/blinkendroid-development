@@ -127,7 +127,7 @@ public class PlayerActivity extends Activity implements BlinkendroidListener, Ru
 		    moleView.setVisibility(View.INVISIBLE);
 		    mole = false;
 		    // show points
-		    ownerView.setText("+" + (2000 - moleCounter));
+		    ownerView.setText("+" + moleCounter);
 		    ownerView.invalidate();
 		    ownerView.setVisibility(View.VISIBLE);
 		    handler.postDelayed(new Runnable() {
@@ -137,13 +137,13 @@ public class PlayerActivity extends Activity implements BlinkendroidListener, Ru
 			}
 		    }, BlinkendroidApp.SHOW_OWNER_DURATION);
 		    // send hitmole to server
-		    blinkendroidClient.hitMole(moleCounter);
+		    // blinkendroidClient.hitMole(moleCounter);
 		    return true;
 		} else {
 		    // send missed mole to server
-		    blinkendroidClient.missedMole(moleCounter);
+		    // blinkendroidClient.missedMole(moleCounter);
 		    // show points
-		    ownerView.setText("-" + (2000 - moleCounter));
+		    ownerView.setText("-" + moleCounter);
 		    ownerView.invalidate();
 		    ownerView.setVisibility(View.VISIBLE);
 		    handler.postDelayed(new Runnable() {
@@ -387,21 +387,22 @@ public class PlayerActivity extends Activity implements BlinkendroidListener, Ru
 
 	runOnUiThread(new Runnable() {
 
-            public void run() {
-                Bitmap image = bmp;
-                if (image == null) {
-                    image = BitmapFactory.decodeStream(getResources().openRawResource(R.drawable.blinkendroid_gingerbread));
-                }
-                imageView.setImage(image);
-                imageView.setVisibility(View.VISIBLE);
-                playerView.setVisibility(View.GONE);
-                view = imageView;
-                view.invalidate();
-            }
-        });
+	    public void run() {
+		Bitmap image = bmp;
+		if (image == null) {
+		    image = BitmapFactory.decodeStream(getResources().openRawResource(
+			    R.drawable.blinkendroid_gingerbread));
+		}
+		imageView.setImage(image);
+		imageView.setVisibility(View.VISIBLE);
+		playerView.setVisibility(View.GONE);
+		view = imageView;
+		view.invalidate();
+	    }
+	});
     }
 
-    public void mole(final int type, final int duration) {
+    public void mole(final int type, final int moleC, final int duration) {
 	runOnUiThread(new Runnable() {
 	    public void run() {
 		if (mole)
@@ -410,7 +411,7 @@ public class PlayerActivity extends Activity implements BlinkendroidListener, Ru
 		moleView.setImageResource(R.drawable.android1 + (type % 5));
 		moleView.setVisibility(View.VISIBLE);
 		mole = true;
-		moleCounter = duration;
+		moleCounter = moleC;
 		handler.postDelayed(new Runnable() {
 		    public void run() {
 			moleView.setVisibility(View.GONE);

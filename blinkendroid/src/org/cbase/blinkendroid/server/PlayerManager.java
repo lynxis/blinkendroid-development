@@ -432,7 +432,7 @@ public class PlayerManager implements ConnectionListener, BlinkendroidServerList
 	logger.info("mole " + x + ":" + y + " (" + px + ":" + py + ")" + style + "," + duration);
 	PlayerClient pc = mMatrixClients[py][px];
 	if (null != pc && null != pc.getBlinkenProtocol())
-	    pc.getBlinkenProtocol().mole(style, duration);
+	    pc.getBlinkenProtocol().mole(style, actualPoints, duration);
 	else
 	    logger.error("client not found (" + px + ":" + py + ")");
     }

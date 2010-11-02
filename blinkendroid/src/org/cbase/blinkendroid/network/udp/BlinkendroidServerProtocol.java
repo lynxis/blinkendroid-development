@@ -87,12 +87,13 @@ public class BlinkendroidServerProtocol extends BlinkendroidProtocol implements 
 	}
     }
 
-    public void mole(int style, int moleCounter) {
+    public void mole(int style, int moleCounter, int duration) {
 	try {
 	    ByteBuffer out = ByteBuffer.allocate(1024);
 	    out.putInt(COMMAND_MOLE);
 	    out.putInt(style);
 	    out.putInt(moleCounter);
+	    out.putInt(duration);
 	    send(out);
 	} catch (IOException e) {
 	    logger.error("mole failed ", e);
