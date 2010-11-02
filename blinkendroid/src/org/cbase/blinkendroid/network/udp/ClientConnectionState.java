@@ -41,7 +41,8 @@ public class ClientConnectionState extends ConnectionState implements CommandHan
 	mHeartbeater.shutdown();
     }
 
-    protected void receivedHeartbeat(int ts) {
+    @Override
+	protected void receivedHeartbeat(int ts) {
 	m_LastSeen = System.currentTimeMillis();
 	// check timerStyle
 	if (this.timerStyle == BlinkendroidApp.DIRECTTIMER && ts == BlinkendroidApp.GLOBALTIMER) {
@@ -50,7 +51,8 @@ public class ClientConnectionState extends ConnectionState implements CommandHan
 	}
     }
 
-    public void checkTimeout(int timeout) {
+    @Override
+	public void checkTimeout(int timeout) {
 	if (m_state != Connstate.ESTABLISHED) {
 	    return;
 	}

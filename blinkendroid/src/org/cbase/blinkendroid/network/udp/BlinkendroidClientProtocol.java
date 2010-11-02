@@ -58,6 +58,7 @@ public class BlinkendroidClientProtocol extends BlinkendroidProtocol implements 
 		case OPTION_PLAY_TYPE_MOVIE:
 		    final long startTime = in.getLong();
 		    Thread t = new Thread() {
+			@Override
 			public void run() {
 			    try {
 				BLM blm = BlinkendroidDataClientProtocol.receiveMovie((InetSocketAddress) from);
@@ -73,6 +74,7 @@ public class BlinkendroidClientProtocol extends BlinkendroidProtocol implements 
 		case OPTION_PLAY_TYPE_IMAGE:
 		    in.getLong();// we dont need startime for the image
 		    Thread t2 = new Thread() {
+			@Override
 			public void run() {
 			    Bitmap bmp = BlinkendroidDataClientProtocol.receiveImage((InetSocketAddress) from);
 			    mListener.showImage(bmp);
