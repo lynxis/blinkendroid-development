@@ -420,7 +420,9 @@ public class PlayerManager implements ConnectionListener, BlinkendroidServerList
 	int px = (int) ((maxX - 1) * x);
 	int py = (int) ((maxY - 1) * y);
 	logger.info("mole " + x + ":" + y + " (" + px + ":" + py + ")" + style + "," + moleCounter);
-	mMatrixClients[px][py].getBlinkenProtocol().mole(style, moleCounter);
+	PlayerClient pc = mMatrixClients[px][py];
+	if (null != pc && null != pc.getBlinkenProtocol())
+	    pc.getBlinkenProtocol().mole(style, moleCounter);
 
     }
 }
