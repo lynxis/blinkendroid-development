@@ -32,8 +32,9 @@ public class WhackaMole extends Thread {
 	int style;
 	try {
 	    do {
-		// sleep random time but a little less if moleCounter is high
-		Thread.sleep(random.nextInt(10000) + 500);
+		// sleep random time but a little less if moleCounter is high		
+		int sleepTime = (int)(10000-moleCounter*0.5);
+		Thread.sleep(sleepTime * random.nextInt(1));
 		// send a mole to x=0.0-1.0 y=0.0-1.0
 		x = random.nextFloat();
 		y = random.nextFloat();
