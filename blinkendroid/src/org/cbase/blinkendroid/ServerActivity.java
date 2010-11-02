@@ -100,6 +100,15 @@ public class ServerActivity extends Activity implements ConnectionListener, BLMM
 	    }
 	});
 
+	final Button moleButton = (Button) findViewById(R.id.server_mole_button);
+	moleButton.setOnClickListener(new OnClickListener() {
+
+	    public void onClick(View v) {
+		if (null != blinkendroidServer)
+		    blinkendroidServer.toggleWhackaMole();
+	    }
+	});
+
 	final ToggleButton serverSwitchButton = (ToggleButton) findViewById(R.id.server_switch);
 	serverSwitchButton.setOnClickListener(new OnClickListener() {
 
@@ -147,6 +156,7 @@ public class ServerActivity extends Activity implements ConnectionListener, BLMM
 		    blinkendroidServer.start();
 
 		    clientButton.setEnabled(true);
+		    moleButton.setEnabled(true);
 		    serverNameView.setEnabled(false);
 		} else {
 		    receiverThread.shutdown();
@@ -158,6 +168,7 @@ public class ServerActivity extends Activity implements ConnectionListener, BLMM
 		    ticketManager.reset();
 
 		    clientButton.setEnabled(false);
+		    moleButton.setEnabled(false);
 		    serverNameView.setEnabled(true);
 		}
 	    }

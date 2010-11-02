@@ -42,6 +42,9 @@
 				<Spinner android:id="@+id/image_selector"
 					android:layout_width="fill_parent" android:layout_height="wrap_content"
 					android:hint="@string/image_hint" />
+				<Button android:id="@+id/server_mole_button" android:text="Whack-a-Mole"
+					android:layout_width="fill_parent" android:layout_height="wrap_content"
+					android:enabled="false" />	
 				<Button android:id="@+id/server_client" android:text="Start client"
 					android:layout_width="fill_parent" android:layout_height="wrap_content"
 					android:enabled="false" />
