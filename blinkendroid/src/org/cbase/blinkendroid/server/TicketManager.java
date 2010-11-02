@@ -28,13 +28,18 @@ public class TicketManager implements IPeerHandler, ConnectionListener {
     private ClientQueueListener clientQueueListener = null;
 
     public TicketManager() {
-	this.serverName = serverName;
+	this.serverName = "Blinkendroid";
+    }
+
+    public boolean start() {
 	try {
 	    socket = new DatagramSocket(BlinkendroidApp.BROADCAST_ANNOUCEMENT_SERVER_TICKET_PORT);
 	    socket.setReuseAddress(true);
+	    return true;
 	} catch (SocketException e) {
 	    logger.error("new DatagramSocket(Constants.BROADCAST_ANNOUCEMENT_SERVER_TICKET_PORT) failed "
 		    + e.getMessage());
+	    return false;
 	}
     }
 
@@ -82,6 +87,8 @@ public class TicketManager implements IPeerHandler, ConnectionListener {
 
     public void reset() {
 	tickets.clear();
+	waitingQueue.clear();
+	socket.close();
     }
 
     public void connectionClosed(ClientSocket clientSocket) {

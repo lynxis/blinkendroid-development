@@ -121,7 +121,19 @@ public class ServerActivity extends Activity implements ConnectionListener, BLMM
 			serverSwitchButton.setChecked(false);
 			return;
 		    }
-		    // test for already existing name
+		    if (!ticketManager.start()) {
+			AlertDialog.Builder builder = new AlertDialog.Builder(ServerActivity.this);
+			builder.setMessage("TicketManager failed. Restart App").setCancelable(false).setNegativeButton(
+				"OK", new DialogInterface.OnClickListener() {
+				    public void onClick(DialogInterface dialog, int id) {
+					dialog.cancel();
+				    }
+				});
+			builder.create();
+			builder.show();
+			serverSwitchButton.setChecked(false);
+			return;
+		    }
 		    ticketManager.setServerName(serverNameView.getText().toString());
 		    // start recieverthread
 		    receiverThread = new ReceiverThread(BlinkendroidApp.BROADCAST_ANNOUCEMENT_SERVER_PORT,
