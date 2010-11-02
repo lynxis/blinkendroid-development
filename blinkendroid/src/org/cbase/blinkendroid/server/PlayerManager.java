@@ -417,8 +417,12 @@ public class PlayerManager implements ConnectionListener, BlinkendroidServerList
     }
 
     public void mole(float x, float y, int style, int moleCounter) {
-	int px = (int) ((maxX - 1) * x);
-	int py = (int) ((maxY - 1) * y);
+	int px = Math.round(maxX * x);
+	if (px != 0)
+	    px -= 1;
+	int py = Math.round(maxY * y);
+	if (py != 0)
+	    py -= 1;
 	logger.info("mole " + x + ":" + y + " (" + px + ":" + py + ")" + style + "," + moleCounter);
 	PlayerClient pc = mMatrixClients[px][py];
 	if (null != pc && null != pc.getBlinkenProtocol())
