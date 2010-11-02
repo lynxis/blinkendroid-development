@@ -110,7 +110,7 @@ public class ReceiverThread extends Thread {
 	} catch (final SocketException x) {
 	    // swallow, this is expected when being interrupted by
 	    // socket.close()
-	    x.printStackTrace();
+	    // x.printStackTrace();
 	}
     }
 
@@ -124,7 +124,7 @@ public class ReceiverThread extends Thread {
 	try {
 	    join();
 	} catch (final InterruptedException x) {
-	    throw new RuntimeException(x);
 	}
+	logger.info("ReceiverThread shutdown");
     }
 }

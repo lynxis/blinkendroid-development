@@ -94,7 +94,7 @@ public class SenderThread extends Thread {
 	try {
 	    join();
 	} catch (final InterruptedException x) {
-	    throw new RuntimeException(x);
+	    // swallow, this is expected when being interrupted
 	}
     }
 }
