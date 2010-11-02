@@ -37,6 +37,7 @@ public class BlinkendroidFrame extends JFrame implements ImageManagerListener,
     private JButton removeClient = null;
     private JComboBox moviesList = null;
     private JComboBox imagesList = null;
+    private final DefaultListModel clientListModel = new DefaultListModel();    
     private JLabel titleLbl, moviesLbl, imagesLbl, clientsLbl, ticketsLbl;
     private JList clientsList;
     private JTextField ticketsTxt;
@@ -66,14 +67,16 @@ public class BlinkendroidFrame extends JFrame implements ImageManagerListener,
 	}
     }
 
-    public synchronized void connectionClosed(ClientSocket clientSocket) {	
-        DefaultListModel listModel = (DefaultListModel) clientsList.getModel();       
-        listModel.removeElement(clientSocket);
+    public void connectionClosed(ClientSocket clientSocket) {
+	synchronized(clientListModel) {       
+            clientListModel.removeElement(clientSocket);
+	}
     }
 
-    public synchronized void connectionOpened(ClientSocket clientSocket) {
-	DefaultListModel listModel = (DefaultListModel) clientsList.getModel();
-	listModel.addElement(clientSocket);
+    public void connectionOpened(ClientSocket clientSocket) {
+	synchronized(clientListModel) {
+	    clientListModel.addElement(clientSocket);
+	}
     }
 
     /**
@@ -104,7 +107,7 @@ public class BlinkendroidFrame extends JFrame implements ImageManagerListener,
 	ticketsTxt = new JTextField("10");
 	refreshTickets = new JButton("set");
 
-	clientsList = new JList(new DefaultListModel());
+	clientsList = new JList(clientListModel);
 
 	ActionListener actionListener = new FormActionListener();
 	imagesList = new JComboBox(new String[] { "Images" });
@@ -270,19 +273,19 @@ public class BlinkendroidFrame extends JFrame implements ImageManagerListener,
 		}
 		break;
 	    case REMOVE_CLIENT:
-		DefaultListModel listModel = (DefaultListModel) clientsList
-			.getModel();
 		
 		if(clientsList.getSelectedIndex() == -1) {
 		    return;
 		}
 		
-		Object selectedClient = listModel
-		.get(clientsList.getSelectedIndex());
+		Object selectedClient = clientListModel.get(clientsList.getSelectedIndex());
 		
 		if(selectedClient == null || !(selectedClient instanceof ClientSocket)) {
 		    return;
 		}
+		
+		// TODO: Missing call to something which actually removed the client
+		
 		break;
 	    case CLIP:
 	    	server.clip();
