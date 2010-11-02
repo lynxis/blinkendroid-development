@@ -34,6 +34,7 @@ public class BlinkendroidFrame extends JFrame implements ImageManagerListener,
     private JButton singleclipButton = null;
     private JButton clipButton = null;
     private JButton globalTimerButton = null;
+    private JButton moleButton = null;
     private JButton removeClient = null;
     private JComboBox moviesList = null;
     private JComboBox imagesList = null;
@@ -44,7 +45,7 @@ public class BlinkendroidFrame extends JFrame implements ImageManagerListener,
     private JButton refreshTickets = null;
 
     public synchronized void imagesReady() {
-	JOptionPane.showMessageDialog(this, "Images Ready");
+//	JOptionPane.showMessageDialog(this, "Images Ready");
 
 	DefaultComboBoxModel imgCbModel = (DefaultComboBoxModel) imagesList
 		.getModel();
@@ -56,7 +57,7 @@ public class BlinkendroidFrame extends JFrame implements ImageManagerListener,
     }
 
     public synchronized void moviesReady() {
-	JOptionPane.showMessageDialog(this, "Movies Ready");
+//	JOptionPane.showMessageDialog(this, "Movies Ready");
 
 	DefaultComboBoxModel movCbModel = (DefaultComboBoxModel) moviesList
 		.getModel();
@@ -132,6 +133,10 @@ public class BlinkendroidFrame extends JFrame implements ImageManagerListener,
 	globalTimerButton = new JButton("GTimer");
 	globalTimerButton.setActionCommand(Commands.GLOBALTIMER.toString());
 	globalTimerButton.addActionListener(actionListener);
+
+	moleButton = new JButton("Whacka");
+	moleButton.setActionCommand(Commands.MOLE.toString());
+	moleButton.addActionListener(actionListener);
 	
 	removeClient = new JButton("-");
 	removeClient.setActionCommand(Commands.REMOVE_CLIENT.toString());
@@ -190,6 +195,9 @@ public class BlinkendroidFrame extends JFrame implements ImageManagerListener,
 	globalTimerButton.setLocation(200, 380);
 	globalTimerButton.setSize(80, 30);
 	
+	moleButton.setLocation(20, 430);
+	moleButton.setSize(80, 30);
+	
 	jContentPane.add(refreshTickets);
 	jContentPane.add(ticketsLbl);
 	jContentPane.add(ticketsTxt);
@@ -204,12 +212,13 @@ public class BlinkendroidFrame extends JFrame implements ImageManagerListener,
 	jContentPane.add(clipButton);
 	jContentPane.add(singleclipButton);
 	jContentPane.add(globalTimerButton);
+	jContentPane.add(moleButton);
 	jContentPane.add(removeClient);
 
     }
 
     private enum Commands {
-	START_STOP, MOVIES_SELECTION, IMAGES_SELECTION, REMOVE_CLIENT, CLIP, SINGLECLIP, GLOBALTIMER;
+	START_STOP, MOVIES_SELECTION, IMAGES_SELECTION, REMOVE_CLIENT, CLIP, SINGLECLIP, GLOBALTIMER, MOLE;
     }
 
     private class TicketFocusListener implements FocusListener {
@@ -296,6 +305,10 @@ public class BlinkendroidFrame extends JFrame implements ImageManagerListener,
 	    case GLOBALTIMER:
 	    	server.globalTimer();
 	    	break;
+	    case MOLE:
+	    	server.mole();
+	    	break;
+	    	
 	    }
 
 	}
