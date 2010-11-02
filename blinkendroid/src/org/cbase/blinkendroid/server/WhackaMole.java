@@ -6,7 +6,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class WhackaMole extends Thread {
-    private static final Logger logger = LoggerFactory.getLogger(WhackaMole.class);
+    private static final Logger logger = LoggerFactory
+	    .getLogger(WhackaMole.class);
     private boolean running = false;
     private int moleCounter;
     private Random random;
@@ -32,11 +33,18 @@ public class WhackaMole extends Thread {
 	int style;
 	try {
 	    do {
+
+		int moleDuration;
 		
-		int moleDuration = (int)(10000-moleCounter*0.5);
-								
+		if(moleCounter <= 19) {
+		    moleDuration = (int) (10000 - moleCounter * 500);
+		} else {
+		    moleDuration = 100;
+		}
+
 		try {
-		    // sleep random time but a little less if moleCounter is high		   		   
+		    // sleep random time but a little less if moleCounter is
+		    // high
 		    Thread.sleep(random.nextInt(10000) + 500);
 		} catch (InterruptedException ie) {
 		    logger.error("WhackaMole interrupt fucked up", ie);
