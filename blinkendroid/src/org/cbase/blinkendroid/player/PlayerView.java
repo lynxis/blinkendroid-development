@@ -105,6 +105,9 @@ public class PlayerView extends ClippableView implements Runnable {
 	    final float pixelHeight = (float) getHeight() / (absEndY - absStartY);
 
 	    // clip
+	    int red = 0;
+	    int green = 0;
+	    int blue = 0;
 	    for (int y = absStartY; y < absEndY; y++) {
 		final int clippedY = y - absStartY;
 		final byte[] row = matrix[y];
@@ -112,9 +115,15 @@ public class PlayerView extends ClippableView implements Runnable {
 		    final int clippedX = x - absStartX;
 		    final int value = row[x] << (8 - blm.header.bits);
 		    if (blm.header.color) {
-			int red = ((row[x] & 48) >> 4) * 64;
-			int green = ((row[x] & 12) >> 2) * 64;
-			int blue = (row[x] & 3) * 64;
+			if (blm.header.bits == 6) {
+			    red = ((row[x] & 48) >> 4) * 64;
+			    green = ((row[x] & 12) >> 2) * 64;
+			    blue = (row[x] & 3) * 64;
+			} else if (blm.header.bits == 8) {
+			    red = ((row[x] & 224) >> 5) * 32;
+			    green = ((row[x] & 28) >> 2) * 32;
+			    blue = (row[x] & 3) * 64;
+			}
 			// Log.d(Constants.LOG_TAG, r+","+g+","+b+":"+
 			// row[x]+";");
 			paint.setColor(Color.argb(255, red, green, blue));
