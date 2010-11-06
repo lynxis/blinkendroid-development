@@ -81,7 +81,7 @@ public class ImageManager {
     }
 
     public ImageHeader getImageHeader(int pos) {
-	if (null != imageHeader.get(pos))
+	if (pos < imageHeader.size() && null != imageHeader.get(pos))
 	    return imageHeader.get(pos);
 	return null;
     }

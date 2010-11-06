@@ -82,7 +82,7 @@ public class BLMManager {
     }
 
     public BLMHeader getBLMHeader(int pos) {
-	if (null != blmHeader.get(pos))
+	if (pos < blmHeader.size() && null != blmHeader.get(pos))
 	    return blmHeader.get(pos);
 	return null;
     }
