@@ -6,6 +6,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
@@ -39,14 +41,14 @@ public class BlinkendroidFrame extends JFrame implements ImageManagerListener,
     private JButton removeClient = null;
     private JComboBox moviesList = null;
     private JComboBox imagesList = null;
-    private final DefaultListModel clientListModel = new DefaultListModel();    
+    private final DefaultListModel clientListModel = new DefaultListModel();
     private JLabel titleLbl, moviesLbl, imagesLbl, clientsLbl, ticketsLbl;
     private JList clientsList;
     private JTextField ticketsTxt;
     private JButton refreshTickets = null;
 
     public synchronized void imagesReady() {
-//	JOptionPane.showMessageDialog(this, "Images Ready");
+	// JOptionPane.showMessageDialog(this, "Images Ready");
 
 	DefaultComboBoxModel imgCbModel = (DefaultComboBoxModel) imagesList
 		.getModel();
@@ -58,8 +60,6 @@ public class BlinkendroidFrame extends JFrame implements ImageManagerListener,
     }
 
     public synchronized void moviesReady() {
-//	JOptionPane.showMessageDialog(this, "Movies Ready");
-
 	DefaultComboBoxModel movCbModel = (DefaultComboBoxModel) moviesList
 		.getModel();
 	movCbModel.removeAllElements();
@@ -70,13 +70,13 @@ public class BlinkendroidFrame extends JFrame implements ImageManagerListener,
     }
 
     public void connectionClosed(ClientSocket clientSocket) {
-	synchronized(clientListModel) {       
-            clientListModel.removeElement(clientSocket);
+	synchronized (clientListModel) {
+	    clientListModel.removeElement(clientSocket);
 	}
     }
 
     public void connectionOpened(ClientSocket clientSocket) {
-	synchronized(clientListModel) {
+	synchronized (clientListModel) {
 	    clientListModel.addElement(clientSocket);
 	}
     }
@@ -102,6 +102,9 @@ public class BlinkendroidFrame extends JFrame implements ImageManagerListener,
      */
     private void initialize() {
 
+	this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+	this.addWindowListener(new MainWindowListener());
 	this.setTitle("Blinkendroid SwingUI");
 
 	titleLbl = new JLabel("Blinkendroid SwingUI");
@@ -129,11 +132,11 @@ public class BlinkendroidFrame extends JFrame implements ImageManagerListener,
 	clipButton = new JButton("clip");
 	clipButton.setActionCommand(Commands.CLIP.toString());
 	clipButton.addActionListener(actionListener);
-	
+
 	singleclipButton = new JButton("1clip");
 	singleclipButton.setActionCommand(Commands.SINGLECLIP.toString());
 	singleclipButton.addActionListener(actionListener);
-	
+
 	globalTimerButton = new JButton("GTimer");
 	globalTimerButton.setActionCommand(Commands.GLOBALTIMER.toString());
 	globalTimerButton.addActionListener(actionListener);
@@ -141,13 +144,13 @@ public class BlinkendroidFrame extends JFrame implements ImageManagerListener,
 	moleButton = new JButton("Whacka");
 	moleButton.setActionCommand(Commands.MOLE.toString());
 	moleButton.addActionListener(actionListener);
-	
+
 	removeClient = new JButton("-");
 	removeClient.setActionCommand(Commands.REMOVE_CLIENT.toString());
 	removeClient.addActionListener(actionListener);
-	
+
 	ticketsTxt.addFocusListener(new TicketFocusListener());
-	
+
 	this.setPreferredSize(new Dimension(350, 500));
 	this.setResizable(false);
 
@@ -165,10 +168,10 @@ public class BlinkendroidFrame extends JFrame implements ImageManagerListener,
 
 	clientsLbl.setLocation(0, 90);
 	clientsLbl.setSize(100, 20);
-	
+
 	ticketsLbl.setLocation(0, 300);
 	ticketsLbl.setSize(100, 20);
-	
+
 	moviesList.setLocation(120, 30);
 	moviesList.setSize(200, 20);
 
@@ -177,31 +180,31 @@ public class BlinkendroidFrame extends JFrame implements ImageManagerListener,
 
 	clientsList.setLocation(120, 90);
 	clientsList.setSize(200, 200);
-	
+
 	removeClient.setLocation(325, 270);
 	removeClient.setSize(20, 20);
 
 	ticketsTxt.setLocation(120, 300);
 	ticketsTxt.setSize(100, 30);
-	
+
 	refreshTickets.setLocation(230, 305);
 	refreshTickets.setSize(60, 20);
-	
+
 	startStopButton.setLocation(120, 340);
 	startStopButton.setSize(200, 30);
-	
+
 	clipButton.setLocation(20, 380);
 	clipButton.setSize(80, 30);
-	
+
 	singleclipButton.setLocation(110, 380);
 	singleclipButton.setSize(80, 30);
-	
+
 	globalTimerButton.setLocation(200, 380);
 	globalTimerButton.setSize(80, 30);
-	
+
 	moleButton.setLocation(20, 430);
 	moleButton.setSize(80, 30);
-	
+
 	jContentPane.add(refreshTickets);
 	jContentPane.add(ticketsLbl);
 	jContentPane.add(ticketsTxt);
@@ -220,28 +223,34 @@ public class BlinkendroidFrame extends JFrame implements ImageManagerListener,
 	jContentPane.add(removeClient);
     }
 
+    protected void shutdown() {
+	System.out.println("Closing main window");
+	server.shutdown();
+    }
+
     private enum Commands {
 	START_STOP, MOVIES_SELECTION, IMAGES_SELECTION, REMOVE_CLIENT, CLIP, SINGLECLIP, GLOBALTIMER, MOLE;
     }
 
     private class TicketFocusListener implements FocusListener {
-	    
-	    public void focusLost(FocusEvent e) {
-		    int maxClients = -1;
-		    
-		    try {
-			maxClients = Integer.parseInt(ticketsTxt.getText());
-		    } catch (NumberFormatException nfe) {
-			JOptionPane.showMessageDialog(BlinkendroidFrame.this, "Invalid amount of tickets, using default");
-		    }
-		    
-		    server.setMaxClients(maxClients);
+
+	public void focusLost(FocusEvent e) {
+	    int maxClients = -1;
+
+	    try {
+		maxClients = Integer.parseInt(ticketsTxt.getText());
+	    } catch (NumberFormatException nfe) {
+		JOptionPane.showMessageDialog(BlinkendroidFrame.this,
+			"Invalid amount of tickets, using default");
 	    }
-	    
-	    public void focusGained(FocusEvent e) {
-	    }
+
+	    server.setMaxClients(maxClients);
+	}
+
+	public void focusGained(FocusEvent e) {
+	}
     }
-    
+
     private class FormActionListener implements ActionListener {
 
 	public void actionPerformed(ActionEvent e) {
@@ -249,10 +258,10 @@ public class BlinkendroidFrame extends JFrame implements ImageManagerListener,
 	    switch (Commands.valueOf(e.getActionCommand())) {
 	    case START_STOP:
 		if (!server.isRunning()) {
-		    ((JButton) e.getSource()).setText("stop Server");		   		    
+		    ((JButton) e.getSource()).setText("stop Server");
 		    server.start();
 		} else {
-		    ((JButton) e.getSource()).setText("start Server");		   
+		    ((JButton) e.getSource()).setText("start Server");
 		    server.start();
 		}
 		break;
@@ -265,8 +274,6 @@ public class BlinkendroidFrame extends JFrame implements ImageManagerListener,
 		}
 
 		if (selectedImage instanceof ImageHeader) {
-		    System.out.println("lala"
-			    + ((ImageHeader) selectedImage).height);
 		    server.switchImage((ImageHeader) selectedImage);
 		}
 
@@ -285,36 +292,82 @@ public class BlinkendroidFrame extends JFrame implements ImageManagerListener,
 		}
 		break;
 	    case REMOVE_CLIENT:
-		
-		if(clientsList.getSelectedIndex() == -1) {
+
+		if (clientsList.getSelectedIndex() == -1) {
 		    return;
 		}
-		
-		Object selectedClient = clientListModel.get(clientsList.getSelectedIndex());
-		
-		if(selectedClient == null || !(selectedClient instanceof ClientSocket)) {
+
+		Object selectedClient = clientListModel.get(clientsList
+			.getSelectedIndex());
+
+		if (selectedClient == null
+			|| !(selectedClient instanceof ClientSocket)) {
 		    return;
 		}
-		
-		// TODO: Missing call to something which actually removed the client
-		
+
+		// TODO: Missing call to something which actually removed the
+		// client
+
 		break;
 	    case CLIP:
-	    	server.clip();
+		server.clip();
 		break;
 	    case SINGLECLIP:
-	    	server.singleclip();
+		server.singleclip();
 		break;
 	    case GLOBALTIMER:
-	    	server.globalTimer();
-	    	break;
+		server.globalTimer();
+		break;
 	    case MOLE:
-	    	server.mole();
-	    	break;
-	    	
+		server.mole();
+		break;
+
 	    }
 
 	}
 
+    }
+
+    private class MainWindowListener implements WindowListener {
+
+	@Override
+	public void windowActivated(WindowEvent e) {
+	    // TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void windowClosed(WindowEvent e) {
+	    // TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void windowClosing(WindowEvent e) {
+	    BlinkendroidFrame.this.shutdown();
+	}
+
+	@Override
+	public void windowDeactivated(WindowEvent e) {
+	    // TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void windowDeiconified(WindowEvent e) {
+	    // TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void windowIconified(WindowEvent e) {
+	    // TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void windowOpened(WindowEvent e) {
+	    // TODO Auto-generated method stub
+	}
     }
 }

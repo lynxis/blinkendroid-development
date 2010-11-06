@@ -10,7 +10,8 @@ import org.slf4j.LoggerFactory;
 public class ImageManager {
 
     private List<ImageHeader> imageHeader;
-
+    ImageHeader defaultImage;
+    
     public List<ImageHeader> getImageHeader() {
 	return imageHeader;
     }
@@ -22,7 +23,7 @@ public class ImageManager {
     public ImageManager() {
 	imageHeader = new ArrayList<ImageHeader>();
 	/* Adding the default movie */
-	ImageHeader defaultImage = new ImageHeader();
+	defaultImage = new ImageHeader();
 	defaultImage.filename = null;
 	defaultImage.title = "Blinkendroid - Default";
 	defaultImage.height = 0;
@@ -38,6 +39,10 @@ public class ImageManager {
     public void readImages(final ImageManagerListener listener, String dir) {
 	this.listener = listener;
 	this.dir = dir;
+	
+	imageHeader.clear();
+	imageHeader.add(defaultImage);
+	
 	new Thread() {
 	    @Override
 	    public void run() {

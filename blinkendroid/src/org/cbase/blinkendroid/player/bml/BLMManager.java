@@ -12,7 +12,8 @@ import org.slf4j.LoggerFactory;
 public class BLMManager {
 
     private List<BLMHeader> blmHeader;
-
+    BLMHeader defaultMovie;
+    
     public List<BLMHeader> getBlmHeader() {
 	return blmHeader;
     }
@@ -23,7 +24,7 @@ public class BLMManager {
     public BLMManager() {
 	blmHeader = new ArrayList<BLMHeader>();
 	/* Adding the default movie */
-	BLMHeader defaultMovie = new BLMHeader();
+	defaultMovie = new BLMHeader();
 	defaultMovie.filename = null;
 	defaultMovie.title = "Blinkendroid - Default";
 	defaultMovie.height = 32;
@@ -38,6 +39,10 @@ public class BLMManager {
 
     public void readMovies(final BLMManagerListener listener, final String dir) {
 	this.listener = listener;
+	
+	blmHeader.clear();
+	blmHeader.add(defaultMovie);
+	
 	new Thread() {
 	    @Override
 	    public void run() {
