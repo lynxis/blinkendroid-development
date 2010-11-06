@@ -44,6 +44,7 @@ public class BLMManager {
 		File blinkendroidDir = new File(dir);
 		if (!blinkendroidDir.exists()) {
 		    logger.info("/blinkendroid does not exist");
+		    listener.moviesReady();
 		    return;
 		}
 		File[] files = blinkendroidDir.listFiles();
