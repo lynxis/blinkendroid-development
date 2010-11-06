@@ -300,7 +300,6 @@ public class ServerActivity extends Activity implements ConnectionListener, BLMM
 	}
 	if (null != ticketManager) {
 	    ticketManager.reset();
-	    ticketManager = null;
 	}
     }
 
