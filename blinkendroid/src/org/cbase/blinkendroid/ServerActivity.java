@@ -176,14 +176,7 @@ public class ServerActivity extends Activity implements ConnectionListener, BLMM
 		    pickImageButton.setEnabled(true);
 
 		} else {
-		    receiverThread.shutdown();
-		    receiverThread = null;
-
-		    blinkendroidServer.shutdown();
-		    blinkendroidServer = null;
-
-		    ticketManager.reset();
-
+		    shutdown();
 		    clientButton.setEnabled(false);
 		    moleButton.setEnabled(false);
 		    pickImageButton.setEnabled(false);
@@ -288,13 +281,14 @@ public class ServerActivity extends Activity implements ConnectionListener, BLMM
 
     @Override
     protected void onDestroy() {
-	receiverThread.shutdown();
-	receiverThread = null;
-
-	blinkendroidServer.shutdown();
-	blinkendroidServer = null;
-
 	logger.info("ServerActivity onDestroy ");
+	shutdown();
+	app.wantWakeLock(false);
+
+	super.onDestroy();
+    }
+
+    private void shutdown() {
 	if (receiverThread != null) {
 	    receiverThread.shutdown();
 	    receiverThread = null;
@@ -308,9 +302,6 @@ public class ServerActivity extends Activity implements ConnectionListener, BLMM
 	    ticketManager.reset();
 	    ticketManager = null;
 	}
-	app.wantWakeLock(false);
-
-	super.onDestroy();
     }
 
     @Override
