@@ -112,10 +112,13 @@ public class ConnectionState implements CommandHandler {
     public void handle(SocketAddress socketAddr, ByteBuffer bybuff) throws IOException {
 	final int iCommand = bybuff.getInt();
 	final int connId = bybuff.getInt();
-	/*
-	 * if ( Command.values().length > iCommand || 0 < iCommand ) { // ignore
-	 * unknown commands return; }
-	 */
+
+	if (Command.values().length <= iCommand || iCommand < 0) {
+	    // ignore unknown commands return;
+	    logger.warn("unknown command: " + iCommand);
+	    return;
+	}
+
 	final Command command = Command.values()[iCommand];
 
 	// syn is a special case, because we dont have a connection

@@ -85,11 +85,15 @@ public class BlinkendroidClient extends Thread {
 	blinkenProto.locateMe();
     }
 
-    public void hitMole(int moleDuration) {
-	blinkenProto.hitMole(moleDuration);
+    public void touch() {
+	blinkenProto.touch();
     }
 
-    public void missedMole(int moleDuration) {
-	blinkenProto.missedMole(moleDuration);
+    public void hitMole() {
+	blinkenProto.hitMole();
+    }
+
+    public void missedMole() {
+	blinkenProto.missedMole();
     }
 }

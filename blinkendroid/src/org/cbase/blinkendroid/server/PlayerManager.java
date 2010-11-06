@@ -10,11 +10,11 @@ import java.util.Collections;
 import java.util.List;
 
 import org.cbase.blinkendroid.BlinkendroidApp;
-import org.cbase.blinkendroid.network.BlinkendroidServerListener;
 import org.cbase.blinkendroid.network.ConnectionListener;
 import org.cbase.blinkendroid.network.tcp.DataServer;
 import org.cbase.blinkendroid.network.udp.BlinkendroidProtocol;
 import org.cbase.blinkendroid.network.udp.ClientSocket;
+import org.cbase.blinkendroid.network.udp.CommandHandler;
 import org.cbase.blinkendroid.network.udp.ConnectionState;
 import org.cbase.blinkendroid.network.udp.UDPDirectConnection;
 import org.cbase.blinkendroid.player.bml.BLMHeader;
@@ -24,7 +24,7 @@ import org.slf4j.LoggerFactory;
 
 import android.graphics.Color;
 
-public class PlayerManager implements ConnectionListener, BlinkendroidServerListener {
+public class PlayerManager implements ConnectionListener, CommandHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(PlayerManager.class);
 
@@ -341,15 +341,11 @@ public class PlayerManager implements ConnectionListener, BlinkendroidServerList
 	PlayerClient client = getPlayerClientBySocketAddress(socketAddr);
 
 	if (client != null) {
-	    // TODO schtief remove this ugly hack
-	    // CommandHandler handler = client.getHandlers().get(proto);
-	    // if (handler != null) {
 	    try {
 		client.handle(socketAddr, protoData);
 	    } catch (IOException e) {
 		logger.error("PlayerClient could not handle", e);
 	    }
-	    // }
 	} else { // no client found
 	    if (proto == BlinkendroidApp.PROTOCOL_CONNECTION) {
 		int data = protoData.getInt();
@@ -411,9 +407,57 @@ public class PlayerManager implements ConnectionListener, BlinkendroidServerList
 	}
     }
 
-    public void locateMe(SocketAddress clientAddress) {
-	PlayerClient playerClient = getPlayerClientBySocketAddress(clientAddress);
+    public void locateMe(PlayerClient playerClient) {
 	arrow(playerClient);
+    }
+
+    public void handle(SocketAddress from, ByteBuffer in) throws IOException {
+	final PlayerClient playerClient = getPlayerClientBySocketAddress(from);
+	int command = in.getInt();
+	if (null == playerClient) {
+	    logger.error("PlayerClient for command not found " + command);
+	}
+
+	if (command == BlinkendroidProtocol.COMMAND_LOCATEME) {
+	    locateMe(playerClient);
+	} else if (command == BlinkendroidProtocol.COMMAND_TOUCH) {
+	    touch(playerClient);
+	}
+    }
+
+    private void touch(final PlayerClient playerClient) {
+	// TODO switch the effect
+	new Thread() {
+	    public void run() {
+		try {
+		    // light up row and column
+		    int x = playerClient.x;
+		    int y = playerClient.y;
+		    logger.error("touch " + x + "," + y);
+		    int i = 1;
+		    do {
+			if ((x + i < maxX))
+			    blink(x + i, y);
+			if (y + i < maxY)
+			    blink(x, y + i);
+			if (x - i >= 0)
+			    blink(x - i, y);
+			if (y - i >= 0)
+			    blink(x, y - i);
+			i++;
+		    } while ((x - i < 0) && (x + i >= maxX) && (y - i < 0) && (y + i >= maxY));
+		} catch (Exception e) {
+		    logger.error("touch failed", e);
+		}
+	    }
+
+	    private void blink(int x, int y) {
+		PlayerClient pc = PlayerManager.this.mMatrixClients[y][x];
+		if (null != pc)
+		    pc.getBlinkenProtocol().blink();
+	    }
+
+	}.start();
     }
 
     public void hitMole(SocketAddress clientAddress) {
@@ -426,14 +470,20 @@ public class PlayerManager implements ConnectionListener, BlinkendroidServerList
 	arrow(playerClient);
     }
 
-    public void mole(float x, float y, int style, int actualPoints, int duration) {
+    public PlayerClient getPlayer(float x, float y) {
 	int px = (int) (maxX * x);
 	int py = (int) (maxY * y);
-	logger.info("mole " + x + ":" + y + " (" + px + ":" + py + ")" + style + "," + duration);
 	PlayerClient pc = mMatrixClients[py][px];
-	if (null != pc && null != pc.getBlinkenProtocol())
-	    pc.getBlinkenProtocol().mole(style, actualPoints, duration);
-	else
-	    logger.error("client not found (" + px + ":" + py + ")");
+	if (null != pc)
+	    return pc;
+	return null;
+    }
+
+    public List<PlayerClient> getAllClients() {
+	synchronized (mClients) {
+	    List<PlayerClient> all = new ArrayList<PlayerClient>(mClients);
+	    return all;
+	}
+
     }
 }

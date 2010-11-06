@@ -23,6 +23,7 @@ import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.cbase.blinkendroid.BlinkendroidApp;
 import org.cbase.blinkendroid.network.ConnectionListener;
 import org.cbase.blinkendroid.network.tcp.DataServer;
 import org.cbase.blinkendroid.network.udp.UDPServerProtocolManager;
@@ -70,7 +71,10 @@ public class BlinkendroidServer {
 
 	    playerManager = new PlayerManager(mServerProto);
 	    playerManager.setVideoServer(videoSocket);
+
 	    mServerProto.setPlayerManager(playerManager);
+	    // for locateME & touch
+	    mServerProto.registerHandler(BlinkendroidApp.PROTOCOL_CLIENT, playerManager);
 
 	    // mServerProto.registerHandler(proto, playerManager);
 	    for (ConnectionListener connectionListener : connectionListeners) {
@@ -128,10 +132,12 @@ public class BlinkendroidServer {
     }
 
     public void toggleWhackaMole() {
-	if (null != whackAmole && whackAmole.isRunning())
+	if (null != whackAmole && whackAmole.isRunning()) {
+	    mServerProto.unregisterHandler(whackAmole);
 	    whackAmole.shutdown();
-	else {
+	} else {
 	    whackAmole = new WhackaMole(playerManager);
+	    mServerProto.registerHandler(BlinkendroidApp.PROTOCOL_CLIENT, whackAmole);
 	    whackAmole.start();
 	}
     }

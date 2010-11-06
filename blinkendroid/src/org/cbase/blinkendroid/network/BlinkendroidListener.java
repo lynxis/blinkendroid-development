@@ -38,5 +38,5 @@ public interface BlinkendroidListener extends ConnectionListener {
 
     void showImage(Bitmap bmp);
 
-    void mole(int type, int moleCounter, int duration);
+    void mole(int type, int moleCounter, int duration, int points);
 }

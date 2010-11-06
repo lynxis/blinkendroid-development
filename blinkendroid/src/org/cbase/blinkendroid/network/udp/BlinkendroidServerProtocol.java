@@ -1,22 +1,18 @@
 package org.cbase.blinkendroid.network.udp;
 
 import java.io.IOException;
-import java.net.SocketAddress;
 import java.nio.ByteBuffer;
 
 import org.cbase.blinkendroid.BlinkendroidApp;
-import org.cbase.blinkendroid.network.BlinkendroidServerListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class BlinkendroidServerProtocol extends BlinkendroidProtocol implements CommandHandler {
+public class BlinkendroidServerProtocol extends BlinkendroidProtocol {
 
     private ClientSocket mClientSocket;
     private static final Logger logger = LoggerFactory.getLogger(BlinkendroidServerProtocol.class);
-    private BlinkendroidServerListener mListener;
 
-    public BlinkendroidServerProtocol(BlinkendroidServerListener mListener, ClientSocket clientSocket) {
-
+    public BlinkendroidServerProtocol(ClientSocket clientSocket) {
 	mClientSocket = clientSocket;
     }
 
@@ -72,31 +68,28 @@ public class BlinkendroidServerProtocol extends BlinkendroidProtocol implements 
 	mClientSocket.send(out);
     }
 
-    public void handle(SocketAddress from, ByteBuffer in) throws IOException {
-	int command = in.getInt();
-
-	// logger.info("received: " + command);
-	if (mListener != null) {
-	    if (command == COMMAND_LOCATEME) {
-		mListener.locateMe(from);
-	    } else if (command == COMMAND_HITMOLE) {
-		mListener.hitMole(from);
-	    } else if (command == COMMAND_MISSEDMOLE) {
-		mListener.missedMole(from);
-	    }
-	}
-    }
-
-    public void mole(int style, int moleCounter, int duration) {
+    public void mole(int style, int moleCounter, int duration, int points) {
 	try {
 	    ByteBuffer out = ByteBuffer.allocate(1024);
 	    out.putInt(COMMAND_MOLE);
 	    out.putInt(style);
 	    out.putInt(moleCounter);
 	    out.putInt(duration);
+	    out.putInt(points);
 	    send(out);
 	} catch (IOException e) {
 	    logger.error("mole failed ", e);
+	}
+    }
+
+    public void blink() {
+	try {
+	    ByteBuffer out = ByteBuffer.allocate(16);
+	    out.putInt(COMMAND_BLINK);
+	    send(out);
+	    logger.info("blink flushed ");
+	} catch (IOException e) {
+	    logger.error("blink failed ", e);
 	}
     }
 }

@@ -1,12 +1,12 @@
 package org.cbase.blinkendroid.network.udp;
 
 import java.io.IOException;
-import java.io.InterruptedIOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.SocketException;
+import java.net.SocketTimeoutException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -66,7 +66,7 @@ public class UDPAbstractBlinkendroidProtocol implements UDPDirectConnection {
 	ByteBuffer in = ByteBuffer.wrap(packet.getData());
 	int proto = in.getInt();
 	int pos = in.position();
-	logger.info("BlinkendroidClient received Protocol: " + proto);
+	// logger.info("BlinkendroidClient received Protocol: " + proto);
 	if (proto == BlinkendroidApp.PROTOCOL_HEARTBEAT) {
 	    for (CommandHandler h : handlers.values()) {
 		h.handle(socketAddress, in);
@@ -107,16 +107,16 @@ public class UDPAbstractBlinkendroidProtocol implements UDPDirectConnection {
 		    try {
 			mSocket.receive(receivePacket);
 			receive(receivePacket);
-		    } catch (InterruptedIOException e) {
-			// timeout happened - just a normal case, swallowing
-			// Log.i(Constants.LOG_TAG, "ReceiverThread timeout");
+		    } catch (SocketTimeoutException e) {
+			// swallow every second
+		    } catch (Exception e) {
+			logger.error("mSocket.receive failed. go on", e);
 		    }
 		}
 	    } catch (SocketException e) {
-		logger.error("InputThread Socket closed", e);
+		logger.error("ReceiverThread Socket closed", e);
 	    } catch (IOException e) {
-		logger.error("InputThread IOException", e);
-		e.printStackTrace();
+		logger.error("ReceiverThread IOException", e);
 	    }
 	}
 

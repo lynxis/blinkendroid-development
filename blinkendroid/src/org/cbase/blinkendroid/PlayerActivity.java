@@ -80,8 +80,8 @@ public class PlayerActivity extends Activity implements BlinkendroidListener, Ru
 
     private boolean mole = false;
     private int moleCounter;
+    private int molePoints;
     private int hitMole;
-    private int myPoints = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,6 +118,7 @@ public class PlayerActivity extends Activity implements BlinkendroidListener, Ru
 			ownerView.setText(owner);
 		    }
 		}, BlinkendroidApp.SHOW_OWNER_DURATION);
+		blinkendroidClient.touch();
 		return true;
 	    }
 	});
@@ -131,12 +132,12 @@ public class PlayerActivity extends Activity implements BlinkendroidListener, Ru
 		    moleView.setVisibility(View.INVISIBLE);
 		    mole = false;
 		    // show points
-		    myPoints += moleCounter;
-		    ownerView.setText(Integer.toString(myPoints));
+		    molePoints++;
+		    ownerView.setText(Integer.toString(molePoints));
 		    ownerView.invalidate();
 		    ownerView.setVisibility(View.VISIBLE);
+		    blinkendroidClient.hitMole();
 		    handler.postDelayed(new Runnable() {
-
 			public void run() {
 			    ownerView.setVisibility(View.GONE);
 			}
@@ -144,7 +145,6 @@ public class PlayerActivity extends Activity implements BlinkendroidListener, Ru
 		    // send hitmole to server
 		    // blinkendroidClient.hitMole(moleCounter);
 		} else {
-		    logger.info("missed the mole dude!");
 		}
 		return true;
 	    }
@@ -245,7 +245,7 @@ public class PlayerActivity extends Activity implements BlinkendroidListener, Ru
     }
 
     public void serverTime(final long serverTime) {
-	logger.debug("*** time " + serverTime);
+	// logger.debug("*** time " + serverTime);
 	final long timeDelta = System.nanoTime() / 1000000 - serverTime;
 	runOnUiThread(new Runnable() {
 
@@ -329,6 +329,7 @@ public class PlayerActivity extends Activity implements BlinkendroidListener, Ru
 		if (view instanceof PlayerView) {
 		    ((PlayerView) view).stopPlaying();
 		}
+		ownerView.setText(owner);
 		ownerView.setVisibility(View.VISIBLE);
 	    }
 	});
@@ -400,7 +401,7 @@ public class PlayerActivity extends Activity implements BlinkendroidListener, Ru
 	});
     }
 
-    public void mole(final int type, final int moleC, final int duration) {
+    public void mole(final int type, final int moleC, final int duration, final int points) {
 	runOnUiThread(new Runnable() {
 	    public void run() {
 		if (mole || ownerView.getVisibility() == View.VISIBLE)
@@ -410,6 +411,7 @@ public class PlayerActivity extends Activity implements BlinkendroidListener, Ru
 		moleView.setVisibility(View.VISIBLE);
 		mole = true;
 		moleCounter = moleC;
+		molePoints = points;
 		handler.postDelayed(new Runnable() {
 		    public void run() {
 			moleView.setVisibility(View.GONE);
@@ -418,10 +420,11 @@ public class PlayerActivity extends Activity implements BlinkendroidListener, Ru
 			// if we did not hit the mole show negative
 			if (moleCounter != hitMole) {
 			    // show points
-			    myPoints -= moleCounter;
-			    ownerView.setText(Integer.toString(myPoints));
+			    molePoints--;
+			    ownerView.setText(Integer.toString(molePoints));
 			    ownerView.invalidate();
 			    ownerView.setVisibility(View.VISIBLE);
+			    blinkendroidClient.missedMole();
 			    handler.postDelayed(new Runnable() {
 
 				public void run() {

@@ -36,6 +36,17 @@ public class BlinkendroidClientProtocol extends BlinkendroidProtocol implements 
 	}
     }
 
+    public void touch() {
+	ByteBuffer out = ByteBuffer.allocate(1024);
+	try {
+	    out.putInt(COMMAND_TOUCH);
+	    send(out);
+	} catch (IOException e) {
+	    e.printStackTrace();
+	    logger.error("touch failed", e);
+	}
+    }
+
     public void handle(final SocketAddress from, ByteBuffer in) throws IOException {
 	int command = in.getInt();
 
@@ -94,7 +105,8 @@ public class BlinkendroidClientProtocol extends BlinkendroidProtocol implements 
 		final int type = in.getInt();
 		final int moleCounter = in.getInt();
 		final int duration = in.getInt();
-		mListener.mole(type, moleCounter, duration);
+		final int points = in.getInt();
+		mListener.mole(type, moleCounter, duration, points);
 	    }
 	}
     }
@@ -106,8 +118,8 @@ public class BlinkendroidClientProtocol extends BlinkendroidProtocol implements 
 	serverSocket.send(out);
     }
 
-    public void hitMole(int moleDuration) {
-	ByteBuffer out = ByteBuffer.allocate(1024);
+    public void hitMole() {
+	ByteBuffer out = ByteBuffer.allocate(16);
 	try {
 	    out.putInt(COMMAND_HITMOLE);
 	    send(out);
@@ -117,8 +129,8 @@ public class BlinkendroidClientProtocol extends BlinkendroidProtocol implements 
 	}
     }
 
-    public void missedMole(int moleDuration) {
-	ByteBuffer out = ByteBuffer.allocate(1024);
+    public void missedMole() {
+	ByteBuffer out = ByteBuffer.allocate(16);
 	try {
 	    out.putInt(COMMAND_MISSEDMOLE);
 	    send(out);
