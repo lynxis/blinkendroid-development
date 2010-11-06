@@ -86,9 +86,12 @@ public class TicketManager implements IPeerHandler, ConnectionListener {
     }
 
     public void reset() {
-	tickets.clear();
-	waitingQueue.clear();
-	socket.close();
+	if (null != tickets)
+	    tickets.clear();
+	if (null != waitingQueue)
+	    waitingQueue.clear();
+	if (null != socket)
+	    socket.close();
     }
 
     public void connectionClosed(ClientSocket clientSocket) {
