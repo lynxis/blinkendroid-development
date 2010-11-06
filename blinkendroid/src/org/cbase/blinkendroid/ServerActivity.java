@@ -288,6 +288,12 @@ public class ServerActivity extends Activity implements ConnectionListener, BLMM
 
     @Override
     protected void onDestroy() {
+	receiverThread.shutdown();
+	receiverThread = null;
+
+	blinkendroidServer.shutdown();
+	blinkendroidServer = null;
+
 	logger.info("ServerActivity onDestroy ");
 	if (receiverThread != null) {
 	    receiverThread.shutdown();
@@ -297,6 +303,10 @@ public class ServerActivity extends Activity implements ConnectionListener, BLMM
 	if (blinkendroidServer != null) {
 	    blinkendroidServer.shutdown();
 	    blinkendroidServer = null;
+	}
+	if (null != ticketManager) {
+	    ticketManager.reset();
+	    ticketManager = null;
 	}
 	app.wantWakeLock(false);
 
