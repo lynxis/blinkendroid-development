@@ -29,7 +29,7 @@ import android.util.AttributeSet;
 /**
  * @author Andreas Schildbach
  */
-public class PlayerView extends ClippableView implements Runnable {
+public class PlayerView extends ClippableView implements Runnable, BlinkenView {
 
     private BLM blm;
     private boolean playing = false;
@@ -39,7 +39,7 @@ public class PlayerView extends ClippableView implements Runnable {
     private int numFrames;
     private int frame = 0;
     private long duration;
-
+    private boolean blink = false;
     private final Handler handler = new Handler();
     private final Paint paint = new Paint();
 
@@ -126,9 +126,11 @@ public class PlayerView extends ClippableView implements Runnable {
 			}
 			// Log.d(Constants.LOG_TAG, r+","+g+","+b+":"+
 			// row[x]+";");
-			paint.setColor(Color.argb(255, red, green, blue));
+			paint.setColor(Color.argb(255, blink ? 255 - red : red, blink ? 255 - green : green,
+				blink ? 255 - blue : blue));
 		    } else {
-			paint.setColor(Color.argb(255, value, value, value));
+			paint.setColor(Color.argb(255, blink ? 255 - value : value, blink ? 255 - value : value,
+				blink ? 255 - value : value));
 		    }
 		    canvas.drawRect(pixelWidth * clippedX + PIXEL_PADDING, pixelHeight * clippedY + PIXEL_PADDING,
 			    pixelWidth * (clippedX + 1) - PIXEL_PADDING, pixelHeight * (clippedY + 1) - PIXEL_PADDING,
@@ -166,5 +168,15 @@ public class PlayerView extends ClippableView implements Runnable {
 
 	// wait until next frame
 	handler.postDelayed(this, nextFrameTime - time);
+    }
+
+    public void blink(int type) {
+	// logger.info("blink " + type);
+	blink = true;
+	handler.postDelayed(new Runnable() {
+	    public void run() {
+		blink = false;
+	    }
+	}, 500);
     }
 }

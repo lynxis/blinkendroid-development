@@ -24,6 +24,7 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
+import java.util.List;
 
 import org.cbase.blinkendroid.BlinkendroidApp;
 import org.cbase.blinkendroid.network.ConnectionListener;
@@ -83,9 +84,11 @@ public class UDPServerProtocolManager extends UDPAbstractBlinkendroidProtocol im
 	ByteBuffer in = ByteBuffer.wrap(packet.getData());
 	int proto = in.getInt();
 
-	CommandHandler handler = handlers.get(proto);
+	List<CommandHandler> handler = handlers.get(proto);
 	if (null != handler) {
-	    handler.handle(from, in);
+	    for (CommandHandler commandHandler : handler) {
+		commandHandler.handle(from, in);
+	    }
 	} else {
 	    if (mPlayerManager != null) {
 		mPlayerManager.handle(this, from, proto, in);

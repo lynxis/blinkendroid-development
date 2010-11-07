@@ -408,6 +408,7 @@ public class PlayerManager implements ConnectionListener, CommandHandler {
     }
 
     public void locateMe(PlayerClient playerClient) {
+	logger.info("locateMe from " + playerClient.toString());
 	arrow(playerClient);
     }
 
@@ -415,7 +416,7 @@ public class PlayerManager implements ConnectionListener, CommandHandler {
 	final PlayerClient playerClient = getPlayerClientBySocketAddress(from);
 	int command = in.getInt();
 	if (null == playerClient) {
-	    logger.error("PlayerClient for command not found " + command);
+	    logger.error("PlayerClient from command not found " + command);
 	}
 
 	if (command == BlinkendroidProtocol.COMMAND_LOCATEME) {
@@ -426,6 +427,7 @@ public class PlayerManager implements ConnectionListener, CommandHandler {
     }
 
     private void touch(final PlayerClient playerClient) {
+	logger.info("touch from " + playerClient.toString());
 	// TODO switch the effect
 	new Thread() {
 	    public void run() {
@@ -445,7 +447,7 @@ public class PlayerManager implements ConnectionListener, CommandHandler {
 			if (y - i >= 0)
 			    blink(x, y - i);
 			i++;
-		    } while ((x - i < 0) && (x + i >= maxX) && (y - i < 0) && (y + i >= maxY));
+		    } while ((x - i > 0) || (x + i < maxX) || (y - i > 0) || (y + i < maxY));
 		} catch (Exception e) {
 		    logger.error("touch failed", e);
 		}
@@ -454,7 +456,7 @@ public class PlayerManager implements ConnectionListener, CommandHandler {
 	    private void blink(int x, int y) {
 		PlayerClient pc = PlayerManager.this.mMatrixClients[y][x];
 		if (null != pc)
-		    pc.getBlinkenProtocol().blink();
+		    pc.getBlinkenProtocol().blink(1);
 	    }
 
 	}.start();

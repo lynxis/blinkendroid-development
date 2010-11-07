@@ -9,7 +9,7 @@ import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 
-public class PuzzleImageView extends ClippableView {
+public class PuzzleImageView extends ClippableView implements BlinkenView {
 
     private static final Logger logger = LoggerFactory.getLogger(PuzzleImageView.class);
 
@@ -53,5 +53,9 @@ public class PuzzleImageView extends ClippableView {
 	    canvas.drawBitmap(image, srcRect, dstRect, null);
 	}
 	super.onDraw(canvas);
+    }
+
+    public void blink(int type) {
+	logger.info("blink " + type);
     }
 }

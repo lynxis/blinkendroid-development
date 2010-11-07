@@ -41,6 +41,8 @@ public class BlinkendroidClientProtocol extends BlinkendroidProtocol implements 
 	try {
 	    out.putInt(COMMAND_TOUCH);
 	    send(out);
+	    logger.info("touch flushed");
+
 	} catch (IOException e) {
 	    e.printStackTrace();
 	    logger.error("touch failed", e);
@@ -107,6 +109,9 @@ public class BlinkendroidClientProtocol extends BlinkendroidProtocol implements 
 		final int duration = in.getInt();
 		final int points = in.getInt();
 		mListener.mole(type, moleCounter, duration, points);
+	    } else if (command == COMMAND_BLINK) {
+		final int type = in.getInt();
+		mListener.blink(type);
 	    }
 	}
     }

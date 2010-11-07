@@ -11,6 +11,7 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.cbase.blinkendroid.BlinkendroidApp;
 import org.cbase.blinkendroid.network.ConnectionListener;
@@ -23,7 +24,7 @@ public class UDPAbstractBlinkendroidProtocol implements UDPDirectConnection {
 
     protected DatagramSocket mSocket;
     protected ReceiverThread receiverThread;
-    protected final HashMap<Integer, CommandHandler> handlers = new HashMap<Integer, CommandHandler>();
+    protected final Map<Integer, List<CommandHandler>> handlers = new HashMap<Integer, List<CommandHandler>>();
     protected List<ConnectionListener> connectionListener = new ArrayList<ConnectionListener>();
     protected boolean server;
 
@@ -38,11 +39,20 @@ public class UDPAbstractBlinkendroidProtocol implements UDPDirectConnection {
     }
 
     public void registerHandler(Integer proto, CommandHandler handler) {
-	handlers.put(proto, handler);
+	List<CommandHandler> h = handlers.get(proto);
+	if (h == null) {
+	    h = new ArrayList<CommandHandler>();
+	    handlers.put(proto, h);
+	}
+	h.add(handler);
     }
 
-    public void unregisterHandler(CommandHandler handler) {
-	handlers.remove(handler);
+    public void unregisterHandler(Integer proto, CommandHandler handler) {
+	List<CommandHandler> h = handlers.get(proto);
+	if (h == null) {
+	    return;
+	}
+	h.remove(handler);
     }
 
     public void close() {
@@ -67,18 +77,23 @@ public class UDPAbstractBlinkendroidProtocol implements UDPDirectConnection {
 	int proto = in.getInt();
 	int pos = in.position();
 	// logger.info("BlinkendroidClient received Protocol: " + proto);
+	// TODO remove this ugly hack, let everyone register himself for
+	// protocol heartbet
 	if (proto == BlinkendroidApp.PROTOCOL_HEARTBEAT) {
-	    for (CommandHandler h : handlers.values()) {
-		h.handle(socketAddress, in);
-		in.position(pos);
+	    for (List<CommandHandler> h : handlers.values()) {
+		for (CommandHandler commandHandler : h) {
+		    commandHandler.handle(socketAddress, in);
+		    in.position(pos);
+		}
 	    }
 	    return;
 	}
 
-	CommandHandler handler = handlers.get(proto);
-
+	List<CommandHandler> handler = handlers.get(proto);
 	if (null != handler) {
-	    handler.handle(socketAddress, in);
+	    for (CommandHandler commandHandler : handler) {
+		commandHandler.handle(socketAddress, in);
+	    }
 	}
     }
 

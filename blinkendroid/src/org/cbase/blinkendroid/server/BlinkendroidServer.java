@@ -133,7 +133,7 @@ public class BlinkendroidServer {
 
     public void toggleWhackaMole() {
 	if (null != whackAmole && whackAmole.isRunning()) {
-	    mServerProto.unregisterHandler(whackAmole);
+	    mServerProto.unregisterHandler(BlinkendroidApp.PROTOCOL_CLIENT, whackAmole);
 	    whackAmole.shutdown();
 	} else {
 	    whackAmole = new WhackaMole(playerManager);

@@ -82,10 +82,11 @@ public class BlinkendroidServerProtocol extends BlinkendroidProtocol {
 	}
     }
 
-    public void blink() {
+    public void blink(int type) {
 	try {
 	    ByteBuffer out = ByteBuffer.allocate(16);
 	    out.putInt(COMMAND_BLINK);
+	    out.putInt(type);
 	    send(out);
 	    logger.info("blink flushed ");
 	} catch (IOException e) {
