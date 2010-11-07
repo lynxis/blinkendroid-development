@@ -44,6 +44,11 @@ public class TicketManager implements IPeerHandler, ConnectionListener {
     }
 
     public void foundPeer(String name, String ip, int protocolVersion) {
+	// version
+	if (protocolVersion < BlinkendroidApp.BROADCAST_PROTOCOL_VERSION) {
+	    logger.warn("old version '" + protocolVersion + "' user: " + name + " ip: " + ip);
+	    return;
+	}
 	// noch platz frei?
 	if (clients < maxClients || tickets.contains(ip)) {
 	    // send ticket to ip
