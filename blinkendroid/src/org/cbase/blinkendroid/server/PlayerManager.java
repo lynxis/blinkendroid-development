@@ -44,6 +44,14 @@ public class PlayerManager implements ConnectionListener, CommandHandler {
     private DataServer videoServer;
     private int runningMediaType = BlinkendroidProtocol.OPTION_PLAY_TYPE_IMAGE;
 
+    public int getMaxX() {
+	return maxX;
+    }
+    
+    public int getMaxY() {
+	return maxY;
+    }
+    
     public DataServer getVideoServer() {
 	return videoServer;
     }
@@ -427,37 +435,17 @@ public class PlayerManager implements ConnectionListener, CommandHandler {
     }
 
     private void touch(final PlayerClient playerClient) {
+	if(playerClient == null) {
+	    return;
+	}
+	
 	logger.info("touch from " + playerClient.toString());
-	// TODO switch the effect
+
+	final ITouchEffect effect = new InverseEffect(this, playerClient);
 	new Thread() {
 	    @Override
-			public void run() {
-		try {
-		    // light up row and column
-		    int x = playerClient.x;
-		    int y = playerClient.y;
-		    logger.error("touch " + x + "," + y);
-		    int i = 1;
-		    do {
-			if ((x + i < maxX))
-			    blink(x + i, y);
-			if (y + i < maxY)
-			    blink(x, y + i);
-			if (x - i >= 0)
-			    blink(x - i, y);
-			if (y - i >= 0)
-			    blink(x, y - i);
-			i++;
-		    } while ((x - i > 0) || (x + i < maxX) || (y - i > 0) || (y + i < maxY));
-		} catch (Exception e) {
-		    logger.error("touch failed", e);
-		}
-	    }
-
-	    private void blink(int x, int y) {
-		PlayerClient pc = PlayerManager.this.mMatrixClients[y][x];
-		if (null != pc)
-		    pc.getBlinkenProtocol().blink(1);
+	    public void run() {
+		effect.showEffect();
 	    }
 
 	}.start();
@@ -479,6 +467,14 @@ public class PlayerManager implements ConnectionListener, CommandHandler {
 	PlayerClient pc = mMatrixClients[py][px];
 	if (null != pc)
 	    return pc;
+	return null;
+    }
+    
+    public PlayerClient getPlayer(int x, int y) {
+	if(x <= maxX && y <= maxY) {
+	    return mMatrixClients[y][x];
+	}
+	
 	return null;
     }
 
