@@ -78,6 +78,11 @@ public class BlinkendroidServer {
 	    mServerProto.registerHandler(BlinkendroidApp.PROTOCOL_CLIENT, playerManager);
 	    // register for& touch
 	    effectManager = new EffectManager(playerManager);
+	    
+	    // setting default touch effect
+	    ITouchEffect effect = new InverseEffect(playerManager);
+	    effectManager.setEffect(effect);
+	    
 	    mServerProto.registerHandler(BlinkendroidApp.PROTOCOL_CLIENT, effectManager);
 
 	    // mServerProto.registerHandler(proto, playerManager);
@@ -118,6 +123,10 @@ public class BlinkendroidServer {
 
     public void switchImage(ImageHeader imageHeader) {
 	playerManager.switchImage(imageHeader);
+    }
+    
+    public void setTouchEffect(ITouchEffect effect) {
+	effectManager.setEffect(effect);
     }
 
     public void clip() {

@@ -7,14 +7,12 @@ public class InverseEffect implements ITouchEffect {
 
     private static final Logger logger = LoggerFactory.getLogger(InverseEffect.class);
     private PlayerManager playerManager = null;
-    private PlayerClient playerClient = null;
 
-    public InverseEffect(PlayerManager pMgr, PlayerClient pClient) {
+    public InverseEffect(PlayerManager pMgr) {
 	this.playerManager = pMgr;
-	this.playerClient = pClient;
     }
 
-    public void showEffect() {
+    public void showEffect(PlayerClient playerClient) {
 	try {
 	    // light up row and column
 	    int x = playerClient.x;

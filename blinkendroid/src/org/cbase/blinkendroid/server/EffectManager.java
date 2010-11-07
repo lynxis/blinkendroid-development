@@ -12,9 +12,14 @@ import org.slf4j.LoggerFactory;
 public class EffectManager implements CommandHandler {
     private static final Logger logger = LoggerFactory.getLogger(EffectManager.class);
     PlayerManager playerManager;
-
+    ITouchEffect effect;
+    
     public EffectManager(PlayerManager playerManager) {
 	this.playerManager = playerManager;
+    }
+    
+    public void setEffect(ITouchEffect effect) {
+	this.effect = effect;
     }
 
     public void handle(SocketAddress from, ByteBuffer in) throws IOException {
@@ -31,13 +36,17 @@ public class EffectManager implements CommandHandler {
     }
 
     private void touch(final PlayerClient playerClient) {
+	
+	if(effect == null || playerClient == null) {
+	    return;
+	}
+	
 	logger.info("touch from " + playerClient.toString());
 
-	final ITouchEffect effect = new InverseEffect(playerManager, playerClient);
 	new Thread() {
 	    @Override
 	    public void run() {
-		effect.showEffect();
+		effect.showEffect(playerClient);
 	    }
 
 	}.start();
