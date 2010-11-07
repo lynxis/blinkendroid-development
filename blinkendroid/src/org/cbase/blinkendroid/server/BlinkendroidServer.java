@@ -42,7 +42,7 @@ public class BlinkendroidServer {
     private PlayerManager playerManager;
     private List<ConnectionListener> connectionListeners;
     private WhackaMole whackAmole;
-
+    private EffectManager effectManager;
     private UDPServerProtocolManager mServerProto;
 
     private DataServer videoSocket;
@@ -73,8 +73,12 @@ public class BlinkendroidServer {
 	    playerManager.setVideoServer(videoSocket);
 
 	    mServerProto.setPlayerManager(playerManager);
-	    // for locateME & touch
+
+	    // register for locateME
 	    mServerProto.registerHandler(BlinkendroidApp.PROTOCOL_CLIENT, playerManager);
+	    // register for& touch
+	    effectManager = new EffectManager(playerManager);
+	    mServerProto.registerHandler(BlinkendroidApp.PROTOCOL_CLIENT, effectManager);
 
 	    // mServerProto.registerHandler(proto, playerManager);
 	    for (ConnectionListener connectionListener : connectionListeners) {
