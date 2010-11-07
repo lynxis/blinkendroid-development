@@ -110,7 +110,8 @@ public class WhackaMole extends Thread implements CommandHandler {
 		final long gameTime = System.currentTimeMillis() - startTime;
 		logger.info("game over in " + gameTime / 1000.00);
 		new Thread() {
-		    public void run() {
+		    @Override
+					public void run() {
 			try {
 			    Thread.sleep(5000);
 			    List<PlayerClient> clients = playerManager.getAllClients();

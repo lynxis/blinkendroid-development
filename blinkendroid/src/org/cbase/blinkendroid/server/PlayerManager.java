@@ -430,7 +430,8 @@ public class PlayerManager implements ConnectionListener, CommandHandler {
 	logger.info("touch from " + playerClient.toString());
 	// TODO switch the effect
 	new Thread() {
-	    public void run() {
+	    @Override
+			public void run() {
 		try {
 		    // light up row and column
 		    int x = playerClient.x;
