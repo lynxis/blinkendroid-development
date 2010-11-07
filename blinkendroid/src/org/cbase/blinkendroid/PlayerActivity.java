@@ -149,8 +149,6 @@ public class PlayerActivity extends Activity implements BlinkendroidListener, Ru
 			    ownerView.setVisibility(View.GONE);
 			}
 		    }, BlinkendroidApp.SHOW_OWNER_DURATION);
-		    // send hitmole to server
-		    // blinkendroidClient.hitMole(moleCounter);
 		} else {
 		}
 		return true;
