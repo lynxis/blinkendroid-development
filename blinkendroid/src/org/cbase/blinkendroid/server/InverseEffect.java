@@ -32,6 +32,7 @@ public class InverseEffect implements ITouchEffect {
 		    blink(x - i, y);
 		if (y - i >= 0)
 		    blink(x, y - i);
+		Thread.sleep(500);
 		i++;
 	    } while ((x - i > 0) || (x + i < maxX) || (y - i > 0) || (y + i < maxY));
 	} catch (Exception e) {
@@ -44,7 +45,7 @@ public class InverseEffect implements ITouchEffect {
 	if (null != pc)
 	    pc.getBlinkenProtocol().blink(1);
     }
-    
+
     @Override
     public String toString() {
 	return EFFECT_NAME;
