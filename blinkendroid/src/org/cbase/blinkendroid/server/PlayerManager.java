@@ -47,11 +47,11 @@ public class PlayerManager implements ConnectionListener, CommandHandler {
     public int getMaxX() {
 	return maxX;
     }
-    
+
     public int getMaxY() {
 	return maxY;
     }
-    
+
     public DataServer getVideoServer() {
 	return videoServer;
     }
@@ -425,40 +425,12 @@ public class PlayerManager implements ConnectionListener, CommandHandler {
 	int command = in.getInt();
 	if (null == playerClient) {
 	    logger.error("PlayerClient from command not found " + command);
+	    return;
 	}
 
 	if (command == BlinkendroidProtocol.COMMAND_LOCATEME) {
 	    locateMe(playerClient);
-	} else if (command == BlinkendroidProtocol.COMMAND_TOUCH) {
-	    touch(playerClient);
 	}
-    }
-
-    private void touch(final PlayerClient playerClient) {
-	if(playerClient == null) {
-	    return;
-	}
-	
-	logger.info("touch from " + playerClient.toString());
-
-	final ITouchEffect effect = new InverseEffect(this, playerClient);
-	new Thread() {
-	    @Override
-	    public void run() {
-		effect.showEffect();
-	    }
-
-	}.start();
-    }
-
-    public void hitMole(SocketAddress clientAddress) {
-	PlayerClient playerClient = getPlayerClientBySocketAddress(clientAddress);
-	arrow(playerClient);
-    }
-
-    public void missedMole(SocketAddress clientAddress) {
-	PlayerClient playerClient = getPlayerClientBySocketAddress(clientAddress);
-	arrow(playerClient);
     }
 
     public PlayerClient getPlayer(float x, float y) {
@@ -469,12 +441,12 @@ public class PlayerManager implements ConnectionListener, CommandHandler {
 	    return pc;
 	return null;
     }
-    
+
     public PlayerClient getPlayer(int x, int y) {
-	if(x <= maxX && y <= maxY) {
+	if (x < maxX && y < maxY) {
 	    return mMatrixClients[y][x];
 	}
-	
+
 	return null;
     }
 
