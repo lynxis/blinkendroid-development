@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 public class InverseEffect implements ITouchEffect {
 
     private static final Logger logger = LoggerFactory.getLogger(InverseEffect.class);
+    private static final String EFFECT_NAME = "Inverse";
     private PlayerManager playerManager = null;
 
     public InverseEffect(PlayerManager pMgr) {
@@ -42,6 +43,11 @@ public class InverseEffect implements ITouchEffect {
 	PlayerClient pc = playerManager.getPlayer(x, y);
 	if (null != pc)
 	    pc.getBlinkenProtocol().blink(1);
+    }
+    
+    @Override
+    public String toString() {
+	return EFFECT_NAME;
     }
 
 }

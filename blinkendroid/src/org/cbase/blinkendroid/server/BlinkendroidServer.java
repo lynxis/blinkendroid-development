@@ -47,6 +47,10 @@ public class BlinkendroidServer {
 
     private DataServer videoSocket;
 
+    public PlayerManager getPlayerManager() {
+	return playerManager;
+    }
+    
     public BlinkendroidServer(int port) {
 	this.connectionListeners = new ArrayList<ConnectionListener>();
 	this.port = port;

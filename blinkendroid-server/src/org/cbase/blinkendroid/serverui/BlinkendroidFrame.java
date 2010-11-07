@@ -17,6 +17,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
 import org.cbase.blinkendroid.network.ConnectionListener;
@@ -25,6 +26,10 @@ import org.cbase.blinkendroid.player.bml.BLMHeader;
 import org.cbase.blinkendroid.player.bml.BLMManager.BLMManagerListener;
 import org.cbase.blinkendroid.player.image.ImageHeader;
 import org.cbase.blinkendroid.player.image.ImageManager.ImageManagerListener;
+import org.cbase.blinkendroid.server.ClipAroundEffect;
+import org.cbase.blinkendroid.server.EffectManager;
+import org.cbase.blinkendroid.server.ITouchEffect;
+import org.cbase.blinkendroid.server.InverseEffect;
 
 public class BlinkendroidFrame extends JFrame implements ImageManagerListener,
 	BLMManagerListener, ConnectionListener {
@@ -41,8 +46,9 @@ public class BlinkendroidFrame extends JFrame implements ImageManagerListener,
     private JButton removeClient = null;
     private JComboBox moviesList = null;
     private JComboBox imagesList = null;
+    private JComboBox touchEffectsList = null;
     private final DefaultListModel clientListModel = new DefaultListModel();
-    private JLabel titleLbl, moviesLbl, imagesLbl, clientsLbl, ticketsLbl;
+    private JLabel titleLbl, moviesLbl, imagesLbl, clientsLbl, ticketsLbl, touchEffectsLbl;
     private JList clientsList;
     private JTextField ticketsTxt;
     private JButton refreshTickets = null;
@@ -95,6 +101,19 @@ public class BlinkendroidFrame extends JFrame implements ImageManagerListener,
 	setVisible(true);
     }
 
+    private void initializeEffects() {	
+	if(server.getPlayerManager() != null) {
+	    ITouchEffect[] effects = new ITouchEffect [] {new InverseEffect(server.getPlayerManager()),
+		    new ClipAroundEffect(server.getPlayerManager())};
+	    
+	    ((DefaultComboBoxModel)touchEffectsList.getModel()).removeAllElements();
+	    
+	    for(ITouchEffect effect : effects) {
+		((DefaultComboBoxModel)touchEffectsList.getModel()).addElement(effect);
+	    }
+	}
+    }
+    
     /**
      * This method initializes this
      * 
@@ -110,12 +129,14 @@ public class BlinkendroidFrame extends JFrame implements ImageManagerListener,
 	titleLbl = new JLabel("Blinkendroid SwingUI");
 	moviesLbl = new JLabel("Movies:");
 	imagesLbl = new JLabel("Images:");
+	touchEffectsLbl = new JLabel("Touch Effects: ");
 	clientsLbl = new JLabel("Clients: ");
 	ticketsLbl = new JLabel("Tickets: ");
 	ticketsTxt = new JTextField("10");
 	refreshTickets = new JButton("set");
 
 	clientsList = new JList(clientListModel);
+	JScrollPane clientsListScrollPane = new JScrollPane(clientsList);
 
 	ActionListener actionListener = new FormActionListener();
 	imagesList = new JComboBox(new String[] { "Images" });
@@ -124,6 +145,9 @@ public class BlinkendroidFrame extends JFrame implements ImageManagerListener,
 	moviesList = new JComboBox(new String[] { "Movies" });
 	moviesList.setActionCommand(Commands.MOVIES_SELECTION.toString());
 	moviesList.addActionListener(actionListener);
+	touchEffectsList = new JComboBox();
+	touchEffectsList.setActionCommand(Commands.EFFECT_CHANGED.toString());
+	touchEffectsList.addActionListener(actionListener);
 
 	startStopButton = new JButton("start Server");
 	startStopButton.setActionCommand(Commands.START_STOP.toString());
@@ -166,7 +190,10 @@ public class BlinkendroidFrame extends JFrame implements ImageManagerListener,
 	imagesLbl.setLocation(0, 60);
 	imagesLbl.setSize(100, 20);
 
-	clientsLbl.setLocation(0, 90);
+	touchEffectsLbl.setLocation(0, 90);
+	touchEffectsLbl.setSize(100, 20);
+	
+	clientsLbl.setLocation(0, 120);
 	clientsLbl.setSize(100, 20);
 
 	ticketsLbl.setLocation(0, 300);
@@ -178,8 +205,11 @@ public class BlinkendroidFrame extends JFrame implements ImageManagerListener,
 	imagesList.setLocation(120, 60);
 	imagesList.setSize(200, 20);
 
-	clientsList.setLocation(120, 90);
-	clientsList.setSize(200, 200);
+	touchEffectsList.setLocation(120, 90);
+	touchEffectsList.setSize(200, 20);
+	
+	clientsListScrollPane.setLocation(120, 120);
+	clientsListScrollPane.setSize(200, 170);
 
 	removeClient.setLocation(325, 270);
 	removeClient.setSize(20, 20);
@@ -208,13 +238,15 @@ public class BlinkendroidFrame extends JFrame implements ImageManagerListener,
 	jContentPane.add(refreshTickets);
 	jContentPane.add(ticketsLbl);
 	jContentPane.add(ticketsTxt);
+	jContentPane.add(touchEffectsLbl);
 	jContentPane.add(clientsLbl);
 	jContentPane.add(titleLbl);
 	jContentPane.add(moviesLbl);
 	jContentPane.add(moviesList);
 	jContentPane.add(imagesLbl);
 	jContentPane.add(imagesList);
-	jContentPane.add(clientsList);
+	jContentPane.add(touchEffectsList);
+	jContentPane.add(clientsListScrollPane);
 	jContentPane.add(startStopButton);
 	jContentPane.add(clipButton);
 	jContentPane.add(singleclipButton);
@@ -229,7 +261,7 @@ public class BlinkendroidFrame extends JFrame implements ImageManagerListener,
     }
 
     private enum Commands {
-	START_STOP, MOVIES_SELECTION, IMAGES_SELECTION, REMOVE_CLIENT, CLIP, SINGLECLIP, GLOBALTIMER, MOLE;
+	START_STOP, MOVIES_SELECTION, IMAGES_SELECTION, REMOVE_CLIENT, CLIP, SINGLECLIP, GLOBALTIMER, MOLE, EFFECT_CHANGED;
     }
 
     private class TicketFocusListener implements FocusListener {
@@ -260,6 +292,7 @@ public class BlinkendroidFrame extends JFrame implements ImageManagerListener,
 		if (!server.isRunning()) {
 		    ((JButton) e.getSource()).setText("stop Server");
 		    server.start();
+		    initializeEffects();
 		} else {
 		    ((JButton) e.getSource()).setText("start Server");
 		    server.start();
@@ -289,6 +322,19 @@ public class BlinkendroidFrame extends JFrame implements ImageManagerListener,
 		if (selectedMovie instanceof BLMHeader) {
 		    System.out.println(((BLMHeader) selectedMovie).author);
 		    server.switchMovie((BLMHeader) selectedMovie);
+		}
+		break;
+	    case EFFECT_CHANGED:
+		System.out.println("Effect changed start");
+		Object selectedEffect = ((JComboBox) e.getSource()).getModel().getSelectedItem();
+		
+		if(selectedEffect == null || !server.isRunning()) {
+		    return;
+		}
+		
+		if(selectedEffect instanceof ITouchEffect) {
+		    System.out.println("Switching effect");
+		    server.switchEffect((ITouchEffect)selectedEffect);
 		}
 		break;
 	    case REMOVE_CLIENT:

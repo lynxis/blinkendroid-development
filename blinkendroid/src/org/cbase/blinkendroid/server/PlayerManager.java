@@ -443,7 +443,7 @@ public class PlayerManager implements ConnectionListener, CommandHandler {
     }
 
     public PlayerClient getPlayer(int x, int y) {
-	if ((x < maxX && y < maxY) && (x >= 0 && y > 0)) {
+	if ((x < maxX && y < maxY) && (x >= 0 && y >= 0)) {
 	    return mMatrixClients[y][x];
 	}
 

@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 public class ClipAroundEffect implements ITouchEffect {
 
     private static final Logger logger = LoggerFactory.getLogger(ClipAroundEffect.class);
+    private static final String EFFECT_NAME = "Clip Around";
     private PlayerManager playerManager = null;
 
     public ClipAroundEffect(PlayerManager pMgr) {
@@ -41,5 +42,10 @@ public class ClipAroundEffect implements ITouchEffect {
 	PlayerClient pc = playerManager.getPlayer(x, y);
 	if (null != pc)
 	    pc.getBlinkenProtocol().clip((float) 0.0, (float) 0.0, (float) 1.0, (float) 1.0);
+    }
+    
+    @Override
+    public String toString() {
+	return EFFECT_NAME;
     }
 }

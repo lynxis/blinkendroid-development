@@ -20,6 +20,8 @@ import org.cbase.blinkendroid.player.bml.BLMManager;
 import org.cbase.blinkendroid.player.image.ImageHeader;
 import org.cbase.blinkendroid.player.image.ImageManager;
 import org.cbase.blinkendroid.server.BlinkendroidServer;
+import org.cbase.blinkendroid.server.ITouchEffect;
+import org.cbase.blinkendroid.server.PlayerManager;
 import org.cbase.blinkendroid.server.TicketManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,6 +56,14 @@ public final class BlinkendroidSwingServer {
 
     public BlinkendroidFrame getUI() {
 	return serverUI;
+    }
+    
+    public PlayerManager getPlayerManager() {
+	if (blinkendroidServer != null) {
+	    return blinkendroidServer.getPlayerManager();
+	}
+	
+	return null;
     }
 
     public void setMaxClients(int maxClients) {
@@ -213,6 +223,10 @@ public final class BlinkendroidSwingServer {
 	blinkendroidServer.switchImage(imgHeader);
     }
 
+
+    public void switchEffect(ITouchEffect effect) {
+	blinkendroidServer.setTouchEffect(effect);
+    }
     public void start() {
 	if (null == blinkendroidServer) {
 	    ticketManager.start();
