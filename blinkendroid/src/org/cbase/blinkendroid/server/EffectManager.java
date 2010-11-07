@@ -33,5 +33,13 @@ public class EffectManager implements CommandHandler {
     private void touch(final PlayerClient playerClient) {
 	logger.info("touch from " + playerClient.toString());
 
+	final ITouchEffect effect = new InverseEffect(playerManager, playerClient);
+	new Thread() {
+	    @Override
+	    public void run() {
+		effect.showEffect();
+	    }
+
+	}.start();
     }
 }
