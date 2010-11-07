@@ -56,7 +56,11 @@ public class WhackaMole extends Thread implements CommandHandler {
 		try {
 		    // sleep random time but a little less if moleCounter is
 		    // high
-		    sleep = random.nextInt(10000 - moleCounter * 200);
+		    if (moleCounter < 50)
+			sleep = random.nextInt(10000 - moleCounter * 200);
+		    else
+			sleep = random.nextInt(500);
+
 		    if (sleep < 500)
 			sleep = 500;
 		    Thread.sleep(sleep);
