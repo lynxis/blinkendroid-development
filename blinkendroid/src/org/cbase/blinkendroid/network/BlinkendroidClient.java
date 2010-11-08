@@ -39,10 +39,12 @@ public class BlinkendroidClient extends Thread {
     private UDPClientProtocolManager protocol;
     private ClientConnectionState mConnstate;
     private BlinkendroidClientProtocol blinkenProto;
+    private int screenLayout;
 
-    public BlinkendroidClient(final InetSocketAddress socketAddress, final BlinkendroidListener listener) {
+    public BlinkendroidClient(final InetSocketAddress socketAddress, final BlinkendroidListener listener, int screenLayout) {
 	this.socketAddress = socketAddress;
 	this.listener = listener;
+	this.screenLayout = screenLayout;
     }
 
     @Override
@@ -56,7 +58,7 @@ public class BlinkendroidClient extends Thread {
 	    ClientSocket serverSocket = new ClientSocket(protocol, socketAddress);
 	    mConnstate = new ClientConnectionState(serverSocket, listener);
 	    protocol.registerHandler(BlinkendroidApp.PROTOCOL_CONNECTION, mConnstate);
-	    mConnstate.openConnection();
+	    mConnstate.openConnection(screenLayout);
 
 	    blinkenProto = new BlinkendroidClientProtocol(listener, serverSocket);
 	    protocol.registerHandler(BlinkendroidApp.PROTOCOL_PLAYER, blinkenProto);

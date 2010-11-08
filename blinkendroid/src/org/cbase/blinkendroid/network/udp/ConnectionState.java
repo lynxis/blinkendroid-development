@@ -35,6 +35,8 @@ public class ConnectionState implements CommandHandler {
     protected long m_LastSeen;
     private ClientSocket mClientSocket;
     private DirectTimerThread directTimerThread;
+    
+    private int screenLayout;
 
     /**
      * This thread sends the global time to connected devices.
@@ -123,6 +125,7 @@ public class ConnectionState implements CommandHandler {
 
 	// syn is a special case, because we dont have a connection
 	if (command == Command.SYN) {
+	    screenLayout = bybuff.getInt();
 	    receivedSyn(connId);
 	    return;
 	}
@@ -155,8 +158,8 @@ public class ConnectionState implements CommandHandler {
 	}
     }
 
-    public void openConnection() {
-	sendSyn();
+    public void openConnection(int screenLayout) {
+	sendSyn(screenLayout);
     }
 
     protected void stateChange(Connstate newState) {
@@ -236,12 +239,13 @@ public class ConnectionState implements CommandHandler {
 	m_LastSeen = System.currentTimeMillis();
     }
 
-    protected void sendSyn() {
+    protected void sendSyn(int screenLayout) {
 	logger.info("sendSyn");
 	ByteBuffer out = ByteBuffer.allocate(1024);
 	out.putInt(Command.SYN.ordinal());
 	m_connId = (int) System.currentTimeMillis();
 	out.putInt(m_connId);// TODO set uuid
+	out.putInt(screenLayout);
 	stateChange(Connstate.SYNACKWAIT);
 	try {
 	    send(out);

@@ -194,7 +194,8 @@ public class PlayerActivity extends Activity implements BlinkendroidListener, Ru
 	}
 	int port = getIntent().getIntExtra(INTENT_EXTRA_PORT, BlinkendroidApp.BROADCAST_SERVER_PORT);
 	InetSocketAddress socketAddr = new InetSocketAddress(addr, port);
-	blinkendroidClient = new BlinkendroidClient(socketAddr, this);
+	blinkendroidClient = new BlinkendroidClient(socketAddr, this, getResources().getConfiguration().screenLayout);
+
 	/*
 	 * blinkendroidClient = new BlinkendroidClient( new
 	 * InetSocketAddress(getIntent().getStringExtra( INTENT_EXTRA_IP),
