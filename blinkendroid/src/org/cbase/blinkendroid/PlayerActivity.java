@@ -38,6 +38,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -194,7 +195,7 @@ public class PlayerActivity extends Activity implements BlinkendroidListener, Ru
 	}
 	int port = getIntent().getIntExtra(INTENT_EXTRA_PORT, BlinkendroidApp.BROADCAST_SERVER_PORT);
 	InetSocketAddress socketAddr = new InetSocketAddress(addr, port);
-	blinkendroidClient = new BlinkendroidClient(socketAddr, this, getResources().getConfiguration().screenLayout);
+	blinkendroidClient = new BlinkendroidClient(socketAddr, this, getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK);
 
 	/*
 	 * blinkendroidClient = new BlinkendroidClient( new
