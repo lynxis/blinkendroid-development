@@ -118,7 +118,7 @@ public final class BlinkendroidSwingServer {
 	blmManager = new BLMManager();
 	imageManager = new ImageManager();
 	ticketManager = new TicketManager();
-	ticketManager.setServerName("BlinkendroidSwingServer");
+	ticketManager.setServerName("Blinkendroid Worldrecord Server");
 	ticketManager.setMaxClients(20);
 
 	if (JNOTIFY_FOUND) {
@@ -148,7 +148,7 @@ public final class BlinkendroidSwingServer {
 
 	// Checking for JNotify libs
 	try {
-	    int testId = JNotify.addWatch(".", JNotify.FILE_ANY, false, null);
+	    int testId = JNotify.addWatch(".", JNotify.FILE_ANY, false, new MediaDirListener());
 	    JNotify.removeWatch(testId);
 	} catch (UnsatisfiedLinkError ule) {
 	    logger
