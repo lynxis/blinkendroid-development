@@ -182,7 +182,7 @@ public class PlayerManager implements ConnectionListener, CommandHandler {
 		    playerClient.endY = startY + (float) (1.0 / maxY);
 		    if (clipAll)
 			playerClient.getBlinkenProtocol().clip(playerClient.startX, playerClient.startY,
-			        playerClient.endX, playerClient.endY);
+				playerClient.endX, playerClient.endY);
 		}
 		startX = startX + (float) (1.0 / maxX);
 	    }
